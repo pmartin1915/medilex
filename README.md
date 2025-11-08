@@ -4,7 +4,7 @@ A mobile flashcard application for learning medical terminology, built with Reac
 
 ## Features
 
-- **4-Tab Navigation**: Home, Learn, Library, Progress
+- **5-Tab Navigation**: Home, Learn, Library, Progress, Debug
 - **Swipeable Flashcards**: Study medical terms with intuitive swipe gestures
 - **Streak Tracking**: 7-day visual streak calendar
 - **Progress Analytics**: Track accuracy, mastered terms, and study sessions
@@ -12,6 +12,8 @@ A mobile flashcard application for learning medical terminology, built with Reac
 - **Search & Filter**: Find terms quickly in the library
 - **Offline-First**: All data stored locally with AsyncStorage
 - **Error Handling**: Comprehensive error boundaries and try-catch blocks
+- **Debug Panel**: Built-in error logging with copy/paste functionality
+- **Real-time Error Notifications**: Toast alerts for errors in dev mode
 
 ## Tech Stack
 
@@ -62,7 +64,9 @@ The app will automatically:
 src/
 ├── components/          # Reusable UI components
 │   ├── ErrorBoundary.tsx
+│   ├── ErrorToast.tsx       # NEW: Real-time error notifications
 │   ├── MedicalTermCard.tsx
+│   ├── StartupLoader.tsx
 │   ├── StreakCalendar.tsx
 │   ├── SwipeableCard.tsx
 │   ├── PrimaryButton.tsx
@@ -72,10 +76,13 @@ src/
 │   ├── HomeScreen.tsx
 │   ├── LearnScreen.tsx
 │   ├── LibraryScreen.tsx
-│   └── ProgressScreen.tsx
+│   ├── ProgressScreen.tsx
+│   └── DebugScreen.tsx      # NEW: Debug panel with error viewer
 ├── store/              # Zustand state management
 │   ├── wordStore.ts
 │   └── streakStore.ts
+├── utils/              # Utilities
+│   └── errorLogger.ts       # NEW: Error logging system
 ├── theme/              # Design system
 │   └── theme.ts
 ├── types/              # TypeScript interfaces
@@ -111,6 +118,24 @@ src/
 - Current and longest streak
 - Achievement cards
 
+### Debug Screen
+- **Error Logs Tab**: View all errors with timestamps, stack traces, and context
+  - Tap any error to copy full details to clipboard
+  - "Copy All" button to copy all errors at once
+  - Smart timestamps (e.g., "5m ago", "Just now")
+  - Color-coded by severity (Error = red, Warning = yellow)
+- **Storage Tab**: Inspect AsyncStorage data
+  - View all storage keys
+  - Tap any key to view its value
+  - Clear all storage (with confirmation)
+- **State Tab**: Live app state inspection
+  - View loaded terms count
+  - See user progress entries
+  - Check current streak
+  - Preview sample terms
+- **Error Count Badge**: Debug tab icon shows red badge with error count
+- **Real-time Updates**: Auto-refreshes every 2 seconds
+
 ## Data Persistence
 
 All data is stored locally using AsyncStorage:
@@ -118,12 +143,60 @@ All data is stored locally using AsyncStorage:
 - `@vocab_app:user_progress` - Study progress per term
 - `@vocab_app:streak` - Streak tracking data
 
-## Error Handling
+## Error Handling & Debugging
 
-- ErrorBoundary wraps entire app
-- Try-catch blocks in all async operations
-- Console logging for debugging
-- User-friendly error messages
+The app has comprehensive debugging features built-in:
+
+### Error Logging System
+- **Automatic Capture**: All errors, warnings, and console output are logged
+- **Persistent Storage**: Errors saved to AsyncStorage (max 50 recent logs)
+- **Stack Traces**: Full stack traces with preserved function/class names
+- **Component Context**: Shows which component caused the error
+
+### Debug Tab Features
+- **In-App Error Viewer**: See all errors without needing a laptop
+- **One-Tap Copy**: Copy any error or all errors to clipboard
+- **Smart Filtering**: Separate tabs for Logs, Storage, and State
+- **Real-time Monitoring**: Errors appear instantly with toast notifications
+
+### Development Tools
+Use these batch files for enhanced debugging:
+
+#### `debug-mode.bat` (Recommended)
+Launches the app with maximum debugging enabled:
+- Verbose Metro bundler output
+- Clear cache on startup
+- Enhanced error messages
+- Source maps enabled
+- Shows all debug features available
+
+#### `start-android.bat`
+Standard startup with:
+- ADB connection verification
+- Emulator readiness check
+- Metro bundler with --clear and --dev-client flags
+
+#### `show-errors.bat`
+Quick utility to check if Metro is running and remind you about the Debug tab
+
+### Error Notifications in DEV Mode
+- Toast notifications appear at top of screen when errors occur
+- Tap toast to navigate directly to Debug tab
+- Toasts auto-dismiss after 5 seconds
+- Only active in development mode (`__DEV__`)
+
+### ErrorBoundary
+- Wraps entire app to catch React component errors
+- Shows user-friendly error screen with full details
+- Logs errors to Debug tab automatically
+- "Try Again" button to reset and continue
+
+### Best Practices for Debugging
+1. **Use the Debug Tab First**: Easiest way to see errors on Android emulator
+2. **Tap to Copy**: Copy errors from Debug tab, paste into messages/notes
+3. **Check Error Count Badge**: Debug tab icon shows red badge with error count
+4. **Use debug-mode.bat**: Start development with `debug-mode.bat` for best experience
+5. **Toast Notifications**: Watch for error toasts during development
 
 ## Adding More Terms
 
@@ -135,7 +208,13 @@ To add more medical terms:
 
 ## Known Issues
 
-None currently! 🎉
+None currently!
+
+If you encounter errors:
+1. Check the Debug tab in the app (bug icon at bottom)
+2. Copy the error using the tap-to-copy feature
+3. Clear Metro cache: `npx expo start --clear`
+4. Restart the emulator if needed
 
 ## Future Enhancements
 

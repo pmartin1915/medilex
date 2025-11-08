@@ -6,18 +6,21 @@ import {
   ScrollView,
   TouchableOpacity,
   Alert,
+  Clipboard,
+  Platform,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { theme } from '../theme/theme';
 import { errorLogger, ErrorLog } from '../utils/errorLogger';
 import { useWordStore } from '../store/wordStore';
 import { useStreakStore } from '../store/streakStore';
-import { Trash2, RefreshCw, AlertCircle } from 'lucide-react-native';
+import { Trash2, RefreshCw, AlertCircle, Copy, CheckCircle2 } from 'lucide-react-native';
 
 export const DebugScreen = () => {
   const [logs, setLogs] = useState<ErrorLog[]>([]);
   const [storageKeys, setStorageKeys] = useState<string[]>([]);
   const [selectedTab, setSelectedTab] = useState<'logs' | 'storage' | 'state'>('logs');
+  const [copiedLogId, setCopiedLogId] = useState<string | null>(null);
 
   const terms = useWordStore(state => state.terms);
   const userProgress = useWordStore(state => state.userProgress);
@@ -97,10 +100,74 @@ export const DebugScreen = () => {
     }
   };
 
+  const handleCopyLog = async (log: ErrorLog) => {
+    try {
+      const logText = `
+=== ERROR LOG ===
+Type: ${log.type.toUpperCase()}
+Time: ${new Date(log.timestamp).toLocaleString()}
+Context: ${log.context || 'N/A'}
+
+Message:
+${log.message}
+
+${log.stack ? `Stack Trace:\n${log.stack}\n` : ''}
+${log.componentStack ? `Component Stack:\n${log.componentStack}\n` : ''}
+=================
+      `.trim();
+
+      await Clipboard.setString(logText);
+      setCopiedLogId(log.id);
+
+      // Reset copied state after 2 seconds
+      setTimeout(() => setCopiedLogId(null), 2000);
+    } catch (error: any) {
+      Alert.alert('Error', `Failed to copy: ${error.message}`);
+    }
+  };
+
+  const handleCopyAllLogs = async () => {
+    try {
+      const allLogsText = logs.map(log => {
+        return `
+=== ERROR LOG ===
+Type: ${log.type.toUpperCase()}
+Time: ${new Date(log.timestamp).toLocaleString()}
+Context: ${log.context || 'N/A'}
+Message: ${log.message}
+${log.stack ? `Stack: ${log.stack}` : ''}
+=================`;
+      }).join('\n\n');
+
+      await Clipboard.setString(allLogsText);
+      Alert.alert('Success', `Copied ${logs.length} error logs to clipboard`);
+    } catch (error: any) {
+      Alert.alert('Error', `Failed to copy logs: ${error.message}`);
+    }
+  };
+
+  const formatTimestamp = (timestamp: string) => {
+    const date = new Date(timestamp);
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMs / 3600000);
+
+    if (diffMins < 1) return 'Just now';
+    if (diffMins < 60) return `${diffMins}m ago`;
+    if (diffHours < 24) return `${diffHours}h ago`;
+    return date.toLocaleTimeString();
+  };
+
   const renderLogs = () => (
     <View style={styles.tabContent}>
       <View style={styles.tabHeader}>
         <Text style={styles.tabTitle}>Error Logs ({logs.length})</Text>
+        {logs.length > 0 && (
+          <TouchableOpacity onPress={handleCopyAllLogs} style={styles.iconButton}>
+            <Copy size={20} color={theme.colors.accent} />
+          </TouchableOpacity>
+        )}
         <TouchableOpacity onPress={handleClearLogs} style={styles.iconButton}>
           <Trash2 size={20} color={theme.colors.error} />
         </TouchableOpacity>
@@ -111,22 +178,35 @@ export const DebugScreen = () => {
 
       <ScrollView style={styles.logsList}>
         {logs.length === 0 ? (
-          <Text style={styles.emptyText}>No error logs recorded</Text>
+          <View style={styles.emptyContainer}>
+            <CheckCircle2 size={48} color={theme.colors.success} />
+            <Text style={styles.emptyText}>No errors logged!</Text>
+            <Text style={styles.emptySubtext}>Your app is running smoothly</Text>
+          </View>
         ) : (
           logs.map((log) => (
-            <View
+            <TouchableOpacity
               key={log.id}
               style={[
                 styles.logItem,
                 log.type === 'error' && styles.logItemError,
                 log.type === 'warn' && styles.logItemWarn,
               ]}
+              onPress={() => handleCopyLog(log)}
+              activeOpacity={0.7}
             >
               <View style={styles.logHeader}>
-                <Text style={styles.logType}>{log.type.toUpperCase()}</Text>
-                <Text style={styles.logTime}>
-                  {new Date(log.timestamp).toLocaleTimeString()}
-                </Text>
+                <View style={styles.logHeaderLeft}>
+                  <Text style={styles.logType}>{log.type.toUpperCase()}</Text>
+                  <Text style={styles.logTime}>{formatTimestamp(log.timestamp)}</Text>
+                </View>
+                <View style={styles.copyIndicator}>
+                  {copiedLogId === log.id ? (
+                    <CheckCircle2 size={16} color={theme.colors.success} />
+                  ) : (
+                    <Copy size={16} color={theme.colors.textTertiary} />
+                  )}
+                </View>
               </View>
               <Text style={styles.logMessage}>{log.message}</Text>
               {log.context && (
@@ -137,7 +217,8 @@ export const DebugScreen = () => {
                   {log.stack}
                 </Text>
               )}
-            </View>
+              <Text style={styles.tapHint}>Tap to copy full error</Text>
+            </TouchableOpacity>
           ))
         )}
       </ScrollView>
@@ -348,10 +429,23 @@ const styles = StyleSheet.create({
   logsList: {
     flex: 1,
   },
+  emptyContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 60,
+    paddingHorizontal: 20,
+  },
   emptyText: {
     textAlign: 'center',
-    marginTop: 40,
-    fontSize: 16,
+    marginTop: 16,
+    fontSize: 18,
+    fontWeight: '600',
+    color: theme.colors.textPrimary,
+  },
+  emptySubtext: {
+    textAlign: 'center',
+    marginTop: 4,
+    fontSize: 14,
     color: theme.colors.textSecondary,
   },
   logItem: {
@@ -372,7 +466,16 @@ const styles = StyleSheet.create({
   logHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
     marginBottom: 8,
+  },
+  logHeaderLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  copyIndicator: {
+    padding: 4,
   },
   logType: {
     fontSize: 12,
@@ -382,6 +485,13 @@ const styles = StyleSheet.create({
   logTime: {
     fontSize: 11,
     color: theme.colors.textTertiary,
+  },
+  tapHint: {
+    fontSize: 10,
+    color: theme.colors.textTertiary,
+    fontStyle: 'italic',
+    marginTop: 8,
+    textAlign: 'right',
   },
   logMessage: {
     fontSize: 14,

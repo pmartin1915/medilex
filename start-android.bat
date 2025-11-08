@@ -61,7 +61,16 @@ if errorlevel 1 (
 )
 echo.
 
-echo [5/5] Starting Expo and launching on Android...
+echo [5/5] Starting Expo Metro bundler with enhanced logging...
+echo.
+echo ========================================
+echo DEVELOPER MODE ENABLED
+echo ========================================
+echo - Errors will be highlighted in RED
+echo - Warnings will be highlighted in YELLOW
+echo - Check the Debug tab in the app for all errors
+echo - Press Ctrl+C to stop the server
+echo ========================================
 echo.
 echo The Metro bundler will start and the app will install automatically.
 echo.
@@ -72,4 +81,6 @@ echo   3. Run this script again
 echo.
 echo Press Ctrl+C to stop Metro when you're done.
 echo.
-npx expo start --android
+
+REM Start Metro with clear cache and launch on Android (Expo Go)
+npx expo start --clear --android

@@ -1,10 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
+import { View, Text, StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import type { NavigationContainerRef } from '@react-navigation/native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Home, BookOpen, Library, TrendingUp, Bug } from 'lucide-react-native';
 import ErrorBoundary from './src/components/ErrorBoundary';
 import { StartupLoader } from './src/components/StartupLoader';
+import { ErrorToast } from './src/components/ErrorToast';
 import { HomeScreen } from './src/screens/HomeScreen';
 import { LearnScreen } from './src/screens/LearnScreen';
 import { LibraryScreen } from './src/screens/LibraryScreen';
@@ -13,18 +16,19 @@ import { DebugScreen } from './src/screens/DebugScreen';
 import { useWordStore } from './src/store/wordStore';
 import { useStreakStore } from './src/store/streakStore';
 import { theme } from './src/theme/theme';
+import { errorLogger } from './src/utils/errorLogger';
 
 const Tab = createBottomTabNavigator();
 
 function AppContent() {
   const loadTerms = useWordStore(state => state.loadTerms);
   const loadStreak = useStreakStore(state => state.loadStreak);
+  const [errorCount, setErrorCount] = useState(0);
+  const navigationRef = useRef<NavigationContainerRef<any>>(null);
 
   useEffect(() => {
     const initializeStores = async () => {
       try {
-        // Dynamically import errorLogger only when needed
-        const { errorLogger } = await import('./src/utils/errorLogger');
         errorLogger.logInfo('Loading app stores...', 'App');
         await loadTerms();
         await loadStreak();
@@ -35,10 +39,36 @@ function AppContent() {
     };
 
     initializeStores();
+
+    // Poll for error count updates
+    const interval = setInterval(() => {
+      const logs = errorLogger.getLogs();
+      const errors = logs.filter(log => log.type === 'error').length;
+      setErrorCount(errors);
+    }, 2000);
+
+    return () => clearInterval(interval);
   }, []);
 
+  const DebugIcon = ({ color, size }: { color: string; size: number }) => (
+    <View style={styles.debugIconContainer}>
+      <Bug size={size} color={color} />
+      {errorCount > 0 && (
+        <View style={styles.badge}>
+          <Text style={styles.badgeText}>{errorCount > 99 ? '99+' : errorCount}</Text>
+        </View>
+      )}
+    </View>
+  );
+
+  const handleToastPress = () => {
+    // Navigate to Debug tab when toast is pressed
+    navigationRef.current?.navigate('Debug');
+  };
+
   return (
-    <NavigationContainer>
+    <>
+      <NavigationContainer ref={navigationRef}>
       <Tab.Navigator
         screenOptions={{
           headerShown: false,
@@ -103,13 +133,13 @@ function AppContent() {
           component={DebugScreen}
           options={{
             tabBarLabel: 'Debug',
-            tabBarIcon: ({ color, size }) => (
-              <Bug size={size} color={color} />
-            ),
+            tabBarIcon: DebugIcon,
           }}
         />
       </Tab.Navigator>
     </NavigationContainer>
+      <ErrorToast onPress={handleToastPress} />
+    </>
   );
 }
 
@@ -118,8 +148,6 @@ export default function App() {
 
   const handleStartupComplete = async (success: boolean) => {
     try {
-      // Dynamically import errorLogger only after startup
-      const { errorLogger } = await import('./src/utils/errorLogger');
       if (success) {
         errorLogger.logInfo('Startup completed successfully', 'App');
       } else {
@@ -141,3 +169,26 @@ export default function App() {
     </GestureHandlerRootView>
   );
 }
+
+const styles = StyleSheet.create({
+  debugIconContainer: {
+    position: 'relative',
+  },
+  badge: {
+    position: 'absolute',
+    top: -4,
+    right: -8,
+    backgroundColor: theme.colors.error,
+    borderRadius: 10,
+    minWidth: 18,
+    height: 18,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 4,
+  },
+  badgeText: {
+    color: '#FFFFFF',
+    fontSize: 10,
+    fontWeight: '700',
+  },
+});
