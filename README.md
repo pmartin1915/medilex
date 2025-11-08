@@ -162,6 +162,56 @@ This app MUST use React 18.2.0. React 19 has compatibility issues with React Nav
 - Minimal re-renders with Zustand
 - Efficient AsyncStorage operations
 
+## 🤖 Autonomous Testing & Debugging
+
+This app includes a **complete autonomous testing system** that allows Claude (AI assistant) to test and debug without manual copy/paste!
+
+### For Claude
+See **[CLAUDE-AUTONOMOUS-TESTING.md](./CLAUDE-AUTONOMOUS-TESTING.md)** for complete documentation.
+
+Quick commands:
+```bash
+# Check app status
+./check-app-status.sh
+
+# Monitor in real-time
+./monitor-app.sh
+
+# Extract errors
+node extract-errors.js
+```
+
+### For Developers
+The app includes powerful debugging tools:
+
+**Debug Screen Features:**
+- ✅ Real-time error logging
+- ✅ Error count badge on Debug tab
+- ✅ Copy error button for easy sharing
+- ✅ Timestamp formatting
+- ✅ Error type filtering
+
+**Development Tools:**
+- 📱 `monitor-app.sh` - Real-time Android logcat monitoring
+- 🔍 `check-app-status.sh` - Quick health check
+- 📊 `extract-errors.js` - Detailed error extraction
+- 🛠️ Enhanced Metro bundler logging
+
+**Error Logger Enhancement:**
+- Outputs structured errors to console in DEV mode
+- Easy-to-grep format: `🏥 [VOCAB_APP_ERROR]`
+- Appears in both AsyncStorage and Android logcat
+- Automatic toast notifications for errors
+
+### Debugging Workflow
+1. Run `./check-app-status.sh` to verify environment
+2. Start monitoring with `./monitor-app.sh` in background
+3. Make code changes
+4. See results immediately in monitor
+5. Verify fixes with `./check-app-status.sh`
+
+See full documentation in **[DEBUGGING-GUIDE.md](./DEBUGGING-GUIDE.md)** and **[CLAUDE-AUTONOMOUS-TESTING.md](./CLAUDE-AUTONOMOUS-TESTING.md)**.
+
 ## License
 
 MIT

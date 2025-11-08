@@ -102,8 +102,32 @@ class ErrorLogger {
       this.logs = this.logs.slice(0, MAX_LOGS);
     }
 
+    // In development, output structured error to console for easy monitoring
+    if (__DEV__) {
+      this.logToConsole(errorLog);
+    }
+
     // Save to AsyncStorage asynchronously
     this.saveLogs();
+  }
+
+  private logToConsole(errorLog: ErrorLog) {
+    // Output structured error that's easy to parse from logcat
+    const prefix = '🏥 [VOCAB_APP_ERROR]';
+    const timestamp = new Date(errorLog.timestamp).toLocaleTimeString();
+
+    console.log(`${prefix} ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
+    console.log(`${prefix} Type: ${errorLog.type.toUpperCase()}`);
+    console.log(`${prefix} Time: ${timestamp}`);
+    if (errorLog.context) {
+      console.log(`${prefix} Context: ${errorLog.context}`);
+    }
+    console.log(`${prefix} Message: ${errorLog.message}`);
+    if (errorLog.stack) {
+      console.log(`${prefix} Stack: ${errorLog.stack.split('\n')[0]}`);
+    }
+    console.log(`${prefix} ID: ${errorLog.id}`);
+    console.log(`${prefix} ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
   }
 
   private async saveLogs() {
