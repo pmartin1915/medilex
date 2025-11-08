@@ -61,11 +61,15 @@ if errorlevel 1 (
 )
 echo.
 
-echo [5/5] Starting Expo Metro bundler...
+echo [5/5] Starting Expo and launching on Android...
 echo.
-echo TIP: If you still get "Can't find service: package" error:
+echo The Metro bundler will start and the app will install automatically.
+echo.
+echo TIP: If you get "Can't find service: package" error:
 echo   1. Close the emulator completely
-echo   2. Restart it and wait for full boot
+echo   2. Restart it and wait for full boot (you'll see the home screen)
 echo   3. Run this script again
 echo.
-npx expo start
+echo Press Ctrl+C to stop Metro when you're done.
+echo.
+npx expo start --android
