@@ -1,0 +1,202 @@
+[
+  {
+    "id": "prefix_a",
+    "component": "a-",
+    "meaning": "without, not, absence of",
+    "category": "negation",
+    "etymology": "Greek 'a' (not, without)",
+    "examples": ["apnea", "asymptomatic", "atrophy"]
+  },
+  {
+    "id": "prefix_an",
+    "component": "an-",
+    "meaning": "without, not",
+    "category": "negation",
+    "etymology": "Greek 'an' (not, without)",
+    "examples": ["anemia", "anoxia", "anuria"]
+  },
+  {
+    "id": "prefix_brady",
+    "component": "brady-",
+    "meaning": "slow",
+    "category": "rate/speed",
+    "etymology": "Greek 'bradys' (slow)",
+    "examples": ["bradycardia", "bradypnea", "bradykinesia"]
+  },
+  {
+    "id": "prefix_tachy",
+    "component": "tachy-",
+    "meaning": "fast, rapid",
+    "category": "rate/speed",
+    "etymology": "Greek 'tachys' (swift)",
+    "examples": ["tachycardia", "tachypnea", "tachyarrhythmia"]
+  },
+  {
+    "id": "prefix_hyper",
+    "component": "hyper-",
+    "meaning": "excessive, above normal, increased",
+    "category": "quantity/degree",
+    "etymology": "Greek 'hyper' (over, above)",
+    "examples": ["hypertension", "hyperglycemia", "hyperthyroidism"]
+  },
+  {
+    "id": "prefix_hypo",
+    "component": "hypo-",
+    "meaning": "deficient, below normal, decreased",
+    "category": "quantity/degree",
+    "etymology": "Greek 'hypo' (under, below)",
+    "examples": ["hypotension", "hypoglycemia", "hypothyroidism"]
+  },
+  {
+    "id": "prefix_dys",
+    "component": "dys-",
+    "meaning": "difficult, painful, abnormal",
+    "category": "quality/condition",
+    "etymology": "Greek 'dys' (bad, difficult)",
+    "examples": ["dyspnea", "dysphagia", "dysuria"]
+  },
+  {
+    "id": "prefix_poly",
+    "component": "poly-",
+    "meaning": "many, much, excessive",
+    "category": "quantity/degree",
+    "etymology": "Greek 'polys' (many)",
+    "examples": ["polydipsia", "polyuria", "polyneuropathy"]
+  },
+  {
+    "id": "prefix_oligo",
+    "component": "oligo-",
+    "meaning": "few, scanty, deficient",
+    "category": "quantity/degree",
+    "etymology": "Greek 'oligos' (few, little)",
+    "examples": ["oliguria", "oligomenorrhea", "oligospermia"]
+  },
+  {
+    "id": "prefix_macro",
+    "component": "macro-",
+    "meaning": "large, long",
+    "category": "size",
+    "etymology": "Greek 'makros' (long, large)",
+    "examples": ["macrocephaly", "macrocytosis", "macrophage"]
+  },
+  {
+    "id": "prefix_micro",
+    "component": "micro-",
+    "meaning": "small",
+    "category": "size",
+    "etymology": "Greek 'mikros' (small)",
+    "examples": ["microcephaly", "microcytosis", "microorganism"]
+  },
+  {
+    "id": "prefix_hemi",
+    "component": "hemi-",
+    "meaning": "half, one side",
+    "category": "position/direction",
+    "etymology": "Greek 'hemi' (half)",
+    "examples": ["hemiplegia", "hemiparesis", "hemisphere"]
+  },
+  {
+    "id": "prefix_pre",
+    "component": "pre-",
+    "meaning": "before, in front of",
+    "category": "time/position",
+    "etymology": "Latin 'prae' (before)",
+    "examples": ["prenatal", "preoperative", "prediabetes"]
+  },
+  {
+    "id": "prefix_post",
+    "component": "post-",
+    "meaning": "after, behind",
+    "category": "time/position",
+    "etymology": "Latin 'post' (after)",
+    "examples": ["postoperative", "postpartum", "postmortem"]
+  },
+  {
+    "id": "prefix_peri",
+    "component": "peri-",
+    "meaning": "around, surrounding",
+    "category": "position/direction",
+    "etymology": "Greek 'peri' (around)",
+    "examples": ["pericardium", "perioperative", "peritoneum"]
+  },
+  {
+    "id": "prefix_intra",
+    "component": "intra-",
+    "meaning": "within, inside",
+    "category": "position/direction",
+    "etymology": "Latin 'intra' (within)",
+    "examples": ["intracellular", "intramuscular", "intracranial"]
+  },
+  {
+    "id": "prefix_inter",
+    "component": "inter-",
+    "meaning": "between",
+    "category": "position/direction",
+    "etymology": "Latin 'inter' (between)",
+    "examples": ["intercostal", "interstitial", "interphalangeal"]
+  },
+  {
+    "id": "prefix_extra",
+    "component": "extra-",
+    "meaning": "outside, beyond",
+    "category": "position/direction",
+    "etymology": "Latin 'extra' (outside)",
+    "examples": ["extracellular", "extracorporeal", "extracranial"]
+  },
+  {
+    "id": "prefix_anti",
+    "component": "anti-",
+    "meaning": "against, opposing",
+    "category": "opposition",
+    "etymology": "Greek 'anti' (against)",
+    "examples": ["antibiotic", "antihypertensive", "anticoagulant"]
+  },
+  {
+    "id": "prefix_contra",
+    "component": "contra-",
+    "meaning": "against, opposite",
+    "category": "opposition",
+    "etymology": "Latin 'contra' (against)",
+    "examples": ["contraindication", "contralateral", "contraception"]
+  },
+  {
+    "id": "prefix_sub",
+    "component": "sub-",
+    "meaning": "under, below, beneath",
+    "category": "position/direction",
+    "etymology": "Latin 'sub' (under)",
+    "examples": ["subcutaneous", "sublingual", "substernal"]
+  },
+  {
+    "id": "prefix_supra",
+    "component": "supra-",
+    "meaning": "above, over",
+    "category": "position/direction",
+    "etymology": "Latin 'supra' (above)",
+    "examples": ["supraventricular", "suprapubic", "suprarenal"]
+  },
+  {
+    "id": "prefix_endo",
+    "component": "endo-",
+    "meaning": "within, inner",
+    "category": "position/direction",
+    "etymology": "Greek 'endon' (within)",
+    "examples": ["endoscopy", "endocardium", "endotracheal"]
+  },
+  {
+    "id": "prefix_exo",
+    "component": "exo-",
+    "meaning": "outside, outward",
+    "category": "position/direction",
+    "etymology": "Greek 'exo' (outside)",
+    "examples": ["exocrine", "exogenous", "exophthalmos"]
+  },
+  {
+    "id": "prefix_epi",
+    "component": "epi-",
+    "meaning": "upon, above, over",
+    "category": "position/direction",
+    "etymology": "Greek 'epi' (upon)",
+    "examples": ["epidermis", "epidural", "epicardium"]
+  }
+]

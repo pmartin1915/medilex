@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { MedicalTerm, UserProgress } from '../types';
 import { SAMPLE_TERMS, STORAGE_KEYS } from '../data/sampleTerms';
+import { dataValidator } from '../utils/dataValidator';
 
 interface WordState {
   terms: MedicalTerm[];
@@ -53,17 +54,31 @@ export const useWordStore = create<WordState>((set, get) => ({
   loadTerms: async () => {
     try {
       set({ isLoading: true, error: null });
-      
+
       const termsJson = await AsyncStorage.getItem(STORAGE_KEYS.TERMS);
       const terms = termsJson ? JSON.parse(termsJson) : SAMPLE_TERMS;
-      
+
       if (!termsJson) {
         await AsyncStorage.setItem(STORAGE_KEYS.TERMS, JSON.stringify(SAMPLE_TERMS));
       }
-      
+
+      // Validate terms before loading
+      const validationResult = dataValidator.validateTerms(terms);
+      dataValidator.logValidationResults(validationResult, 'WordStore.loadTerms');
+
+      // Check if data is usable (allows loading even with warnings)
+      if (!dataValidator.isDataUsable(terms)) {
+        set({
+          error: 'Terms data validation failed. Check Debug tab for details.',
+          isLoading: false,
+          terms: []
+        });
+        return;
+      }
+
       const progressJson = await AsyncStorage.getItem(STORAGE_KEYS.USER_PROGRESS);
       const userProgress = progressJson ? JSON.parse(progressJson) : {};
-      
+
       set({ terms, userProgress, isLoading: false });
     } catch (error) {
       set({ error: 'Failed to load terms', isLoading: false });

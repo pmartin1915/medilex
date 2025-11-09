@@ -62,11 +62,12 @@ Open a **second PowerShell terminal** and run:
 |------|-------------|-----------------|
 | **`START-HERE.md`** | 🎯 **YOU ARE HERE** - Main entry point | Start here! |
 | **`WORKFLOW-WITH-CLAUDE.md`** | 🤖 How to work with Claude Code | Want fast debugging |
+| **`WEB-VERSION-SETUP.md`** | 🌐 Web version status & troubleshooting | Adding web support |
 | `HOW-TO-RUN-APP.md` | 📖 Complete step-by-step guide | Having issues? |
 | `README.md` | Project overview & features | Learn about the app |
 | `CLAUDE-AUTONOMOUS-TESTING.md` | How Claude tests autonomously | For Claude Code (me!) |
 
-**Just 5 files!** Everything else is archived in `docs/archive/` (old/outdated stuff).
+**Just 6 files!** Everything else is archived in `docs/archive/` (old/outdated stuff).
 
 ---
 

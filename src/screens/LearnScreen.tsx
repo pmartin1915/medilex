@@ -4,6 +4,7 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
+  Platform,
 } from 'react-native';
 import { theme } from '../theme/theme';
 import { useWordStore } from '../store/wordStore';
@@ -30,28 +31,37 @@ export const LearnScreen = () => {
   const handleSwipeLeft = () => {
     if (currentTerm) {
       updateProgress(currentTerm.id, false);
-      nextCard();
+      // Don't auto-advance - stay on current card
     }
   };
 
   const handleSwipeRight = () => {
     if (currentTerm) {
       updateProgress(currentTerm.id, true);
-      nextCard();
+      // Don't auto-advance - stay on current card
     }
   };
 
-  const nextCard = () => {
+  const handleSwipeUp = () => {
+    // Navigate to previous word
+    if (currentIndex > 0) {
+      setCurrentIndex(prev => prev - 1);
+    }
+  };
+
+  const handleSwipeDown = () => {
+    // Navigate to next word
     if (currentIndex < terms.length - 1) {
       setCurrentIndex(prev => prev + 1);
     } else {
+      // Reached end of deck
       setIsComplete(true);
       recordStudySession();
     }
   };
 
   const handlePronounce = () => {
-    if (currentTerm) {
+    if (currentTerm && Platform.OS !== 'web') {
       Speech.speak(currentTerm.term, { rate: 0.75 });
     }
   };
@@ -99,6 +109,8 @@ export const LearnScreen = () => {
         <SwipeableCard
           onSwipeLeft={handleSwipeLeft}
           onSwipeRight={handleSwipeRight}
+          onSwipeUp={handleSwipeUp}
+          onSwipeDown={handleSwipeDown}
         >
           <MedicalTermCard
             term={currentTerm}
@@ -112,9 +124,44 @@ export const LearnScreen = () => {
       </View>
 
       <View style={styles.footer}>
-        <Text style={styles.footerText}>
-          ← Don't Know | Know It →
-        </Text>
+        {Platform.OS === 'web' ? (
+          <View style={styles.webControlsContainer}>
+            <View style={styles.webVerticalButtons}>
+              <TouchableOpacity
+                style={[styles.webButton, styles.webButtonVertical, currentIndex === 0 && styles.webButtonDisabled]}
+                onPress={handleSwipeUp}
+                disabled={currentIndex === 0}
+              >
+                <Text style={styles.webButtonText}>Previous (Up Arrow)</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.webButton, styles.webButtonVertical, currentIndex === terms.length - 1 && styles.webButtonDisabled]}
+                onPress={handleSwipeDown}
+                disabled={currentIndex === terms.length - 1}
+              >
+                <Text style={styles.webButtonText}>Next (Down Arrow)</Text>
+              </TouchableOpacity>
+            </View>
+            <View style={styles.webHorizontalButtons}>
+              <TouchableOpacity
+                style={[styles.webButton, styles.webButtonLeft]}
+                onPress={handleSwipeLeft}
+              >
+                <Text style={styles.webButtonText}>Don't Know (Left Arrow)</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.webButton, styles.webButtonRight]}
+                onPress={handleSwipeRight}
+              >
+                <Text style={styles.webButtonText}>Know It (Right Arrow)</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        ) : (
+          <Text style={styles.footerText}>
+            Up/Down: Navigate | Left/Right: Answer
+          </Text>
+        )}
       </View>
     </View>
   );
@@ -141,6 +188,46 @@ const styles = StyleSheet.create({
   footerText: {
     fontSize: 14,
     color: theme.colors.textSecondary,
+  },
+  webControlsContainer: {
+    width: '100%',
+    maxWidth: 500,
+    gap: 12,
+  },
+  webVerticalButtons: {
+    flexDirection: 'row',
+    gap: 12,
+    marginBottom: 12,
+  },
+  webHorizontalButtons: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  webButton: {
+    flex: 1,
+    paddingVertical: 16,
+    paddingHorizontal: 24,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  webButtonVertical: {
+    backgroundColor: theme.colors.accent,
+  },
+  webButtonLeft: {
+    backgroundColor: theme.colors.error,
+  },
+  webButtonRight: {
+    backgroundColor: theme.colors.success,
+  },
+  webButtonDisabled: {
+    backgroundColor: theme.colors.textTertiary,
+    opacity: 0.5,
+  },
+  webButtonText: {
+    color: '#FFFFFF',
+    fontSize: 14,
+    fontWeight: '600',
   },
   completeContainer: {
     flex: 1,

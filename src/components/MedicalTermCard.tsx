@@ -3,6 +3,8 @@ import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-nati
 import { Volume2, Heart, Bookmark, Info } from 'lucide-react-native';
 import { theme } from '../theme/theme';
 import { MedicalTerm } from '../types';
+import { TermBreakdown } from './TermBreakdown';
+import { hasBreakdown } from '../utils/componentBreakdown';
 
 interface Props {
   term: MedicalTerm;
@@ -51,6 +53,17 @@ export const MedicalTermCard: React.FC<Props> = ({
 
         {showDetails && (
           <>
+            {hasBreakdown(term) && (
+              <TermBreakdown term={term} showTitle={true} variant="inline" />
+            )}
+
+            {term.clinicalNote && (
+              <View style={styles.clinicalNoteContainer}>
+                <Text style={styles.clinicalNoteLabel}>Clinical Note:</Text>
+                <Text style={styles.clinicalNote}>{term.clinicalNote}</Text>
+              </View>
+            )}
+
             <View style={styles.etymologyContainer}>
               <Text style={styles.etymologyLabel}>Etymology:</Text>
               <Text style={styles.etymology}>{term.etymology.meaning}</Text>
@@ -180,6 +193,26 @@ const styles = StyleSheet.create({
     lineHeight: 24,
     color: theme.colors.textSecondary,
     fontStyle: 'italic',
+  },
+  clinicalNoteContainer: {
+    backgroundColor: theme.colors.background,
+    padding: theme.spacing.md,
+    borderRadius: theme.borderRadius.md,
+    marginTop: theme.spacing.md,
+    marginBottom: theme.spacing.md,
+    borderLeftWidth: 4,
+    borderLeftColor: theme.colors.clinical,
+  },
+  clinicalNoteLabel: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: theme.colors.clinical,
+    marginBottom: theme.spacing.xs,
+  },
+  clinicalNote: {
+    fontSize: 14,
+    lineHeight: 20,
+    color: theme.colors.textSecondary,
   },
   etymologyContainer: {
     marginTop: theme.spacing.md,

@@ -1,0 +1,210 @@
+[
+  {
+    "id": "suffix_ia",
+    "component": "-ia",
+    "meaning": "condition, state",
+    "category": "condition",
+    "etymology": "Greek suffix indicating condition",
+    "examples": ["bradycardia", "anemia", "pneumonia"]
+  },
+  {
+    "id": "suffix_itis",
+    "component": "-itis",
+    "meaning": "inflammation",
+    "category": "condition",
+    "etymology": "Greek suffix (inflammation)",
+    "examples": ["arthritis", "dermatitis", "hepatitis"]
+  },
+  {
+    "id": "suffix_osis",
+    "component": "-osis",
+    "meaning": "abnormal condition, disease",
+    "category": "condition",
+    "etymology": "Greek suffix (diseased condition)",
+    "examples": ["osteoporosis", "thrombosis", "cyanosis"]
+  },
+  {
+    "id": "suffix_ology",
+    "component": "-ology",
+    "meaning": "study of, science of",
+    "category": "specialty/study",
+    "etymology": "Greek 'logos' (study)",
+    "examples": ["cardiology", "nephrology", "dermatology"]
+  },
+  {
+    "id": "suffix_ologist",
+    "component": "-ologist",
+    "meaning": "specialist in the study of",
+    "category": "specialist",
+    "etymology": "Greek 'logos' + 'ist' (one who studies)",
+    "examples": ["cardiologist", "neurologist", "pathologist"]
+  },
+  {
+    "id": "suffix_algia",
+    "component": "-algia",
+    "meaning": "pain",
+    "category": "symptom",
+    "etymology": "Greek 'algos' (pain)",
+    "examples": ["neuralgia", "myalgia", "arthralgia"]
+  },
+  {
+    "id": "suffix_ectomy",
+    "component": "-ectomy",
+    "meaning": "surgical removal, excision",
+    "category": "procedure",
+    "etymology": "Greek 'ektome' (cutting out)",
+    "examples": ["appendectomy", "thyroidectomy", "nephrectomy"]
+  },
+  {
+    "id": "suffix_otomy",
+    "component": "-otomy",
+    "meaning": "cutting into, incision",
+    "category": "procedure",
+    "etymology": "Greek 'tome' (cutting)",
+    "examples": ["tracheotomy", "craniotomy", "phlebotomy"]
+  },
+  {
+    "id": "suffix_ostomy",
+    "component": "-ostomy",
+    "meaning": "creation of an opening",
+    "category": "procedure",
+    "etymology": "Greek 'stoma' (mouth, opening)",
+    "examples": ["colostomy", "tracheostomy", "gastrostomy"]
+  },
+  {
+    "id": "suffix_scopy",
+    "component": "-scopy",
+    "meaning": "visual examination",
+    "category": "procedure",
+    "etymology": "Greek 'skopein' (to view)",
+    "examples": ["arthroscopy", "endoscopy", "colonoscopy"]
+  },
+  {
+    "id": "suffix_pathy",
+    "component": "-pathy",
+    "meaning": "disease, disorder",
+    "category": "condition",
+    "etymology": "Greek 'pathos' (suffering)",
+    "examples": ["neuropathy", "myopathy", "nephropathy"]
+  },
+  {
+    "id": "suffix_emia",
+    "component": "-emia",
+    "meaning": "blood condition",
+    "category": "condition",
+    "etymology": "Greek 'haima' (blood)",
+    "examples": ["anemia", "hyperglycemia", "septicemia"]
+  },
+  {
+    "id": "suffix_pnea",
+    "component": "-pnea",
+    "meaning": "breathing",
+    "category": "symptom",
+    "etymology": "Greek 'pnoia' (breathing)",
+    "examples": ["dyspnea", "tachypnea", "apnea"]
+  },
+  {
+    "id": "suffix_megaly",
+    "component": "-megaly",
+    "meaning": "enlargement",
+    "category": "condition",
+    "etymology": "Greek 'megas' (large)",
+    "examples": ["hepatomegaly", "cardiomegaly", "splenomegaly"]
+  },
+  {
+    "id": "suffix_plasty",
+    "component": "-plasty",
+    "meaning": "surgical repair",
+    "category": "procedure",
+    "etymology": "Greek 'plassein' (to form)",
+    "examples": ["angioplasty", "arthroplasty", "rhinoplasty"]
+  },
+  {
+    "id": "suffix_graphy",
+    "component": "-graphy",
+    "meaning": "process of recording",
+    "category": "procedure",
+    "etymology": "Greek 'graphein' (to write)",
+    "examples": ["angiography", "radiography", "echocardiography"]
+  },
+  {
+    "id": "suffix_gram",
+    "component": "-gram",
+    "meaning": "record, image",
+    "category": "test/record",
+    "etymology": "Greek 'gramma' (something written)",
+    "examples": ["electrocardiogram", "angiogram", "mammogram"]
+  },
+  {
+    "id": "suffix_uria",
+    "component": "-uria",
+    "meaning": "urine condition",
+    "category": "condition",
+    "etymology": "Greek 'ouron' (urine)",
+    "examples": ["polyuria", "dysuria", "hematuria"]
+  },
+  {
+    "id": "suffix_trophy",
+    "component": "-trophy",
+    "meaning": "development, nourishment",
+    "category": "condition",
+    "etymology": "Greek 'trophe' (nourishment)",
+    "examples": ["atrophy", "hypertrophy", "dystrophy"]
+  },
+  {
+    "id": "suffix_rrhage",
+    "component": "-rrhage",
+    "meaning": "abnormal flow, bursting forth",
+    "category": "symptom",
+    "etymology": "Greek 'rhegnynai' (to burst)",
+    "examples": ["hemorrhage", "menorrhagia", "rhinorrhagia"]
+  },
+  {
+    "id": "suffix_rrhea",
+    "component": "-rrhea",
+    "meaning": "flow, discharge",
+    "category": "symptom",
+    "etymology": "Greek 'rhoia' (flow)",
+    "examples": ["diarrhea", "rhinorrhea", "amenorrhea"]
+  },
+  {
+    "id": "suffix_plegia",
+    "component": "-plegia",
+    "meaning": "paralysis",
+    "category": "condition",
+    "etymology": "Greek 'plege' (stroke)",
+    "examples": ["hemiplegia", "paraplegia", "quadriplegia"]
+  },
+  {
+    "id": "suffix_paresis",
+    "component": "-paresis",
+    "meaning": "partial paralysis, weakness",
+    "category": "condition",
+    "etymology": "Greek 'paresis' (letting go)",
+    "examples": ["hemiparesis", "gastroparesis", "paraparesis"]
+  },
+  {
+    "id": "suffix_phobia",
+    "component": "-phobia",
+    "meaning": "abnormal fear",
+    "category": "condition",
+    "etymology": "Greek 'phobos' (fear)",
+    "examples": ["claustrophobia", "agoraphobia", "hydrophobia"]
+  },
+  {
+    "id": "suffix_centesis",
+    "component": "-centesis",
+    "meaning": "surgical puncture to remove fluid",
+    "category": "procedure",
+    "etymology": "Greek 'kentesis' (pricking)",
+    "examples": ["thoracentesis", "arthrocentesis", "paracentesis"]
+  },
+  {
+    "id": "suffix_y",
+    "component": "-y",
+    "meaning": "process, condition, state",
+    "category": "condition",
+    "etymology": "Greek/Latin suffix",
+    "examples": ["atrophy", "hypertrophy", "polypharmacy"]
+  }
+]

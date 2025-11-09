@@ -5,6 +5,7 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
+  Platform,
 } from 'react-native';
 import { theme } from '../theme/theme';
 import { useWordStore } from '../store/wordStore';
@@ -26,7 +27,7 @@ export const HomeScreen = ({ navigation }: any) => {
   const progress = wordOfDay ? getProgress(wordOfDay.id) : undefined;
 
   const handlePronounce = () => {
-    if (wordOfDay) {
+    if (wordOfDay && Platform.OS !== 'web') {
       Speech.speak(wordOfDay.term, { rate: 0.75 });
     }
   };

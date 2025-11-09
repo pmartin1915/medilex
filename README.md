@@ -74,9 +74,10 @@ Running `npx expo start` or `npm start` directly will fail with "The system cann
 ### First Run
 
 The app will automatically:
-1. Load 5 sample medical terms
-2. Initialize empty progress tracking
-3. Set up streak tracking
+1. Load 25 medical terms across 12+ specialties
+2. Validate all term data for integrity
+3. Initialize empty progress tracking
+4. Set up streak tracking
 
 ## Project Structure
 
@@ -102,7 +103,8 @@ src/
 │   ├── wordStore.ts
 │   └── streakStore.ts
 ├── utils/              # Utilities
-│   └── errorLogger.ts       # NEW: Error logging system
+│   ├── errorLogger.ts       # Error logging system
+│   └── dataValidator.ts     # NEW: Medical terms validation
 ├── theme/              # Design system
 │   └── theme.ts
 ├── types/              # TypeScript interfaces
@@ -153,6 +155,18 @@ src/
   - See user progress entries
   - Check current streak
   - Preview sample terms
+- **Tests Tab**: NEW! Self-diagnostic testing
+  - Run 8 automated tests with one tap
+  - Validate medical terms data integrity
+  - Check minimum term count (20+ terms)
+  - Test search functionality
+  - Verify AsyncStorage access
+  - Test progress tracking
+  - Validate streak calculations
+  - Check error logging system
+  - Platform compatibility verification
+  - Color-coded pass/fail results
+  - Detailed test summaries
 - **Error Count Badge**: Debug tab icon shows red badge with error count
 - **Real-time Updates**: Auto-refreshes every 2 seconds
 
@@ -218,13 +232,47 @@ Quick utility to check if Metro is running and remind you about the Debug tab
 4. **Use debug-mode.bat**: Start development with `debug-mode.bat` for best experience
 5. **Toast Notifications**: Watch for error toasts during development
 
+## Medical Terms Dataset
+
+### Current Collection
+- **Total Terms:** 25 medical terms
+- **Categories:** 12 medical categories
+- **Specialties:** 11+ medical specialties including:
+  - Cardiovascular (3 terms)
+  - Neurological (3 terms)
+  - Gastrointestinal (3 terms)
+  - Endocrine (3 terms)
+  - Renal/Nephrology (2 terms)
+  - Dermatology (2 terms)
+  - Oncology (2 terms)
+  - Pharmacology (2 terms)
+  - And more...
+- **Difficulty Levels:**
+  - Level 1 (Basic): 9 terms (36%)
+  - Level 2 (Intermediate): 9 terms (36%)
+  - Level 3 (Advanced): 7 terms (28%)
+- **Commonly Misspelled:** 11 terms flagged for special attention
+
+### Data Validation
+All medical terms are automatically validated on load:
+- Structural integrity checks
+- Required field verification
+- Duplicate detection
+- Data type validation
+- Results visible in Debug > Tests tab
+
+For complete documentation, see [MEDICAL-TERMS-GUIDE.md](./MEDICAL-TERMS-GUIDE.md)
+
 ## Adding More Terms
 
 To add more medical terms:
 
 1. Open `src/data/sampleTerms.ts`
 2. Add new term objects following the MedicalTerm interface
-3. Terms will automatically appear in the app
+3. Run self-tests in Debug tab to validate
+4. Update [MEDICAL-TERMS-GUIDE.md](./MEDICAL-TERMS-GUIDE.md) with new categories
+
+See [MEDICAL-TERMS-GUIDE.md](./MEDICAL-TERMS-GUIDE.md) for detailed instructions and best practices.
 
 ## Known Issues
 
@@ -236,6 +284,37 @@ If you encounter errors:
 3. Clear Metro cache: `npx expo start --clear`
 4. Restart the emulator if needed
 
+## Automated Testing
+
+### Test Scripts
+Run automated feature tests:
+```bash
+# Windows
+.\test-app-features.bat
+```
+
+The test script validates:
+- ADB installation and device connection
+- Metro bundler status
+- Recent app errors
+- Project structure integrity
+- Key files presence
+- Dependencies installation
+- Medical terms dataset (verifies 25 terms)
+
+### In-App Self-Tests
+Navigate to Debug > Tests tab and tap the play button to run:
+- Medical terms validation (checks all 25 terms)
+- Minimum term count verification
+- Search functionality testing
+- AsyncStorage accessibility
+- Progress tracking validation
+- Streak calculation verification
+- Error logging system check
+- Platform detection
+
+All tests provide detailed pass/fail results with explanatory messages.
+
 ## Future Enhancements
 
 - [ ] Spaced repetition algorithm
@@ -244,7 +323,11 @@ If you encounter errors:
 - [ ] Study reminders
 - [ ] Dark mode
 - [ ] Cloud sync (optional)
-- [ ] More medical terms (100+)
+- [x] Expand to 25+ medical terms
+- [x] Add data validation system
+- [x] Implement self-diagnostic tests
+- [ ] Reach 50+ medical terms across 15+ specialties
+- [ ] Add medical term difficulty progression
 
 ## Development Notes
 
@@ -325,6 +408,8 @@ Built following best practices from:
 
 ---
 
-**Version**: 1.0.0  
-**Last Updated**: January 2025  
+**Version**: 1.1.0
+**Last Updated**: January 2025
 **Status**: Production Ready ✅
+**Medical Terms**: 25 terms across 12+ categories
+**New Features**: Data validation, self-diagnostic tests, expanded dataset

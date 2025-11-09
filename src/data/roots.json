@@ -1,0 +1,370 @@
+[
+  {
+    "id": "root_card",
+    "component": "card-",
+    "meaning": "heart",
+    "bodySystem": "cardiovascular",
+    "etymology": "Greek 'kardia' (heart)",
+    "examples": ["cardiology", "tachycardia", "pericardium"]
+  },
+  {
+    "id": "root_cardi",
+    "component": "cardi-",
+    "meaning": "heart",
+    "bodySystem": "cardiovascular",
+    "etymology": "Greek 'kardia' (heart)",
+    "examples": ["pericardium", "endocardium", "myocardium"]
+  },
+  {
+    "id": "root_arteri",
+    "component": "arteri-",
+    "meaning": "artery",
+    "bodySystem": "cardiovascular",
+    "etymology": "Greek 'arteria' (windpipe, artery)",
+    "examples": ["arteriosclerosis", "arterial", "arteriography"]
+  },
+  {
+    "id": "root_ven",
+    "component": "ven-",
+    "meaning": "vein",
+    "bodySystem": "cardiovascular",
+    "etymology": "Latin 'vena' (vein)",
+    "examples": ["venous", "intravenous", "venipuncture"]
+  },
+  {
+    "id": "root_phleb",
+    "component": "phleb-",
+    "meaning": "vein",
+    "bodySystem": "cardiovascular",
+    "etymology": "Greek 'phleps' (vein)",
+    "examples": ["phlebitis", "phlebotomy", "thrombophlebitis"]
+  },
+  {
+    "id": "root_angi",
+    "component": "angi-",
+    "meaning": "vessel",
+    "bodySystem": "cardiovascular",
+    "etymology": "Greek 'angeion' (vessel)",
+    "examples": ["angiography", "angioplasty", "angiogenesis"]
+  },
+  {
+    "id": "root_hem",
+    "component": "hem-",
+    "meaning": "blood",
+    "bodySystem": "cardiovascular",
+    "etymology": "Greek 'haima' (blood)",
+    "examples": ["hematology", "hemoglobin", "hemorrhage"]
+  },
+  {
+    "id": "root_tens",
+    "component": "tens-",
+    "meaning": "pressure, tension",
+    "bodySystem": "cardiovascular",
+    "etymology": "Latin 'tensio' (stretching, pressure)",
+    "examples": ["hypertension", "hypotension", "tension"]
+  },
+  {
+    "id": "root_rhythm",
+    "component": "rhythm-",
+    "meaning": "rhythm, regular recurrence",
+    "bodySystem": "cardiovascular",
+    "etymology": "Greek 'rhythmos' (measured flow)",
+    "examples": ["arrhythmia", "dysrhythmia", "biorhythm"]
+  },
+  {
+    "id": "root_pulmon",
+    "component": "pulmon-",
+    "meaning": "lung",
+    "bodySystem": "respiratory",
+    "etymology": "Latin 'pulmo' (lung)",
+    "examples": ["pulmonary", "pulmonologist", "cardiopulmonary"]
+  },
+  {
+    "id": "root_pneum",
+    "component": "pneum-",
+    "meaning": "lung, air",
+    "bodySystem": "respiratory",
+    "etymology": "Greek 'pneumon' (lung)",
+    "examples": ["pneumonia", "pneumothorax", "pneumonectomy"]
+  },
+  {
+    "id": "root_bronch",
+    "component": "bronch-",
+    "meaning": "bronchus, airway",
+    "bodySystem": "respiratory",
+    "etymology": "Greek 'bronchos' (windpipe)",
+    "examples": ["bronchitis", "bronchodilator", "bronchoscopy"]
+  },
+  {
+    "id": "root_trache",
+    "component": "trache-",
+    "meaning": "trachea, windpipe",
+    "bodySystem": "respiratory",
+    "etymology": "Greek 'tracheia' (rough artery)",
+    "examples": ["tracheostomy", "tracheal", "endotracheal"]
+  },
+  {
+    "id": "root_neur",
+    "component": "neur-",
+    "meaning": "nerve",
+    "bodySystem": "neurological",
+    "etymology": "Greek 'neuron' (nerve)",
+    "examples": ["neurology", "neuralgia", "neuropathy"]
+  },
+  {
+    "id": "root_cerebr",
+    "component": "cerebr-",
+    "meaning": "brain, cerebrum",
+    "bodySystem": "neurological",
+    "etymology": "Latin 'cerebrum' (brain)",
+    "examples": ["cerebral", "cerebrospinal", "cerebrovascular"]
+  },
+  {
+    "id": "root_encephal",
+    "component": "encephal-",
+    "meaning": "brain",
+    "bodySystem": "neurological",
+    "etymology": "Greek 'enkephalos' (brain)",
+    "examples": ["encephalitis", "encephalopathy", "electroencephalogram"]
+  },
+  {
+    "id": "root_mening",
+    "component": "mening-",
+    "meaning": "meninges, membrane",
+    "bodySystem": "neurological",
+    "etymology": "Greek 'meninx' (membrane)",
+    "examples": ["meningitis", "meninges", "meningioma"]
+  },
+  {
+    "id": "root_pleg",
+    "component": "pleg-",
+    "meaning": "paralysis, stroke",
+    "bodySystem": "neurological",
+    "etymology": "Greek 'plege' (stroke)",
+    "examples": ["hemiplegia", "paraplegia", "quadriplegia"]
+  },
+  {
+    "id": "root_gastr",
+    "component": "gastr-",
+    "meaning": "stomach",
+    "bodySystem": "gastrointestinal",
+    "etymology": "Greek 'gaster' (stomach)",
+    "examples": ["gastritis", "gastroenterology", "gastroparesis"]
+  },
+  {
+    "id": "root_enter",
+    "component": "enter-",
+    "meaning": "intestine",
+    "bodySystem": "gastrointestinal",
+    "etymology": "Greek 'enteron' (intestine)",
+    "examples": ["enteritis", "gastroenteritis", "enteral"]
+  },
+  {
+    "id": "root_hepat",
+    "component": "hepat-",
+    "meaning": "liver",
+    "bodySystem": "gastrointestinal",
+    "etymology": "Greek 'hepar' (liver)",
+    "examples": ["hepatitis", "hepatology", "hepatomegaly"]
+  },
+  {
+    "id": "root_col",
+    "component": "col-",
+    "meaning": "colon",
+    "bodySystem": "gastrointestinal",
+    "etymology": "Greek 'kolon' (large intestine)",
+    "examples": ["colitis", "colonoscopy", "colorectal"]
+  },
+  {
+    "id": "root_phag",
+    "component": "phag-",
+    "meaning": "eating, swallowing",
+    "bodySystem": "gastrointestinal",
+    "etymology": "Greek 'phagein' (to eat)",
+    "examples": ["dysphagia", "phagocyte", "esophagus"]
+  },
+  {
+    "id": "root_nephr",
+    "component": "nephr-",
+    "meaning": "kidney",
+    "bodySystem": "renal",
+    "etymology": "Greek 'nephros' (kidney)",
+    "examples": ["nephrology", "nephritis", "nephropathy"]
+  },
+  {
+    "id": "root_ren",
+    "component": "ren-",
+    "meaning": "kidney",
+    "bodySystem": "renal",
+    "etymology": "Latin 'ren' (kidney)",
+    "examples": ["renal", "adrenal", "suprarenal"]
+  },
+  {
+    "id": "root_cyst",
+    "component": "cyst-",
+    "meaning": "bladder, sac",
+    "bodySystem": "renal",
+    "etymology": "Greek 'kystis' (bladder)",
+    "examples": ["cystitis", "cystoscopy", "polycystic"]
+  },
+  {
+    "id": "root_ur",
+    "component": "ur-",
+    "meaning": "urine",
+    "bodySystem": "renal",
+    "etymology": "Greek 'ouron' (urine)",
+    "examples": ["urology", "polyuria", "dysuria"]
+  },
+  {
+    "id": "root_derm",
+    "component": "derm-",
+    "meaning": "skin",
+    "bodySystem": "integumentary",
+    "etymology": "Greek 'derma' (skin)",
+    "examples": ["dermatology", "dermatitis", "epidermis"]
+  },
+  {
+    "id": "root_cutane",
+    "component": "cutane-",
+    "meaning": "skin",
+    "bodySystem": "integumentary",
+    "etymology": "Latin 'cutis' (skin)",
+    "examples": ["subcutaneous", "cutaneous", "percutaneous"]
+  },
+  {
+    "id": "root_arthr",
+    "component": "arthr-",
+    "meaning": "joint",
+    "bodySystem": "musculoskeletal",
+    "etymology": "Greek 'arthron' (joint)",
+    "examples": ["arthritis", "arthroscopy", "arthroplasty"]
+  },
+  {
+    "id": "root_oste",
+    "component": "oste-",
+    "meaning": "bone",
+    "bodySystem": "musculoskeletal",
+    "etymology": "Greek 'osteon' (bone)",
+    "examples": ["osteoporosis", "osteomyelitis", "osteopathy"]
+  },
+  {
+    "id": "root_my",
+    "component": "my-",
+    "meaning": "muscle",
+    "bodySystem": "musculoskeletal",
+    "etymology": "Greek 'mys' (muscle)",
+    "examples": ["myalgia", "myocardium", "myopathy"]
+  },
+  {
+    "id": "root_muscul",
+    "component": "muscul-",
+    "meaning": "muscle",
+    "bodySystem": "musculoskeletal",
+    "etymology": "Latin 'musculus' (little mouse, muscle)",
+    "examples": ["intramuscular", "muscular", "musculoskeletal"]
+  },
+  {
+    "id": "root_chondr",
+    "component": "chondr-",
+    "meaning": "cartilage",
+    "bodySystem": "musculoskeletal",
+    "etymology": "Greek 'chondros' (cartilage)",
+    "examples": ["chondritis", "osteochondritis", "chondromalacia"]
+  },
+  {
+    "id": "root_gluc",
+    "component": "gluc-",
+    "meaning": "sugar, glucose",
+    "bodySystem": "endocrine",
+    "etymology": "Greek 'glykys' (sweet)",
+    "examples": ["glucose", "hyperglycemia", "glucagon"]
+  },
+  {
+    "id": "root_glyc",
+    "component": "glyc-",
+    "meaning": "sugar, glucose",
+    "bodySystem": "endocrine",
+    "etymology": "Greek 'glykys' (sweet)",
+    "examples": ["glycemia", "hypoglycemia", "glycogen"]
+  },
+  {
+    "id": "root_thyroid",
+    "component": "thyroid-",
+    "meaning": "thyroid gland",
+    "bodySystem": "endocrine",
+    "etymology": "Greek 'thyreos' (shield)",
+    "examples": ["thyroiditis", "hyperthyroidism", "thyroidectomy"]
+  },
+  {
+    "id": "root_aden",
+    "component": "aden-",
+    "meaning": "gland",
+    "bodySystem": "endocrine",
+    "etymology": "Greek 'aden' (gland)",
+    "examples": ["adenoma", "adenitis", "lymphadenopathy"]
+  },
+  {
+    "id": "root_path",
+    "component": "path-",
+    "meaning": "disease",
+    "bodySystem": "general",
+    "etymology": "Greek 'pathos' (suffering, disease)",
+    "examples": ["pathology", "neuropathy", "psychopathology"]
+  },
+  {
+    "id": "root_cyan",
+    "component": "cyan-",
+    "meaning": "blue",
+    "bodySystem": "general",
+    "etymology": "Greek 'kyanos' (dark blue)",
+    "examples": ["cyanosis", "cyanotic", "acrocyanosis"]
+  },
+  {
+    "id": "root_scop",
+    "component": "scop-",
+    "meaning": "viewing, examination",
+    "bodySystem": "general",
+    "etymology": "Greek 'skopein' (to view)",
+    "examples": ["endoscopy", "arthroscopy", "colonoscopy"]
+  },
+  {
+    "id": "root_dips",
+    "component": "dips-",
+    "meaning": "thirst",
+    "bodySystem": "general",
+    "etymology": "Greek 'dipsa' (thirst)",
+    "examples": ["polydipsia", "hypodipsia", "adipsia"]
+  },
+  {
+    "id": "root_troph",
+    "component": "troph-",
+    "meaning": "nourishment, development",
+    "bodySystem": "general",
+    "etymology": "Greek 'trophe' (nourishment)",
+    "examples": ["atrophy", "hypertrophy", "dystrophy"]
+  },
+  {
+    "id": "root_pharmac",
+    "component": "pharmac-",
+    "meaning": "drug, medicine",
+    "bodySystem": "general",
+    "etymology": "Greek 'pharmakon' (drug)",
+    "examples": ["pharmacy", "polypharmacy", "pharmacology"]
+  },
+  {
+    "id": "root_bio",
+    "component": "bio-",
+    "meaning": "life",
+    "bodySystem": "general",
+    "etymology": "Greek 'bios' (life)",
+    "examples": ["antibiotic", "biology", "biohazard"]
+  },
+  {
+    "id": "root_indic",
+    "component": "indic-",
+    "meaning": "to point out, show",
+    "bodySystem": "general",
+    "etymology": "Latin 'indicare' (to point out)",
+    "examples": ["contraindication", "indication", "indicator"]
+  }
+]

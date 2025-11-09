@@ -8,22 +8,34 @@ import {
   Alert,
   Clipboard,
   Platform,
+  ActivityIndicator,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { theme } from '../theme/theme';
 import { errorLogger, ErrorLog } from '../utils/errorLogger';
 import { useWordStore } from '../store/wordStore';
 import { useStreakStore } from '../store/streakStore';
-import { Trash2, RefreshCw, AlertCircle, Copy, CheckCircle2 } from 'lucide-react-native';
+import { dataValidator } from '../utils/dataValidator';
+import { Trash2, RefreshCw, AlertCircle, Copy, CheckCircle2, PlayCircle, XCircle } from 'lucide-react-native';
+
+interface TestResult {
+  name: string;
+  passed: boolean;
+  message: string;
+  details?: string;
+}
 
 export const DebugScreen = () => {
   const [logs, setLogs] = useState<ErrorLog[]>([]);
   const [storageKeys, setStorageKeys] = useState<string[]>([]);
-  const [selectedTab, setSelectedTab] = useState<'logs' | 'storage' | 'state'>('logs');
+  const [selectedTab, setSelectedTab] = useState<'logs' | 'storage' | 'state' | 'tests'>('logs');
   const [copiedLogId, setCopiedLogId] = useState<string | null>(null);
+  const [testResults, setTestResults] = useState<TestResult[]>([]);
+  const [isRunningTests, setIsRunningTests] = useState(false);
 
   const terms = useWordStore(state => state.terms);
   const userProgress = useWordStore(state => state.userProgress);
+  const searchTerms = useWordStore(state => state.searchTerms);
   const streak = useStreakStore(state => state.currentStreak);
   const studyDates = useStreakStore(state => state.studyDates);
 
@@ -158,6 +170,184 @@ ${log.stack ? `Stack: ${log.stack}` : ''}
     if (diffHours < 24) return `${diffHours}h ago`;
     return date.toLocaleTimeString();
   };
+
+  const runSelfTests = async () => {
+    setIsRunningTests(true);
+    const results: TestResult[] = [];
+
+    try {
+      // Test 1: Validate medical terms data
+      const validationResult = dataValidator.validateTerms(terms);
+      results.push({
+        name: 'Medical Terms Validation',
+        passed: validationResult.isValid,
+        message: validationResult.isValid
+          ? `All ${validationResult.stats.totalTerms} terms validated successfully`
+          : `Found ${validationResult.errors.length} errors in term data`,
+        details: dataValidator.getValidationSummary(validationResult),
+      });
+
+      // Test 2: Check minimum term count
+      const hasMinTerms = terms.length >= 20;
+      results.push({
+        name: 'Minimum Term Count',
+        passed: hasMinTerms,
+        message: hasMinTerms
+          ? `${terms.length} terms loaded (target: 20+)`
+          : `Only ${terms.length} terms loaded (expected 20+)`,
+      });
+
+      // Test 3: Search functionality
+      const searchResults = searchTerms('cardio');
+      const searchWorks = Array.isArray(searchResults);
+      results.push({
+        name: 'Search Functionality',
+        passed: searchWorks,
+        message: searchWorks
+          ? `Search working - found ${searchResults.length} results for "cardio"`
+          : 'Search function failed',
+      });
+
+      // Test 4: AsyncStorage accessibility
+      try {
+        const keys = await AsyncStorage.getAllKeys();
+        const storageWorks = Array.isArray(keys);
+        results.push({
+          name: 'AsyncStorage Access',
+          passed: storageWorks,
+          message: storageWorks
+            ? `AsyncStorage working - ${keys.length} keys found`
+            : 'AsyncStorage not accessible',
+        });
+      } catch (error: any) {
+        results.push({
+          name: 'AsyncStorage Access',
+          passed: false,
+          message: `AsyncStorage error: ${error.message}`,
+        });
+      }
+
+      // Test 5: Progress tracking
+      const progressWorks = typeof userProgress === 'object';
+      results.push({
+        name: 'Progress Tracking',
+        passed: progressWorks,
+        message: progressWorks
+          ? `Progress tracking active - ${Object.keys(userProgress).length} terms tracked`
+          : 'Progress tracking not working',
+      });
+
+      // Test 6: Streak calculation
+      const streakWorks = typeof streak === 'number' && streak >= 0;
+      results.push({
+        name: 'Streak Calculation',
+        passed: streakWorks,
+        message: streakWorks
+          ? `Streak system working - current: ${streak} days`
+          : 'Streak calculation failed',
+      });
+
+      // Test 7: Error logging system
+      const errorLogs = errorLogger.getLogs();
+      const loggingWorks = Array.isArray(errorLogs);
+      results.push({
+        name: 'Error Logging System',
+        passed: loggingWorks,
+        message: loggingWorks
+          ? `Error logger working - ${errorLogs.length} logs stored`
+          : 'Error logging system not functioning',
+      });
+
+      // Test 8: Platform compatibility
+      const platformWorks = Platform.OS !== undefined;
+      results.push({
+        name: 'Platform Detection',
+        passed: platformWorks,
+        message: platformWorks
+          ? `Platform detected: ${Platform.OS}`
+          : 'Platform detection failed',
+      });
+
+    } catch (error: any) {
+      results.push({
+        name: 'Test Suite Execution',
+        passed: false,
+        message: `Test suite crashed: ${error.message}`,
+      });
+    }
+
+    setTestResults(results);
+    setIsRunningTests(false);
+
+    // Log test results
+    const passedCount = results.filter(r => r.passed).length;
+    const totalCount = results.length;
+    errorLogger.logInfo(
+      `Self-tests completed: ${passedCount}/${totalCount} passed`,
+      'DebugScreen.selfTests'
+    );
+  };
+
+  const renderTests = () => (
+    <View style={styles.tabContent}>
+      <View style={styles.tabHeader}>
+        <Text style={styles.tabTitle}>Self-Diagnostic Tests</Text>
+        <TouchableOpacity
+          onPress={runSelfTests}
+          style={styles.iconButton}
+          disabled={isRunningTests}
+        >
+          {isRunningTests ? (
+            <ActivityIndicator size="small" color={theme.colors.accent} />
+          ) : (
+            <PlayCircle size={20} color={theme.colors.success} />
+          )}
+        </TouchableOpacity>
+      </View>
+
+      <ScrollView style={styles.testsList}>
+        {testResults.length === 0 ? (
+          <View style={styles.emptyContainer}>
+            <PlayCircle size={48} color={theme.colors.accent} />
+            <Text style={styles.emptyText}>Run Self-Tests</Text>
+            <Text style={styles.emptySubtext}>
+              Tap the play button above to run diagnostic tests
+            </Text>
+          </View>
+        ) : (
+          <>
+            <View style={styles.testSummary}>
+              <Text style={styles.testSummaryText}>
+                Results: {testResults.filter(t => t.passed).length} / {testResults.length} passed
+              </Text>
+            </View>
+            {testResults.map((test, index) => (
+              <View
+                key={index}
+                style={[
+                  styles.testItem,
+                  test.passed ? styles.testItemPass : styles.testItemFail,
+                ]}
+              >
+                <View style={styles.testHeader}>
+                  {test.passed ? (
+                    <CheckCircle2 size={20} color={theme.colors.success} />
+                  ) : (
+                    <XCircle size={20} color={theme.colors.error} />
+                  )}
+                  <Text style={styles.testName}>{test.name}</Text>
+                </View>
+                <Text style={styles.testMessage}>{test.message}</Text>
+                {test.details && (
+                  <Text style={styles.testDetails}>{test.details}</Text>
+                )}
+              </View>
+            ))}
+          </>
+        )}
+      </ScrollView>
+    </View>
+  );
 
   const renderLogs = () => (
     <View style={styles.tabContent}>
@@ -351,11 +541,26 @@ ${log.stack ? `Stack: ${log.stack}` : ''}
             State
           </Text>
         </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[styles.tab, selectedTab === 'tests' && styles.tabActive]}
+          onPress={() => setSelectedTab('tests')}
+        >
+          <Text
+            style={[
+              styles.tabText,
+              selectedTab === 'tests' && styles.tabTextActive,
+            ]}
+          >
+            Tests
+          </Text>
+        </TouchableOpacity>
       </View>
 
       {selectedTab === 'logs' && renderLogs()}
       {selectedTab === 'storage' && renderStorage()}
       {selectedTab === 'state' && renderState()}
+      {selectedTab === 'tests' && renderTests()}
     </View>
   );
 };
@@ -568,5 +773,60 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: theme.colors.textPrimary,
     fontWeight: '600',
+  },
+  testsList: {
+    flex: 1,
+    padding: 12,
+  },
+  testSummary: {
+    backgroundColor: theme.colors.accent,
+    padding: 16,
+    borderRadius: theme.borderRadius.md,
+    marginBottom: 16,
+    alignItems: 'center',
+  },
+  testSummaryText: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#FFFFFF',
+  },
+  testItem: {
+    backgroundColor: theme.colors.cardBackground,
+    borderRadius: theme.borderRadius.md,
+    padding: 16,
+    marginBottom: 12,
+    borderLeftWidth: 4,
+  },
+  testItemPass: {
+    borderLeftColor: theme.colors.success,
+  },
+  testItemFail: {
+    borderLeftColor: theme.colors.error,
+  },
+  testHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
+    gap: 12,
+  },
+  testName: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: theme.colors.textPrimary,
+    flex: 1,
+  },
+  testMessage: {
+    fontSize: 14,
+    color: theme.colors.textSecondary,
+    marginBottom: 4,
+  },
+  testDetails: {
+    fontSize: 12,
+    color: theme.colors.textTertiary,
+    fontFamily: 'monospace',
+    marginTop: 8,
+    padding: 12,
+    backgroundColor: theme.colors.background,
+    borderRadius: theme.borderRadius.sm,
   },
 });

@@ -1,3 +1,39 @@
+// Medical term component types
+export interface MedicalPrefix {
+  id: string;
+  component: string;
+  meaning: string;
+  category: string;
+  etymology: string;
+  examples: string[];
+}
+
+export interface MedicalRoot {
+  id: string;
+  component: string;
+  meaning: string;
+  bodySystem: string;
+  etymology: string;
+  examples: string[];
+}
+
+export interface MedicalSuffix {
+  id: string;
+  component: string;
+  meaning: string;
+  category: string;
+  etymology: string;
+  examples: string[];
+}
+
+// Component breakdown structure
+export interface TermBreakdown {
+  prefixId?: string | null;
+  rootId: string;
+  suffixId?: string | null;
+}
+
+// Legacy etymology interface (for backward compatibility)
 export interface Etymology {
   prefix?: string;
   root: string;
@@ -20,6 +56,9 @@ export interface MedicalTerm {
   difficulty: 1 | 2 | 3 | 4 | 5;
   commonlyMisspelled: boolean;
   createdAt: Date;
+  // Component breakdown (new feature)
+  breakdown?: TermBreakdown;
+  clinicalNote?: string;
 }
 
 export interface UserProgress {
