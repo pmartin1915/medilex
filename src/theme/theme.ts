@@ -1,13 +1,20 @@
 export const theme = {
   colors: {
-    background: '#FAF7F1',
-    cardBackground: '#FFFFFF',
-    textPrimary: '#2B2B2B',
+    // Warm, calm backgrounds
+    background: '#FAF7F1', // warm cream
+    cardBackground: '#FFFFFF', // white card surface
+
+    // Text hierarchy
+    textPrimary: '#2B2B2B', // dark charcoal
     textSecondary: '#6A6A6A',
     textTertiary: '#9B9B9B',
-    accent: '#7BAAA5',
-    accentLight: '#A5C9C4',
-    accentDark: '#5B8A86',
+
+    // Muted blue accent (used sparingly for Clinical Example, Show More, icons)
+    accent: '#5B8FA3', // muted desaturated blue
+    accentLight: '#7BA5B8',
+    accentDark: '#4A7383',
+
+    // Legacy colors maintained for other features
     clinical: '#5B8FA3',
     border: '#F5EFE3',
     divider: '#E8E2D5',
@@ -18,6 +25,10 @@ export const theme = {
     favorite: '#D17B6F',
     bookmark: '#E8B66B',
     streakFire: '#E8704D',
+
+    // Subtle progress bar
+    progressBackground: '#E8E2D5',
+    progressFill: '#C5BFB0',
   },
   spacing: {
     xs: 4,
@@ -35,11 +46,39 @@ export const theme = {
     full: 9999,
   },
   typography: {
-    wordLarge: {
-      fontSize: 36,
-      fontWeight: '400' as const,
-      lineHeight: 44,
+    // Display term - large serif
+    termDisplay: {
+      fontSize: 48,
+      fontWeight: '600' as const,
+      lineHeight: 56,
+      fontFamily: 'serif',
     },
+    // Pronunciation
+    pronunciation: {
+      fontSize: 18,
+      fontWeight: '400' as const,
+      lineHeight: 26,
+    },
+    // Labels (Definition, Clinical Example, etc.)
+    label: {
+      fontSize: 12,
+      fontWeight: '600' as const,
+      letterSpacing: 1,
+      textTransform: 'uppercase' as const,
+    },
+    // Definition text
+    definition: {
+      fontSize: 18,
+      fontWeight: '400' as const,
+      lineHeight: 28,
+    },
+    // Example text
+    example: {
+      fontSize: 16,
+      fontWeight: '400' as const,
+      lineHeight: 24,
+    },
+    // Body text
     bodyLarge: {
       fontSize: 18,
       fontWeight: '400' as const,
@@ -59,12 +98,13 @@ export const theme = {
       shadowRadius: 4,
       elevation: 2,
     },
+    // Very subtle shadow - just enough to lift the card
     card: {
-      shadowColor: '#7BAAA5',
-      shadowOffset: { width: 0, height: 4 },
-      shadowOpacity: 0.08,
-      shadowRadius: 12,
-      elevation: 4,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.06,
+      shadowRadius: 8,
+      elevation: 3,
     },
   },
 };

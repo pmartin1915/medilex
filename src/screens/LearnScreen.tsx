@@ -113,7 +113,7 @@ export const LearnScreen = () => {
 
       <View style={styles.footer}>
         <Text style={styles.footerText}>
-          ← Don't Know | Know It →
+          Swipe left: Don't Know  •  Swipe right: Know It
         </Text>
       </View>
     </View>
@@ -127,20 +127,23 @@ const styles = StyleSheet.create({
   },
   header: {
     paddingTop: 60,
-    paddingBottom: 20,
+    paddingBottom: 16,
     alignItems: 'center',
   },
   cardContainer: {
     flex: 1,
     justifyContent: 'center',
+    paddingBottom: theme.spacing.md,
   },
   footer: {
-    padding: 20,
+    paddingVertical: theme.spacing.md,
+    paddingBottom: theme.spacing.lg,
     alignItems: 'center',
   },
   footerText: {
-    fontSize: 14,
-    color: theme.colors.textSecondary,
+    fontSize: 12,
+    color: theme.colors.textTertiary,
+    letterSpacing: 0.5,
   },
   completeContainer: {
     flex: 1,

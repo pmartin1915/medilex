@@ -28,26 +28,33 @@ export const MedicalTermCard: React.FC<Props> = ({
   return (
     <View style={styles.card}>
       <ScrollView showsVerticalScrollIndicator={false}>
+        {/* Word block - primary focus */}
         <Text style={styles.term}>{term.term}</Text>
-        
+
         <View style={styles.pronunciationRow}>
           <Text style={styles.pronunciation}>{term.pronunciation}</Text>
-          <TouchableOpacity onPress={onPronounce} style={styles.audioButton}>
-            <Volume2 size={20} color={theme.colors.accent} />
+          <TouchableOpacity
+            onPress={onPronounce}
+            style={styles.audioButton}
+            activeOpacity={0.6}
+          >
+            <Volume2 size={22} color={theme.colors.accent} strokeWidth={1.5} />
           </TouchableOpacity>
         </View>
 
-        <Text style={styles.syllables}>{term.syllables}</Text>
-        <Text style={styles.partOfSpeech}>{term.partOfSpeech}</Text>
+        <View style={styles.metaRow}>
+          <Text style={styles.syllables}>{term.syllables}</Text>
+          <Text style={styles.separator}>•</Text>
+          <Text style={styles.partOfSpeech}>{term.partOfSpeech}</Text>
+        </View>
 
-        <View style={styles.divider} />
-
+        {/* Definition block - clear separation with spacing */}
+        <Text style={styles.sectionLabel}>DEFINITION</Text>
         <Text style={styles.definition}>{term.definition}</Text>
 
-        <View style={styles.exampleContainer}>
-          <Text style={styles.exampleLabel}>Clinical Example:</Text>
-          <Text style={styles.example}>{term.example}</Text>
-        </View>
+        {/* Clinical Example block - accent color only here */}
+        <Text style={styles.clinicalLabel}>CLINICAL EXAMPLE</Text>
+        <Text style={styles.example}>{term.example}</Text>
 
         {showDetails && (
           <>
@@ -81,8 +88,8 @@ export const MedicalTermCard: React.FC<Props> = ({
         <TouchableOpacity
           onPress={() => setShowDetails(!showDetails)}
           style={styles.detailsButton}
+          activeOpacity={0.6}
         >
-          <Info size={16} color={theme.colors.accent} />
           <Text style={styles.detailsButtonText}>
             {showDetails ? 'Show Less' : 'Show More'}
           </Text>
@@ -120,66 +127,71 @@ const styles = StyleSheet.create({
     minHeight: 500,
     ...theme.shadows.card,
   },
+  // Word block - largest element, serif, bold
   term: {
-    fontSize: 36,
-    fontWeight: '400',
+    ...theme.typography.termDisplay,
     color: theme.colors.textPrimary,
     marginBottom: theme.spacing.sm,
   },
   pronunciationRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: theme.spacing.sm,
+    marginBottom: theme.spacing.xs,
   },
   pronunciation: {
-    fontSize: 18,
+    ...theme.typography.pronunciation,
     color: theme.colors.textSecondary,
     fontFamily: 'monospace',
     flex: 1,
   },
   audioButton: {
     padding: theme.spacing.sm,
+    marginRight: -theme.spacing.sm,
+  },
+  metaRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: theme.spacing.xl,
   },
   syllables: {
-    fontSize: 20,
-    color: theme.colors.textSecondary,
-    letterSpacing: 1,
-    marginBottom: theme.spacing.xs,
+    fontSize: 13,
+    color: theme.colors.textTertiary,
+    letterSpacing: 0.5,
+  },
+  separator: {
+    fontSize: 13,
+    color: theme.colors.textTertiary,
+    marginHorizontal: theme.spacing.sm,
   },
   partOfSpeech: {
-    fontSize: 14,
+    fontSize: 13,
     color: theme.colors.textTertiary,
     fontStyle: 'italic',
-    marginBottom: theme.spacing.md,
   },
-  divider: {
-    height: 1,
-    backgroundColor: theme.colors.divider,
-    marginVertical: theme.spacing.md,
+  // Section labels - small, uppercase, subtle
+  sectionLabel: {
+    ...theme.typography.label,
+    color: theme.colors.textTertiary,
+    marginBottom: theme.spacing.sm,
+    marginTop: theme.spacing.xs,
   },
   definition: {
-    fontSize: 18,
-    lineHeight: 28,
+    ...theme.typography.definition,
     color: theme.colors.textPrimary,
-    marginBottom: theme.spacing.lg,
+    marginBottom: theme.spacing.xl,
   },
-  exampleContainer: {
-    backgroundColor: theme.colors.background,
-    padding: theme.spacing.md,
-    borderRadius: theme.borderRadius.md,
-    marginBottom: theme.spacing.md,
-  },
-  exampleLabel: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: theme.colors.clinical,
-    marginBottom: theme.spacing.xs,
+  // Clinical label - accent color only here
+  clinicalLabel: {
+    ...theme.typography.label,
+    color: theme.colors.accent,
+    marginBottom: theme.spacing.sm,
+    marginTop: theme.spacing.sm,
   },
   example: {
-    fontSize: 16,
-    lineHeight: 24,
+    ...theme.typography.example,
     color: theme.colors.textSecondary,
     fontStyle: 'italic',
+    lineHeight: 24,
   },
   etymologyContainer: {
     marginTop: theme.spacing.md,
@@ -231,17 +243,16 @@ const styles = StyleSheet.create({
     lineHeight: 20,
   },
   detailsButton: {
-    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: theme.spacing.md,
-    padding: theme.spacing.sm,
+    marginTop: theme.spacing.lg,
+    paddingVertical: theme.spacing.md,
   },
   detailsButtonText: {
     fontSize: 14,
     color: theme.colors.accent,
-    marginLeft: theme.spacing.xs,
     fontWeight: '600',
+    letterSpacing: 0.5,
   },
   actions: {
     flexDirection: 'row',
