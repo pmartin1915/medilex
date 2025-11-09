@@ -41,6 +41,20 @@ export const LearnScreen = () => {
     }
   };
 
+  const handleSwipeUp = () => {
+    // Navigate to next card without evaluation
+    if (currentIndex < terms.length - 1) {
+      setCurrentIndex(prev => prev + 1);
+    }
+  };
+
+  const handleSwipeDown = () => {
+    // Navigate to previous card
+    if (currentIndex > 0) {
+      setCurrentIndex(prev => prev - 1);
+    }
+  };
+
   const nextCard = () => {
     if (currentIndex < terms.length - 1) {
       setCurrentIndex(prev => prev + 1);
@@ -99,6 +113,8 @@ export const LearnScreen = () => {
         <SwipeableCard
           onSwipeLeft={handleSwipeLeft}
           onSwipeRight={handleSwipeRight}
+          onSwipeUp={handleSwipeUp}
+          onSwipeDown={handleSwipeDown}
         >
           <MedicalTermCard
             term={currentTerm}
@@ -113,7 +129,10 @@ export const LearnScreen = () => {
 
       <View style={styles.footer}>
         <Text style={styles.footerText}>
-          ← Don't Know | Know It →
+          ← Don't Know  •  Know It →
+        </Text>
+        <Text style={[styles.footerText, { marginTop: 4 }]}>
+          ↑ Next  •  ↓ Previous
         </Text>
       </View>
     </View>
