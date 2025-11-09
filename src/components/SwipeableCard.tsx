@@ -1,5 +1,6 @@
 import React, { useRef } from 'react';
 import { Animated, PanResponder, Dimensions, StyleSheet } from 'react-native';
+import * as Haptics from 'expo-haptics';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 const VERTICAL_SWIPE_THRESHOLD = 80; // Increased for more intentional swipes
@@ -27,24 +28,42 @@ export const SwipeableCard: React.FC<Props> = ({
       onPanResponderRelease: (_, gesture) => {
         // Handle vertical swipes only
         if (gesture.dy < -VERTICAL_SWIPE_THRESHOLD && onSwipeUp) {
+          // Trigger haptic feedback for successful swipe
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+
           // Swipe up - slide card up smoothly (rolling effect)
           Animated.timing(position, {
             toValue: { x: 0, y: -SCREEN_HEIGHT },
             duration: 250,
             useNativeDriver: false,
           }).start(() => {
-            position.setValue({ x: 0, y: 0 });
+            // Change card first, then animate new card in from bottom
             onSwipeUp();
+            position.setValue({ x: 0, y: SCREEN_HEIGHT });
+            Animated.timing(position, {
+              toValue: { x: 0, y: 0 },
+              duration: 250,
+              useNativeDriver: false,
+            }).start();
           });
         } else if (gesture.dy > VERTICAL_SWIPE_THRESHOLD && onSwipeDown) {
-          // Swipe down - slide card down smoothly (rolling effect)
+          // Trigger haptic feedback for successful swipe
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+
+          // Swipe down - slide card down, then bring previous card from top
           Animated.timing(position, {
             toValue: { x: 0, y: SCREEN_HEIGHT },
             duration: 250,
             useNativeDriver: false,
           }).start(() => {
-            position.setValue({ x: 0, y: 0 });
+            // Change card first, then animate new card in from top
             onSwipeDown();
+            position.setValue({ x: 0, y: -SCREEN_HEIGHT });
+            Animated.timing(position, {
+              toValue: { x: 0, y: 0 },
+              duration: 250,
+              useNativeDriver: false,
+            }).start();
           });
         } else {
           // Snap back with spring animation for smooth rolling feel

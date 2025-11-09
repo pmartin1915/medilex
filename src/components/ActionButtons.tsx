@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, StyleSheet, TouchableOpacity, Animated } from 'react-native';
 import { ThumbsUp, X, Heart, Bookmark, Share2 } from 'lucide-react-native';
+import * as Haptics from 'expo-haptics';
 import { theme } from '../theme/theme';
 
 interface Props {
@@ -22,12 +23,38 @@ export const ActionButtons: React.FC<Props> = ({
   isFavorited,
   isBookmarked,
 }) => {
+  // Wrapper functions to add haptic feedback
+  const handleKnowIt = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    onKnowIt();
+  };
+
+  const handleDontKnow = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    onDontKnow();
+  };
+
+  const handleFavorite = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    onFavorite();
+  };
+
+  const handleBookmark = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    onBookmark();
+  };
+
+  const handleShare = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    onShare();
+  };
+
   return (
     <View style={styles.container}>
       {/* Know It - Green */}
       <TouchableOpacity
         style={[styles.button, styles.knowItButton]}
-        onPress={onKnowIt}
+        onPress={handleKnowIt}
         activeOpacity={0.7}
         accessibilityLabel="Know It"
         accessibilityRole="button"
@@ -38,7 +65,7 @@ export const ActionButtons: React.FC<Props> = ({
       {/* Don't Know - Red */}
       <TouchableOpacity
         style={[styles.button, styles.dontKnowButton]}
-        onPress={onDontKnow}
+        onPress={handleDontKnow}
         activeOpacity={0.7}
         accessibilityLabel="Don't Know"
         accessibilityRole="button"
@@ -49,7 +76,7 @@ export const ActionButtons: React.FC<Props> = ({
       {/* Favorite - Pink/Red */}
       <TouchableOpacity
         style={[styles.button, styles.favoriteButton]}
-        onPress={onFavorite}
+        onPress={handleFavorite}
         activeOpacity={0.7}
         accessibilityLabel={isFavorited ? "Remove from favorites" : "Add to favorites"}
         accessibilityRole="button"
@@ -65,7 +92,7 @@ export const ActionButtons: React.FC<Props> = ({
       {/* Bookmark - Amber */}
       <TouchableOpacity
         style={[styles.button, styles.bookmarkButton]}
-        onPress={onBookmark}
+        onPress={handleBookmark}
         activeOpacity={0.7}
         accessibilityLabel={isBookmarked ? "Remove bookmark" : "Bookmark"}
         accessibilityRole="button"
@@ -81,7 +108,7 @@ export const ActionButtons: React.FC<Props> = ({
       {/* Share - Teal */}
       <TouchableOpacity
         style={[styles.button, styles.shareButton]}
-        onPress={onShare}
+        onPress={handleShare}
         activeOpacity={0.7}
         accessibilityLabel="Share"
         accessibilityRole="button"
