@@ -4,6 +4,8 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
+  Share,
+  Alert,
 } from 'react-native';
 import { theme } from '../theme/theme';
 import { useWordStore } from '../store/wordStore';
@@ -11,6 +13,7 @@ import { useStreakStore } from '../store/streakStore';
 import { SwipeableCard } from '../components/SwipeableCard';
 import { MedicalTermCard } from '../components/MedicalTermCard';
 import { ProgressIndicator } from '../components/ProgressIndicator';
+import { ActionButtons } from '../components/ActionButtons';
 import * as Speech from 'expo-speech';
 
 export const LearnScreen = () => {
@@ -27,29 +30,62 @@ export const LearnScreen = () => {
   const currentTerm = terms[currentIndex];
   const progress = currentTerm ? getProgress(currentTerm.id) : undefined;
 
-  const handleSwipeLeft = () => {
-    if (currentTerm) {
-      updateProgress(currentTerm.id, false);
-      nextCard();
-    }
-  };
-
-  const handleSwipeRight = () => {
+  // Know It - Mark as known and advance
+  const handleKnowIt = () => {
     if (currentTerm) {
       updateProgress(currentTerm.id, true);
       nextCard();
     }
   };
 
+  // Don't Know - Mark as unknown and advance
+  const handleDontKnow = () => {
+    if (currentTerm) {
+      updateProgress(currentTerm.id, false);
+      nextCard();
+    }
+  };
+
+  // Favorite - Toggle favorite (stays on card)
+  const handleFavorite = () => {
+    if (currentTerm) {
+      toggleFavorite(currentTerm.id);
+    }
+  };
+
+  // Bookmark - Toggle bookmark (stays on card)
+  const handleBookmark = () => {
+    if (currentTerm) {
+      toggleBookmark(currentTerm.id);
+    }
+  };
+
+  // Share - Share term and definition
+  const handleShare = async () => {
+    if (!currentTerm) return;
+
+    try {
+      await Share.share({
+        message: `${currentTerm.term}: ${currentTerm.definition}`,
+        title: currentTerm.term,
+      });
+    } catch (error) {
+      // Handle error gracefully - only show alert on actual errors, not dismissals
+      if (error instanceof Error && error.message !== 'User did not share') {
+        Alert.alert('Share Error', 'Unable to share this term. Please try again.');
+      }
+    }
+  };
+
+  // Swipe Up - Navigate to next card (no evaluation)
   const handleSwipeUp = () => {
-    // Navigate to next card without evaluation
     if (currentIndex < terms.length - 1) {
       setCurrentIndex(prev => prev + 1);
     }
   };
 
+  // Swipe Down - Navigate to previous card
   const handleSwipeDown = () => {
-    // Navigate to previous card
     if (currentIndex > 0) {
       setCurrentIndex(prev => prev - 1);
     }
@@ -109,30 +145,36 @@ export const LearnScreen = () => {
         />
       </View>
 
-      <View style={styles.cardContainer}>
+      <View style={styles.contentContainer}>
         <SwipeableCard
-          onSwipeLeft={handleSwipeLeft}
-          onSwipeRight={handleSwipeRight}
           onSwipeUp={handleSwipeUp}
           onSwipeDown={handleSwipeDown}
         >
           <MedicalTermCard
             term={currentTerm}
             onPronounce={handlePronounce}
-            onFavorite={() => toggleFavorite(currentTerm.id)}
-            onBookmark={() => toggleBookmark(currentTerm.id)}
+            onFavorite={handleFavorite}
+            onBookmark={handleBookmark}
             isFavorited={progress?.isFavorited}
             isBookmarked={progress?.isBookmarked}
+            showActions={false} // Hide bottom actions - using ActionButtons instead
           />
         </SwipeableCard>
+
+        <ActionButtons
+          onKnowIt={handleKnowIt}
+          onDontKnow={handleDontKnow}
+          onFavorite={handleFavorite}
+          onBookmark={handleBookmark}
+          onShare={handleShare}
+          isFavorited={progress?.isFavorited || false}
+          isBookmarked={progress?.isBookmarked || false}
+        />
       </View>
 
       <View style={styles.footer}>
         <Text style={styles.footerText}>
-          ← Don't Know  •  Know It →
-        </Text>
-        <Text style={[styles.footerText, { marginTop: 4 }]}>
-          ↑ Next  •  ↓ Previous
+          Swipe ↑ Next  •  Swipe ↓ Previous
         </Text>
       </View>
     </View>
@@ -149,9 +191,10 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
     alignItems: 'center',
   },
-  cardContainer: {
+  contentContainer: {
     flex: 1,
     justifyContent: 'center',
+    position: 'relative', // For absolute positioning of ActionButtons
   },
   footer: {
     padding: 20,
