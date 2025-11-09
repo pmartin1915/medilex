@@ -2,17 +2,18 @@
 
 ## 🔴 HIGH PRIORITY
 
-### Swipe Gestures
-- [ ] Test previous swipe functionality (DOWN to previous card)
-  - Test at first card (should do nothing)
-  - Test at last card
-  - Test in middle of deck
-- [ ] Enhance swipe gesture system
-  - [ ] Add visual feedback during swipe (color overlay?)
-  - [ ] Add haptic feedback on actions
-  - [ ] Improve animation curves and spring physics
-  - [ ] Make thresholds configurable (not hardcoded)
-  - [ ] Test multi-touch scenarios
+### TikTok-Style UI Polish
+- [ ] Test all platforms (iOS, Android, Web)
+  - [ ] Verify swipe gestures work smoothly
+  - [ ] Test all 5 action buttons
+  - [ ] Test Share on each platform
+  - [ ] Check button visibility on small screens
+  - [ ] Verify animations are smooth
+- [ ] Add gesture enhancements
+  - [ ] Add visual feedback during swipe (card preview?)
+  - [ ] Add haptic feedback on button presses
+  - [ ] Add button press animations (scale effect)
+  - [ ] Consider making threshold configurable
 
 ### Error Handling
 - [ ] Add error handling to Speech synthesis
@@ -68,8 +69,9 @@
   - No bookmarks message
   - No favorites message
   - Completed all terms celebration
-- [ ] Tutorial/onboarding for gestures
-  - First-time user guide
+- [ ] Tutorial/onboarding for NEW gesture system
+  - First-time user guide (TikTok-style)
+  - Show button functions on first launch
   - Gesture hints overlay
   - Skip/don't show again option
 
@@ -77,6 +79,8 @@
 - [ ] Optimize SwipeableCard re-renders
   - Memoize components
   - Use React.memo where appropriate
+- [ ] Optimize ActionButtons re-renders
+  - Only re-render on state changes
 - [ ] Optimize large term lists
   - Consider virtualization for ReviewScreen
   - Lazy load term data
@@ -182,11 +186,20 @@
 ## 📝 Completed
 
 - [x] Vertical swipe navigation (UP=next, DOWN=previous)
-- [x] Horizontal swipe evaluation (LEFT=don't know, RIGHT=know)
+- [x] Horizontal swipe evaluation (LEFT=don't know, RIGHT=know) - DEPRECATED
 - [x] Footer indicators for swipe controls
 - [x] Android troubleshooting scripts
 - [x] Metro cache helper scripts
 - [x] Project context documentation
+- [x] **TikTok-style redesign (MAJOR UPDATE - 2025-11-09)**
+  - [x] Remove horizontal swipes
+  - [x] Add ActionButtons component (5 buttons)
+  - [x] Vertical-only swipe gestures
+  - [x] Share functionality with React Native Share API
+  - [x] Rolling animation effect (smooth vertical sliding)
+  - [x] Button color coding (green, red, pink, amber, teal)
+  - [x] Reduce card width for button space
+  - [x] Update LearnScreen layout
 
 ---
 
@@ -213,4 +226,4 @@
 
 ---
 
-*Last Updated: 2025-11-09*
+*Last Updated: 2025-11-09 (TikTok-style redesign complete!)*

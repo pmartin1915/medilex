@@ -41,7 +41,8 @@ A React Native mobile app (iOS, Android, Web) for learning medical terminology t
 ```
 src/
 ├── components/
-│   ├── SwipeableCard.tsx         # Handles swipe gestures (horizontal + vertical)
+│   ├── SwipeableCard.tsx         # Handles vertical swipe gestures (TikTok-style)
+│   ├── ActionButtons.tsx         # 5 circular action buttons (right side)
 │   ├── MedicalTermCard.tsx       # Card UI display
 │   └── ProgressIndicator.tsx     # Shows current position in deck
 ├── screens/
@@ -77,26 +78,51 @@ index.ts                           # Entry point
 - `totalStudySessions` - All-time session count
 - `recordStudySession()` - Update stats
 
-### Swipe Gesture System
+### Swipe Gesture System (TikTok-Style)
 
 **SwipeableCard.tsx:**
-- Detects horizontal vs vertical swipes
-- Horizontal: Evaluates knowledge (Know/Don't Know)
-- Vertical: Navigation only (Next/Previous)
+- Vertical-only swipes for navigation
+- No horizontal swipes (removed entirely)
+- Smooth rolling animation (like continuous sheet of paper)
 - Uses React Native `PanResponder` + `Animated`
 
-**Current Thresholds:**
-- Horizontal: 25% of screen width
-- Vertical: 50px
+**Current Threshold:**
+- Vertical: 80px (intentional swipe)
 
 **Props:**
 ```typescript
 interface Props {
   children: React.ReactNode;
-  onSwipeLeft: () => void;    // Don't Know (evaluates)
-  onSwipeRight: () => void;   // Know It (evaluates)
   onSwipeUp?: () => void;     // Next card (no eval)
-  onSwipeDown?: () => void;   // Previous card
+  onSwipeDown?: () => void;   // Previous card (no eval)
+}
+```
+
+### Action Button System (TikTok-Style)
+
+**ActionButtons.tsx:**
+- 5 circular buttons stacked vertically on right side
+- Positioned absolutely at right: 16px
+- Button size: 56x56px (good touch target)
+- Spacing: 16px between buttons
+
+**Buttons (top to bottom):**
+1. **Know It** (ThumbsUp, green) - Marks known, advances card
+2. **Don't Know** (X, red) - Marks unknown, advances card
+3. **Favorite** (Heart, pink) - Toggles favorite, stays on card
+4. **Bookmark** (Bookmark, amber) - Toggles bookmark, stays on card
+5. **Share** (Share2, teal) - Shares term + definition via native Share API
+
+**Props:**
+```typescript
+interface Props {
+  onKnowIt: () => void;
+  onDontKnow: () => void;
+  onFavorite: () => void;
+  onBookmark: () => void;
+  onShare: () => void;
+  isFavorited: boolean;
+  isBookmarked: boolean;
 }
 ```
 
@@ -175,74 +201,73 @@ set PATH=%PATH%;D:\Android\Sdk\platform-tools;D:\Android\Sdk\emulator
 
 ### HIGH PRIORITY
 
-1. **Previous Swipe Broken**
-   - `onSwipeDown` should go to previous card
-   - Currently implemented but may have edge cases
-   - Location: `LearnScreen.tsx:51-56`, `SwipeableCard.tsx:77-85`
-
-2. **Missing Error Handling**
-   - Speech synthesis failures
-   - Storage persistence errors
+1. **Missing Error Handling**
+   - Speech synthesis failures (needs try/catch)
+   - Storage persistence errors (AsyncStorage)
+   - Share failures (partially handled)
    - Network issues (if added later)
 
-3. **Missing Loading States**
+2. **Missing Loading States**
    - Initial app load
    - Data persistence operations
    - Screen transitions
 
-4. **No Input Validation**
+3. **No Input Validation**
    - Edge cases: empty term list
    - Invalid progress data
    - Corrupted AsyncStorage data
 
 ### MEDIUM PRIORITY
 
-5. **Swipe Gesture Enhancements Needed**
-   - Visual feedback during swipe (color indicators?)
-   - Haptic feedback on actions
-   - Animation polish (ease curves, spring physics)
-   - Threshold tuning (currently hardcoded)
-   - Multi-touch gesture conflicts
+4. **Gesture Enhancements**
+   - Visual feedback during swipe (card preview of next/prev?)
+   - Haptic feedback on button presses
+   - Button press animations (scale effect)
+   - Consider inertia-based scrolling
 
-6. **UX Improvements**
+5. **UX Improvements**
    - Undo last swipe action
    - Confirm before resetting progress
    - Empty states for bookmarks/favorites
-   - Tutorial/onboarding for gestures
+   - Tutorial/onboarding for new gesture system
+   - Show hint overlay on first use
 
-7. **Performance**
+6. **Performance**
    - Large term lists may cause lag
    - Consider virtualization for ReviewScreen
    - Optimize re-renders in SwipeableCard
+   - ActionButtons re-render optimization
 
-8. **Accessibility**
-   - Screen reader support
-   - Keyboard navigation (web)
+7. **Accessibility**
+   - Screen reader support (labels added to buttons)
+   - Keyboard navigation (web) - needs implementation
    - High contrast mode
    - Font scaling support
+   - Button touch target sizes (currently good at 56px)
 
 ### LOW PRIORITY
 
-9. **Testing**
+8. **Testing**
    - No unit tests currently
    - No E2E tests
    - Manual testing only
+   - Need to test Share API on all platforms
 
-10. **Code Quality**
-    - Some hardcoded values (colors, thresholds)
-    - Magic numbers throughout
-    - Inconsistent error handling patterns
+9. **Code Quality**
+   - Some hardcoded values (button sizes, spacing)
+   - Threshold values (80px) could be configurable
+   - Consider extracting constants
 
 ---
 
 ## 🎯 Future Goals (In Order)
 
-1. **Fix Previous Swipe** - Ensure `onSwipeDown` works reliably
-2. **Enhance Swipe Gestures** - Better feedback, animations, tuning
-3. **Add Error Handling** - Graceful failures, user feedback
-4. **Add Loading States** - Skeleton screens, spinners
-5. **Quality Improvements** - Accessibility, performance, polish
-6. **Testing Suite** - Unit + E2E tests
+1. **Add Error Handling** - Graceful failures, user feedback for all operations
+2. **Add Loading States** - Skeleton screens, spinners, smooth transitions
+3. **Polish Gestures** - Haptic feedback, button animations, visual hints
+4. **Input Validation** - Handle edge cases, corrupted data, empty states
+5. **Quality Improvements** - Accessibility enhancements, performance optimization
+6. **Testing Suite** - Unit + E2E tests for all features
 7. **App Store Deployment** - Production builds, screenshots, listings
 
 ---
@@ -344,9 +369,14 @@ emulator -avd Medium_Phone_API_36.1 -no-snapshot-load
 ## 🔍 Quick Reference: Where to Find Things
 
 **Need to modify swipe gestures?**
-- Logic: `src/components/SwipeableCard.tsx`
+- Logic: `src/components/SwipeableCard.tsx` (vertical-only, line 5 for threshold)
 - Usage: `src/screens/LearnScreen.tsx`
-- Thresholds: Lines 5-6 in `SwipeableCard.tsx`
+- Threshold: Line 5 in `SwipeableCard.tsx` (80px)
+
+**Need to modify action buttons?**
+- Component: `src/components/ActionButtons.tsx`
+- Usage: `src/screens/LearnScreen.tsx` (handlers for each button)
+- Button order: Know It, Don't Know, Favorite, Bookmark, Share (top to bottom)
 
 **Need to add a new medical term?**
 - Data: `src/data/medicalTerms.ts`
@@ -399,18 +429,30 @@ emulator -avd Medium_Phone_API_36.1 -no-snapshot-load
 
 ## 📝 Recent Changes (Keep Updated)
 
-### 2025-11-09: Vertical Swipe Navigation
-- Added vertical swipe support to `SwipeableCard.tsx`
-- Swipe UP = next card (no evaluation)
-- Swipe DOWN = previous card
-- Updated `LearnScreen.tsx` with handlers
-- Added footer indicators for vertical swipes
+### 2025-11-09: TikTok-Style Redesign (MAJOR UPDATE)
+- **Removed horizontal swipes** entirely from SwipeableCard
+- **Added ActionButtons component** with 5 circular buttons:
+  - Know It (green, ThumbsUp) - evaluates and advances
+  - Don't Know (red, X) - evaluates and advances
+  - Favorite (pink, Heart) - toggles, stays on card
+  - Bookmark (amber, Bookmark) - toggles, stays on card
+  - Share (teal, Share2) - native share functionality
+- **Simplified swipe gestures** to vertical-only (UP=next, DOWN=previous)
+- **Added Share functionality** using React Native Share API
+- **Rolling animation** - smooth vertical sliding (250ms) with spring snap-back
+- **Increased swipe threshold** to 80px for more intentional swipes
+- **Reduced card width** by 120px to accommodate action buttons
+- **Updated LearnScreen** layout with absolute-positioned buttons
 
 ### Known State:
+- ✅ TikTok-style UI: Implemented
 - ✅ Vertical swipe: Working
-- ⚠️ Previous swipe: Needs testing/fixing
-- ⚠️ Error handling: Missing
+- ✅ Action buttons: Implemented
+- ✅ Share feature: Implemented (with error handling)
+- ⚠️ Share on web: May need fallback testing
+- ⚠️ Error handling: Partial (needs more coverage)
 - ⚠️ Loading states: Missing
+- ⚠️ Haptic feedback: Not implemented yet
 
 ---
 
