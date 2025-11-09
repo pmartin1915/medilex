@@ -29,7 +29,7 @@ export interface MedicalSuffix {
 // Component breakdown structure
 export interface TermBreakdown {
   prefixId?: string | null;
-  rootId: string;
+  rootId?: string | null;
   suffixId?: string | null;
 }
 
