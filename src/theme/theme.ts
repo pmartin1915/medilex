@@ -46,11 +46,11 @@ export const theme = {
     full: 9999,
   },
   typography: {
-    // Display term - large serif
+    // Display term - large serif (adjusted for longer medical terms)
     termDisplay: {
-      fontSize: 48,
+      fontSize: 40,
       fontWeight: '600' as const,
-      lineHeight: 56,
+      lineHeight: 48,
       fontFamily: 'serif',
     },
     // Pronunciation
