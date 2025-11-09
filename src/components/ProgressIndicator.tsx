@@ -25,24 +25,26 @@ export const ProgressIndicator: React.FC<Props> = ({ current, total }) => {
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    paddingHorizontal: theme.spacing.md,
+    paddingHorizontal: theme.spacing.lg,
   },
   text: {
-    fontSize: 16,
+    fontSize: 11,
     fontWeight: '600',
-    color: theme.colors.textPrimary,
+    color: theme.colors.textTertiary,
     textAlign: 'center',
     marginBottom: theme.spacing.sm,
+    letterSpacing: 1,
+    textTransform: 'uppercase',
   },
   barContainer: {
-    height: 8,
-    backgroundColor: theme.colors.border,
-    borderRadius: theme.borderRadius.sm,
+    height: 3,
+    backgroundColor: theme.colors.progressBackground,
+    borderRadius: theme.borderRadius.full,
     overflow: 'hidden',
   },
   barFill: {
     height: '100%',
-    backgroundColor: theme.colors.accent,
-    borderRadius: theme.borderRadius.sm,
+    backgroundColor: theme.colors.progressFill,
+    borderRadius: theme.borderRadius.full,
   },
 });
