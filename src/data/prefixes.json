@@ -198,5 +198,37 @@
     "category": "position/direction",
     "etymology": "Greek 'epi' (upon)",
     "examples": ["epidermis", "epidural", "epicardium"]
+  },
+  {
+    "id": "prefix_dia",
+    "component": "dia-",
+    "meaning": "through, apart, across",
+    "category": "position/direction",
+    "etymology": "Greek 'dia' (through)",
+    "examples": ["dialysis", "diagnosis", "diameter"]
+  },
+  {
+    "id": "prefix_neo",
+    "component": "neo-",
+    "meaning": "new, recent",
+    "category": "time/quality",
+    "etymology": "Greek 'neos' (new)",
+    "examples": ["neoplasm", "neonatal", "neologism"]
+  },
+  {
+    "id": "prefix_meta",
+    "component": "meta-",
+    "meaning": "beyond, change, after",
+    "category": "position/change",
+    "etymology": "Greek 'meta' (beyond, after)",
+    "examples": ["metastasis", "metabolism", "metamorphosis"]
+  },
+  {
+    "id": "prefix_in",
+    "component": "in-",
+    "meaning": "in, into, within",
+    "category": "position/direction",
+    "etymology": "Latin 'in' (in, into)",
+    "examples": ["inflammation", "inhalation", "injection"]
   }
 ]

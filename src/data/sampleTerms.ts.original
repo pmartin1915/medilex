@@ -46,11 +46,6 @@ export const SAMPLE_TERMS: MedicalTerm[] = [
     difficulty: 1,
     commonlyMisspelled: true,
     createdAt: new Date('2025-01-08'),
-    breakdown: {
-      prefixId: 'prefix_dys',
-      rootId: 'root_pnea',
-    },
-    clinicalNote: 'Common in heart failure, COPD, asthma, and pulmonary embolism. Severity assessed using scales like Modified Medical Research Council (mMRC). Orthopnea and paroxysmal nocturnal dyspnea suggest cardiac etiology.',
   },
   {
     id: 'term_003',
@@ -71,11 +66,6 @@ export const SAMPLE_TERMS: MedicalTerm[] = [
     difficulty: 1,
     commonlyMisspelled: false,
     createdAt: new Date('2025-01-08'),
-    breakdown: {
-      prefixId: 'prefix_hyper',
-      rootId: 'root_tens',
-    },
-    clinicalNote: 'Leading risk factor for stroke, heart attack, and chronic kidney disease. Lifestyle modifications include DASH diet, weight loss, exercise, and sodium restriction. May require multiple antihypertensive medications.',
   },
   {
     id: 'term_004',
@@ -96,11 +86,6 @@ export const SAMPLE_TERMS: MedicalTerm[] = [
     difficulty: 1,
     commonlyMisspelled: false,
     createdAt: new Date('2025-01-08'),
-    breakdown: {
-      prefixId: 'prefix_an',
-      suffixId: 'suffix_emia',
-    },
-    clinicalNote: 'Classified by size (microcytic, normocytic, macrocytic) and mechanism (decreased production, increased destruction, blood loss). Common types include iron deficiency, vitamin B12 deficiency, and anemia of chronic disease.',
   },
   {
     id: 'term_005',
@@ -146,12 +131,6 @@ export const SAMPLE_TERMS: MedicalTerm[] = [
     difficulty: 2,
     commonlyMisspelled: true,
     createdAt: new Date('2025-01-08'),
-    breakdown: {
-      prefixId: 'prefix_a',
-      rootId: 'root_phas',
-      suffixId: 'suffix_ia',
-    },
-    clinicalNote: 'Types include Broca aphasia (expressive), Wernicke aphasia (receptive), and global aphasia. Most commonly caused by left hemisphere stroke. Speech therapy essential for rehabilitation.',
   },
   {
     id: 'term_007',
@@ -172,12 +151,6 @@ export const SAMPLE_TERMS: MedicalTerm[] = [
     difficulty: 2,
     commonlyMisspelled: false,
     createdAt: new Date('2025-01-08'),
-    breakdown: {
-      prefixId: 'prefix_a',
-      rootId: 'root_tax',
-      suffixId: 'suffix_ia',
-    },
-    clinicalNote: 'Cerebellar ataxia affects gait and limb coordination. Sensory ataxia from peripheral neuropathy or posterior column damage. Causes include stroke, alcohol, vitamin deficiencies, and hereditary conditions.',
   },
   {
     id: 'term_008',
@@ -223,12 +196,6 @@ export const SAMPLE_TERMS: MedicalTerm[] = [
     difficulty: 2,
     commonlyMisspelled: true,
     createdAt: new Date('2025-01-08'),
-    breakdown: {
-      prefixId: 'prefix_dys',
-      rootId: 'root_phag',
-      suffixId: 'suffix_ia',
-    },
-    clinicalNote: 'Oropharyngeal dysphagia causes difficulty initiating swallowing; esophageal dysphagia causes food sticking sensation. Major aspiration risk. Modified barium swallow study aids diagnosis.',
   },
   {
     id: 'term_010',
@@ -249,11 +216,6 @@ export const SAMPLE_TERMS: MedicalTerm[] = [
     difficulty: 2,
     commonlyMisspelled: true,
     createdAt: new Date('2025-01-08'),
-    breakdown: {
-      rootId: 'root_cirrh',
-      suffixId: 'suffix_osis',
-    },
-    clinicalNote: 'Leading causes: alcohol abuse, hepatitis B/C, non-alcoholic fatty liver disease. Complications include portal hypertension, varices, ascites, hepatic encephalopathy, and hepatocellular carcinoma.',
   },
   {
     id: 'term_011',
@@ -274,11 +236,6 @@ export const SAMPLE_TERMS: MedicalTerm[] = [
     difficulty: 1,
     commonlyMisspelled: false,
     createdAt: new Date('2025-01-08'),
-    breakdown: {
-      rootId: 'root_gastr',
-      suffixId: 'suffix_itis',
-    },
-    clinicalNote: 'H. pylori infection most common cause worldwide. Other causes include NSAIDs, alcohol, stress, autoimmune gastritis. Triple or quadruple therapy eradicates H. pylori.',
   },
   {
     id: 'term_012',
@@ -320,12 +277,6 @@ export const SAMPLE_TERMS: MedicalTerm[] = [
     difficulty: 2,
     commonlyMisspelled: false,
     createdAt: new Date('2025-01-08'),
-    breakdown: {
-      prefixId: 'prefix_hyper',
-      rootId: 'root_thyroid',
-      suffixId: 'suffix_ism',
-    },
-    clinicalNote: 'Graves disease (autoimmune) is most common cause. Symptoms include weight loss, heat intolerance, tremor, palpitations, exophthalmos. Treated with antithyroid drugs, radioiodine, or surgery.',
   },
   {
     id: 'term_014',
@@ -373,11 +324,6 @@ export const SAMPLE_TERMS: MedicalTerm[] = [
     difficulty: 2,
     commonlyMisspelled: false,
     createdAt: new Date('2025-01-08'),
-    breakdown: {
-      rootId: 'root_nephr',
-      suffixId: 'suffix_itis',
-    },
-    clinicalNote: 'Glomerulonephritis most common type. Post-streptococcal GN follows pharyngitis. Presents with hematuria, proteinuria, hypertension, edema. May progress to chronic kidney disease.',
   },
   {
     id: 'term_016',
@@ -398,11 +344,6 @@ export const SAMPLE_TERMS: MedicalTerm[] = [
     difficulty: 1,
     commonlyMisspelled: false,
     createdAt: new Date('2025-01-08'),
-    breakdown: {
-      prefixId: 'prefix_dia',
-      rootId: 'root_lys',
-    },
-    clinicalNote: 'Hemodialysis uses external filter 3-4 times weekly. Peritoneal dialysis uses peritoneal membrane, done at home daily. Indicated when GFR <15 mL/min or severe symptoms of uremia.',
   },
   {
     id: 'term_017',
@@ -423,11 +364,6 @@ export const SAMPLE_TERMS: MedicalTerm[] = [
     difficulty: 2,
     commonlyMisspelled: false,
     createdAt: new Date('2025-01-08'),
-    breakdown: {
-      rootId: 'root_dermat',
-      suffixId: 'suffix_itis',
-    },
-    clinicalNote: 'Types include atopic dermatitis (eczema), contact dermatitis (allergic/irritant), seborrheic dermatitis. Treatment includes moisturizers, topical corticosteroids, and trigger avoidance.',
   },
   {
     id: 'term_018',
@@ -448,11 +384,6 @@ export const SAMPLE_TERMS: MedicalTerm[] = [
     difficulty: 3,
     commonlyMisspelled: true,
     createdAt: new Date('2025-01-08'),
-    breakdown: {
-      rootId: 'root_prurit',
-      suffixId: 'suffix_us',
-    },
-    clinicalNote: 'Systemic causes include liver disease, chronic kidney disease, thyroid disorders, hematologic malignancies, diabetes. Dermatologic causes include eczema, psoriasis, scabies. Treat underlying cause.',
   },
   {
     id: 'term_019',
@@ -473,11 +404,6 @@ export const SAMPLE_TERMS: MedicalTerm[] = [
     difficulty: 3,
     commonlyMisspelled: false,
     createdAt: new Date('2025-01-08'),
-    breakdown: {
-      prefixId: 'prefix_neo',
-      rootId: 'root_plasm',
-    },
-    clinicalNote: 'Benign neoplasms grow locally without invasion or metastasis (e.g., lipoma, adenoma). Malignant neoplasms invade tissues and metastasize (cancer). Biopsy determines nature and grade.',
   },
   {
     id: 'term_020',
@@ -498,11 +424,6 @@ export const SAMPLE_TERMS: MedicalTerm[] = [
     difficulty: 3,
     commonlyMisspelled: true,
     createdAt: new Date('2025-01-08'),
-    breakdown: {
-      prefixId: 'prefix_meta',
-      rootId: 'root_stas',
-    },
-    clinicalNote: 'Common sites: lung, liver, brain, bone. Lymphatic metastasis spreads to regional nodes; hematogenous spreads via bloodstream. Presence determines stage IV disease in most cancers.',
   },
   {
     id: 'term_021',
@@ -524,12 +445,6 @@ export const SAMPLE_TERMS: MedicalTerm[] = [
     difficulty: 2,
     commonlyMisspelled: true,
     createdAt: new Date('2025-01-08'),
-    breakdown: {
-      prefixId: 'prefix_an',
-      rootId: 'root_alges',
-      suffixId: 'suffix_ic',
-    },
-    clinicalNote: 'Classes include non-opioid (acetaminophen, NSAIDs), weak opioids (codeine, tramadol), strong opioids (morphine, fentanyl). WHO pain ladder guides stepwise approach.',
   },
   {
     id: 'term_022',
@@ -577,12 +492,6 @@ export const SAMPLE_TERMS: MedicalTerm[] = [
     difficulty: 1,
     commonlyMisspelled: false,
     createdAt: new Date('2025-01-08'),
-    breakdown: {
-      prefixId: 'prefix_in',
-      rootId: 'root_flamm',
-      suffixId: 'suffix_ation',
-    },
-    clinicalNote: 'Five cardinal signs: rubor (redness), calor (heat), tumor (swelling), dolor (pain), functio laesa (loss of function). Acute inflammation is protective; chronic inflammation causes tissue damage.',
   },
   {
     id: 'term_024',
@@ -602,10 +511,6 @@ export const SAMPLE_TERMS: MedicalTerm[] = [
     difficulty: 2,
     commonlyMisspelled: true,
     createdAt: new Date('2025-01-08'),
-    breakdown: {
-      rootId: 'root_edem',
-    },
-    clinicalNote: 'Pitting edema: heart failure, kidney disease, venous insufficiency, hypoalbuminemia. Non-pitting: lymphedema, myxedema. Bilateral suggests systemic cause; unilateral suggests local cause.',
   },
   {
     id: 'term_025',
@@ -627,12 +532,6 @@ export const SAMPLE_TERMS: MedicalTerm[] = [
     difficulty: 3,
     commonlyMisspelled: true,
     createdAt: new Date('2025-01-08'),
-    breakdown: {
-      prefixId: 'prefix_hypo',
-      rootId: 'root_vol',
-      suffixId: 'suffix_emia',
-    },
-    clinicalNote: 'Hemorrhagic shock from trauma or GI bleeding. Hypovolemic shock from dehydration, burns, third-spacing. Signs include tachycardia, hypotension, poor skin turgor, oliguria. Requires aggressive fluid resuscitation.',
   },
 ];
 
