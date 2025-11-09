@@ -88,15 +88,17 @@ export const getTermComponents = (breakdown?: TermBreakdown): TermComponent[] =>
     }
   }
 
-  // Add root (required)
-  const root = getRootById(breakdown.rootId);
-  if (root) {
-    components.push({
-      type: 'root',
-      component: root.component,
-      meaning: root.meaning,
-      etymology: root.etymology,
-    });
+  // Add root if exists
+  if (breakdown.rootId) {
+    const root = getRootById(breakdown.rootId);
+    if (root) {
+      components.push({
+        type: 'root',
+        component: root.component,
+        meaning: root.meaning,
+        etymology: root.etymology,
+      });
+    }
   }
 
   // Add suffix if exists
@@ -148,7 +150,7 @@ export const getShortBreakdown = (breakdown?: TermBreakdown): string | null => {
  * Check if a term has component breakdown data
  */
 export const hasBreakdown = (term: MedicalTerm): boolean => {
-  return !!term.breakdown && !!term.breakdown.rootId;
+  return !!term.breakdown && !!(term.breakdown.prefixId || term.breakdown.rootId || term.breakdown.suffixId);
 };
 
 /**
