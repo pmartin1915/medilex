@@ -239,13 +239,13 @@ export const SwipeableCard: React.FC<Props> = ({
 
       {onSwipeUp && (
         <Animated.View style={[styles.indicator, styles.upIndicator, { opacity: upIndicatorOpacity }]}>
-          <Text style={styles.indicatorText}>Previous</Text>
+          <Text style={styles.indicatorText}>Next</Text>
         </Animated.View>
       )}
 
       {onSwipeDown && (
         <Animated.View style={[styles.indicator, styles.downIndicator, { opacity: downIndicatorOpacity }]}>
-          <Text style={styles.indicatorText}>Next</Text>
+          <Text style={styles.indicatorText}>Previous</Text>
         </Animated.View>
       )}
     </View>

@@ -31,26 +31,32 @@ export const LearnScreen = () => {
   const handleSwipeLeft = () => {
     if (currentTerm) {
       updateProgress(currentTerm.id, false);
-      // Don't auto-advance - stay on current card
+      // Auto-advance to next card after marking "Don't Know"
+      advanceToNextCard();
     }
   };
 
   const handleSwipeRight = () => {
     if (currentTerm) {
       updateProgress(currentTerm.id, true);
-      // Don't auto-advance - stay on current card
+      // Auto-advance to next card after marking "Know It"
+      advanceToNextCard();
     }
   };
 
   const handleSwipeUp = () => {
-    // Navigate to previous word
+    // Swipe UP = Navigate to NEXT word
+    advanceToNextCard();
+  };
+
+  const handleSwipeDown = () => {
+    // Swipe DOWN = Navigate to PREVIOUS word
     if (currentIndex > 0) {
       setCurrentIndex(prev => prev - 1);
     }
   };
 
-  const handleSwipeDown = () => {
-    // Navigate to next word
+  const advanceToNextCard = () => {
     if (currentIndex < terms.length - 1) {
       setCurrentIndex(prev => prev + 1);
     } else {
@@ -129,17 +135,17 @@ export const LearnScreen = () => {
             <View style={styles.webVerticalButtons}>
               <TouchableOpacity
                 style={[styles.webButton, styles.webButtonVertical, currentIndex === 0 && styles.webButtonDisabled]}
-                onPress={handleSwipeUp}
+                onPress={handleSwipeDown}
                 disabled={currentIndex === 0}
               >
-                <Text style={styles.webButtonText}>Previous (Up Arrow)</Text>
+                <Text style={styles.webButtonText}>Previous (Down Arrow)</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={[styles.webButton, styles.webButtonVertical, currentIndex === terms.length - 1 && styles.webButtonDisabled]}
-                onPress={handleSwipeDown}
+                onPress={handleSwipeUp}
                 disabled={currentIndex === terms.length - 1}
               >
-                <Text style={styles.webButtonText}>Next (Down Arrow)</Text>
+                <Text style={styles.webButtonText}>Next (Up Arrow)</Text>
               </TouchableOpacity>
             </View>
             <View style={styles.webHorizontalButtons}>
@@ -159,7 +165,7 @@ export const LearnScreen = () => {
           </View>
         ) : (
           <Text style={styles.footerText}>
-            Up/Down: Navigate | Left/Right: Answer
+            Up: Next | Down: Previous | Left/Right: Answer & Advance
           </Text>
         )}
       </View>
