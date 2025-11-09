@@ -1,6 +1,10 @@
 @echo off
 setlocal enabledelayedexpansion
 
+REM Set Android SDK paths
+set ANDROID_HOME=D:\Android\Sdk
+set PATH=%PATH%;D:\Android\Sdk\platform-tools;D:\Android\Sdk\emulator
+
 :menu
 cls
 echo ========================================
