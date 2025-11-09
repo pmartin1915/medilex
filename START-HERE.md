@@ -4,13 +4,31 @@
 
 ---
 
-## 🚀 To Run Your App
+## 🎉 NEW! Your App is Mobile-Ready (SDK 54)
+
+Your app has been upgraded and is now compatible with your iPhone!
+
+**📱 To Test on iPhone (EASIEST!):**
+
+```powershell
+.\start-mobile.bat
+```
+
+Then scan the QR code with your iPhone's Expo Go app!
+
+**📖 Read [MOBILE-READY.md](./MOBILE-READY.md) for complete mobile testing instructions.**
+
+---
+
+## 🚀 To Run on Android Emulator
 
 **One command does everything:**
 
 ```powershell
 .\quick-start.bat
 ```
+
+**Note:** Android emulator needs Expo Go updated to 54.0.6. See [MOBILE-READY.md](./MOBILE-READY.md) for instructions.
 
 That's it! This will:
 - ✅ Launch the Android emulator (if not running)
@@ -46,13 +64,15 @@ Open a **second PowerShell terminal** and run:
 
 | Script | What It Does | When to Use |
 |--------|-------------|-------------|
-| **`quick-start.bat`** | 🎯 **START HERE** - Does everything | Every time |
+| **`start-mobile.bat`** | 📱 **MOBILE TESTING** - For iPhone | Testing on real device |
+| **`quick-start.bat`** | 🎯 **ANDROID EMULATOR** - Full automation | Android testing |
+| `start-web.bat` | 🌐 Launch web version | Quick web testing |
 | `monitor-app.bat` | Shows errors in real-time | When debugging |
 | `check-app-status.bat` | Quick health check | Verify setup is working |
-| `start-android.bat` | Just start app (assumes emulator running) | Restart after crash |
 | `launch-emulator.bat` | Just launch emulator | Manual control |
 
-**99% of the time, just use `quick-start.bat`**
+**For iPhone testing: Use `start-mobile.bat` (NEW!)**
+**For Android emulator: Use `quick-start.bat`**
 
 ---
 
