@@ -144,27 +144,33 @@ function AppContent() {
 }
 
 export default function App() {
-  const [startupComplete, setStartupComplete] = useState(false);
+  // TEMPORARY: Bypass StartupLoader to diagnose black screen issue
+  // The StartupLoader will be re-enabled once we identify and fix the root cause
 
-  const handleStartupComplete = async (success: boolean) => {
-    try {
-      if (success) {
-        errorLogger.logInfo('Startup completed successfully', 'App');
-      } else {
-        errorLogger.logError('error', 'Startup failed - app may not work correctly', undefined, undefined, 'App');
-      }
-    } catch (error) {
-      console.log('Startup complete:', success);
-    }
-    setStartupComplete(true);
-  };
+  // const [startupComplete, setStartupComplete] = useState(false);
+
+  // const handleStartupComplete = async (success: boolean) => {
+  //   try {
+  //     if (success) {
+  //       errorLogger.logInfo('Startup completed successfully', 'App');
+  //     } else {
+  //       errorLogger.logError('error', 'Startup failed - app may not work correctly', undefined, undefined, 'App');
+  //     }
+  //   } catch (error) {
+  //     console.log('Startup complete:', success);
+  //   }
+  //   setStartupComplete(true);
+  // };
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <ErrorBoundary>
+        <AppContent />
+        {/* TEMPORARY: StartupLoader bypassed - will be re-enabled after fixing
         <StartupLoader onComplete={handleStartupComplete}>
           {startupComplete && <AppContent />}
         </StartupLoader>
+        */}
       </ErrorBoundary>
     </GestureHandlerRootView>
   );

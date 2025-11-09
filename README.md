@@ -40,16 +40,36 @@ A mobile flashcard application for learning medical terminology, built with Reac
 ```bash
 # Install dependencies
 npm install
-
-# Start the development server
-npm start
-
-# Run on iOS
-npm run ios
-
-# Run on Android
-npm run android
 ```
+
+### Running the App
+
+**IMPORTANT**: Always use the provided batch scripts (not `npm start` or `npx expo start` directly) to ensure Android SDK paths are configured correctly.
+
+#### Quick Start (Recommended - Does Everything)
+```bash
+.\quick-start.bat
+```
+This script:
+- Automatically launches the Android emulator if needed
+- Waits for emulator to fully boot
+- Sets Android SDK paths correctly
+- Starts Metro bundler
+- Auto-launches the app
+
+#### Manual Start (If Emulator Already Running)
+```bash
+.\start-android.bat
+```
+
+#### Simple Metro Start (Convenience Wrapper)
+```bash
+.\start.bat
+```
+This sets Android SDK paths and runs `npx expo start` with correct configuration.
+
+#### Why Not Use `npm start` Directly?
+Running `npx expo start` or `npm start` directly will fail with "The system cannot find the path specified" because the ANDROID_HOME environment variable won't be set. The batch scripts fix this automatically.
 
 ### First Run
 
