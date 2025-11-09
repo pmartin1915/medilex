@@ -2,19 +2,19 @@ import React, { useRef } from 'react';
 import { Animated, PanResponder, Dimensions, StyleSheet } from 'react-native';
 import * as Haptics from 'expo-haptics';
 
-const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
-const VERTICAL_SWIPE_THRESHOLD = 80; // Increased for more intentional swipes
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
+const HORIZONTAL_SWIPE_THRESHOLD = 100; // Horizontal swipes feel better with slightly higher threshold
 
 interface Props {
   children: React.ReactNode;
-  onSwipeUp?: () => void;
-  onSwipeDown?: () => void;
+  onSwipeLeft?: () => void;  // Swipe left → Next card
+  onSwipeRight?: () => void; // Swipe right → Previous card
 }
 
 export const SwipeableCard: React.FC<Props> = ({
   children,
-  onSwipeUp,
-  onSwipeDown,
+  onSwipeLeft,
+  onSwipeRight,
 }) => {
   const position = useRef(new Animated.ValueXY()).current;
 
@@ -22,51 +22,39 @@ export const SwipeableCard: React.FC<Props> = ({
     PanResponder.create({
       onStartShouldSetPanResponder: () => true,
       onPanResponderMove: (_, gesture) => {
-        // Only allow vertical movement for the rolling effect
-        position.setValue({ x: 0, y: gesture.dy });
+        // Only allow horizontal movement
+        position.setValue({ x: gesture.dx, y: 0 });
       },
       onPanResponderRelease: (_, gesture) => {
-        // Handle vertical swipes only
-        if (gesture.dy < -VERTICAL_SWIPE_THRESHOLD && onSwipeUp) {
-          // Trigger haptic feedback for successful swipe
+        // Handle horizontal swipes only
+        if (gesture.dx < -HORIZONTAL_SWIPE_THRESHOLD && onSwipeLeft) {
+          // Swipe LEFT → Next card
           Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
 
-          // Swipe up - slide card up smoothly (rolling effect)
+          // Slide card left and reset (simple, reliable animation)
           Animated.timing(position, {
-            toValue: { x: 0, y: -SCREEN_HEIGHT },
+            toValue: { x: -SCREEN_WIDTH, y: 0 },
             duration: 250,
             useNativeDriver: false,
           }).start(() => {
-            // Change card first, then animate new card in from bottom
-            onSwipeUp();
-            position.setValue({ x: 0, y: SCREEN_HEIGHT });
-            Animated.timing(position, {
-              toValue: { x: 0, y: 0 },
-              duration: 250,
-              useNativeDriver: false,
-            }).start();
+            position.setValue({ x: 0, y: 0 });
+            onSwipeLeft();
           });
-        } else if (gesture.dy > VERTICAL_SWIPE_THRESHOLD && onSwipeDown) {
-          // Trigger haptic feedback for successful swipe
+        } else if (gesture.dx > HORIZONTAL_SWIPE_THRESHOLD && onSwipeRight) {
+          // Swipe RIGHT → Previous card
           Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
 
-          // Swipe down - slide card down, then bring previous card from top
+          // Slide card right and reset (simple, reliable animation)
           Animated.timing(position, {
-            toValue: { x: 0, y: SCREEN_HEIGHT },
+            toValue: { x: SCREEN_WIDTH, y: 0 },
             duration: 250,
             useNativeDriver: false,
           }).start(() => {
-            // Change card first, then animate new card in from top
-            onSwipeDown();
-            position.setValue({ x: 0, y: -SCREEN_HEIGHT });
-            Animated.timing(position, {
-              toValue: { x: 0, y: 0 },
-              duration: 250,
-              useNativeDriver: false,
-            }).start();
+            position.setValue({ x: 0, y: 0 });
+            onSwipeRight();
           });
         } else {
-          // Snap back with spring animation for smooth rolling feel
+          // Snap back with spring animation
           Animated.spring(position, {
             toValue: { x: 0, y: 0 },
             friction: 7,
@@ -84,7 +72,7 @@ export const SwipeableCard: React.FC<Props> = ({
         styles.card,
         {
           transform: [
-            { translateY: position.y },
+            { translateX: position.x },
           ],
         },
       ]}
@@ -97,7 +85,8 @@ export const SwipeableCard: React.FC<Props> = ({
 
 const styles = StyleSheet.create({
   card: {
-    width: SCREEN_WIDTH - 90, // More width for card content, buttons are smaller now
-    alignSelf: 'center',
+    width: SCREEN_WIDTH - 72, // Expanded width: 48px buttons + 12px margin + 12px safety = 72px total
+    alignSelf: 'flex-start', // Align to left edge
+    marginLeft: 12, // Small left margin
   },
 });

@@ -77,15 +77,15 @@ export const LearnScreen = () => {
     }
   };
 
-  // Swipe Up - Navigate to next card (no evaluation)
-  const handleSwipeUp = () => {
+  // Swipe Left - Navigate to next card (no evaluation)
+  const handleSwipeLeft = () => {
     if (currentIndex < terms.length - 1) {
       setCurrentIndex(prev => prev + 1);
     }
   };
 
-  // Swipe Down - Navigate to previous card
-  const handleSwipeDown = () => {
+  // Swipe Right - Navigate to previous card
+  const handleSwipeRight = () => {
     if (currentIndex > 0) {
       setCurrentIndex(prev => prev - 1);
     }
@@ -147,8 +147,8 @@ export const LearnScreen = () => {
 
       <View style={styles.contentContainer}>
         <SwipeableCard
-          onSwipeUp={handleSwipeUp}
-          onSwipeDown={handleSwipeDown}
+          onSwipeLeft={handleSwipeLeft}
+          onSwipeRight={handleSwipeRight}
         >
           <MedicalTermCard
             term={currentTerm}
@@ -174,7 +174,7 @@ export const LearnScreen = () => {
 
       <View style={styles.footer}>
         <Text style={styles.footerText}>
-          Swipe ↑ Next  •  Swipe ↓ Previous
+          Swipe ← Next  •  Swipe → Previous
         </Text>
       </View>
     </View>
