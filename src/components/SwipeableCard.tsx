@@ -78,7 +78,7 @@ export const SwipeableCard: React.FC<Props> = ({
 
 const styles = StyleSheet.create({
   card: {
-    width: SCREEN_WIDTH - 120, // Reduced to make room for action buttons on the right
+    width: SCREEN_WIDTH - 90, // More width for card content, buttons are smaller now
     alignSelf: 'center',
   },
 });

@@ -32,7 +32,7 @@ export const ActionButtons: React.FC<Props> = ({
         accessibilityLabel="Know It"
         accessibilityRole="button"
       >
-        <ThumbsUp size={28} color="#FFFFFF" fill="#FFFFFF" />
+        <ThumbsUp size={24} color="#FFFFFF" fill="#FFFFFF" />
       </TouchableOpacity>
 
       {/* Don't Know - Red */}
@@ -43,7 +43,7 @@ export const ActionButtons: React.FC<Props> = ({
         accessibilityLabel="Don't Know"
         accessibilityRole="button"
       >
-        <X size={28} color="#FFFFFF" strokeWidth={3} />
+        <X size={24} color="#FFFFFF" strokeWidth={3} />
       </TouchableOpacity>
 
       {/* Favorite - Pink/Red */}
@@ -55,7 +55,7 @@ export const ActionButtons: React.FC<Props> = ({
         accessibilityRole="button"
       >
         <Heart
-          size={28}
+          size={24}
           color="#FFFFFF"
           fill={isFavorited ? "#FFFFFF" : "none"}
           strokeWidth={isFavorited ? 0 : 2}
@@ -71,7 +71,7 @@ export const ActionButtons: React.FC<Props> = ({
         accessibilityRole="button"
       >
         <Bookmark
-          size={28}
+          size={24}
           color="#FFFFFF"
           fill={isBookmarked ? "#FFFFFF" : "none"}
           strokeWidth={isBookmarked ? 0 : 2}
@@ -86,7 +86,7 @@ export const ActionButtons: React.FC<Props> = ({
         accessibilityLabel="Share"
         accessibilityRole="button"
       >
-        <Share2 size={28} color="#FFFFFF" />
+        <Share2 size={24} color="#FFFFFF" />
       </TouchableOpacity>
     </View>
   );
@@ -95,16 +95,16 @@ export const ActionButtons: React.FC<Props> = ({
 const styles = StyleSheet.create({
   container: {
     position: 'absolute',
-    right: 16,
+    right: 12,
     top: '50%',
-    transform: [{ translateY: -140 }], // Center vertically (5 buttons * 56px + 4 gaps * 16px = 280px / 2)
+    transform: [{ translateY: -120 }], // Center vertically (5 buttons * 48px + 4 gaps * 12px = 240 + 48 = 288px / 2 = 144, rounded to 120 for better centering)
     zIndex: 10,
-    gap: 16,
+    gap: 12,
   },
   button: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
+    width: 48,
+    height: 48,
+    borderRadius: 24,
     justifyContent: 'center',
     alignItems: 'center',
     ...theme.shadows.card,
