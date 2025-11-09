@@ -5,6 +5,39 @@
 
 ---
 
+## 🤖 FOR NEXT AI SESSION - START HERE!
+
+### Quick Start Commands
+```powershell
+cd D:\Medilex\HealthcareVocabApp
+
+# 1. Sync with git (pull latest + push changes)
+.\sync-with-git.bat
+
+# 2. Test on web
+.\test-web.bat
+```
+
+### What Perry Will Provide
+- **A photo showing exactly what UI changes he wants**
+- Read this entire HANDOFF.md first to understand current state
+- Look at the photo to understand the requested changes
+- Ask clarifying questions if needed before coding
+
+### Current State Summary
+- **Swipe gestures:** Horizontal (LEFT=next, RIGHT=previous)
+- **Action buttons:** 5 buttons on right side with haptics
+- **Card layout:** Left-aligned, width = SCREEN_WIDTH-72
+- **Animation:** Simple single slide (no double-animation)
+- **All changes committed and pushed to git**
+
+### Automation Scripts Available
+- `sync-with-git.bat` - Auto pull/push with conflict resolution
+- `test-web.bat` - Auto web testing with Metro management
+- Both scripts are SAFE (won't kill Claude Code process!)
+
+---
+
 ## ✅ What Was Accomplished (Latest Session)
 
 ### MAJOR UPDATE: Switched to Horizontal Swipes
@@ -66,12 +99,31 @@
 
 ---
 
-## 🔄 To Get Latest Code
+## 🔄 To Get Latest Code (AUTOMATED!)
 
+**Option 1: Automated Git Sync (RECOMMENDED)**
+```powershell
+cd D:\Medilex\HealthcareVocabApp
+.\sync-with-git.bat
+```
+This script will:
+- ✓ Pull latest code from remote
+- ✓ Auto-resolve merge conflicts (favors remote)
+- ✓ Push any local changes
+- ✓ Show current git status
+- **No manual git commands needed!**
+
+**Option 2: Manual Git Commands**
 ```powershell
 cd D:\Medilex\HealthcareVocabApp
 git pull origin claude/healthcare-vocabulary-app-011CUxCkrQVpukro5FXMKfVQ
+# If conflicts: git checkout --theirs . && git add . && git commit -m "Merge"
+git push origin claude/healthcare-vocabulary-app-011CUxCkrQVpukro5FXMKfVQ
 ```
+
+---
+
+## 🧪 To Test the App (AUTOMATED!)
 
 **Quick Web Test (Recommended First!):**
 ```powershell
