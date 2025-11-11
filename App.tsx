@@ -5,6 +5,8 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import type { NavigationContainerRef } from '@react-navigation/native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Home, BookOpen, Library, TrendingUp, Bug } from 'lucide-react-native';
+
+// Note: react-native-screens is automatically enabled in Expo Go
 import ErrorBoundary from './src/components/ErrorBoundary';
 import { StartupLoader } from './src/components/StartupLoader';
 import { ErrorToast } from './src/components/ErrorToast';
