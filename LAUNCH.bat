@@ -62,11 +62,17 @@ echo.
 echo 1. Make sure Expo Go is installed on your iPhone
 echo 2. Ensure iPhone and PC are on same WiFi
 echo 3. Scan the QR code that appears
+echo 4. Press Ctrl+C in Metro window when done
 echo.
 pause
 taskkill /F /IM node.exe >nul 2>&1
 timeout /t 1 /nobreak >nul
-npx expo start --clear
+start "Metro" cmd /k "npx expo start --clear"
+echo.
+echo Metro started! Scan QR code with Expo Go app.
+echo Close Metro window when done, then press any key...
+echo.
+pause
 goto MENU
 
 :START_ANDROID
@@ -97,7 +103,12 @@ timeout /t 1 /nobreak >nul
 echo.
 echo Starting Metro... Press 'a' when QR code appears.
 echo.
-npx expo start --clear
+start "Metro" cmd /k "npx expo start --clear"
+echo.
+echo Metro started! Press 'a' in Metro window to launch on Android.
+echo Close Metro window when done, then press any key...
+echo.
+pause
 goto MENU
 
 :SHOW_ERRORS
@@ -207,7 +218,7 @@ echo                  Live Error Monitor
 echo ════════════════════════════════════════════════════════════════
 echo.
 echo Monitoring Android logcat for errors...
-echo Press Ctrl+C to stop and return to menu
+echo Press Ctrl+C to stop, then close window to return to menu
 echo.
 echo ════════════════════════════════════════════════════════════════
 echo.
@@ -224,7 +235,12 @@ if errorlevel 1 (
 )
 
 adb logcat -c
-adb logcat -v time | findstr /I "VOCAB_APP_ERROR ERROR Exception FATAL ReactNativeJS"
+start "Monitor" cmd /k "adb logcat -v time | findstr /I VOCAB_APP_ERROR ERROR Exception FATAL ReactNativeJS"
+echo.
+echo Monitor started in new window.
+echo Close monitor window when done, then press any key...
+echo.
+pause
 goto MENU
 
 :CLEAR_CACHE
@@ -346,7 +362,11 @@ echo.
 echo Full reset complete!
 echo.
 timeout /t 2 /nobreak >nul
-npx expo start --clear
+start "Metro" cmd /k "npx expo start --clear"
+echo.
+echo Metro started! Close Metro window when done.
+echo.
+pause
 goto MENU
 
 :EXIT
