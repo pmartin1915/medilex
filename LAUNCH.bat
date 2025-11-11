@@ -46,7 +46,7 @@ echo Starting app on WEB...
 echo.
 taskkill /F /IM node.exe >nul 2>&1
 timeout /t 1 /nobreak >nul
-start "Metro" cmd /k "npx expo start --clear"
+start "Metro" cmd /k "cd /d %~dp0 && npx expo start --clear"
 timeout /t 8 /nobreak >nul
 start http://localhost:8081
 echo.
@@ -67,7 +67,7 @@ echo.
 pause
 taskkill /F /IM node.exe >nul 2>&1
 timeout /t 1 /nobreak >nul
-start "Metro" cmd /k "npx expo start --clear"
+start "Metro" cmd /k "cd /d %~dp0 && npx expo start --clear"
 echo.
 echo Metro started! Scan QR code with Expo Go app.
 echo Close Metro window when done, then press any key...
@@ -103,7 +103,7 @@ timeout /t 1 /nobreak >nul
 echo.
 echo Starting Metro... Press 'a' when QR code appears.
 echo.
-start "Metro" cmd /k "npx expo start --clear"
+start "Metro" cmd /k "cd /d %~dp0 && npx expo start --clear"
 echo.
 echo Metro started! Press 'a' in Metro window to launch on Android.
 echo Close Metro window when done, then press any key...
@@ -265,7 +265,7 @@ echo.
 echo Cache cleared! Starting fresh...
 echo.
 timeout /t 2 /nobreak >nul
-start "Metro" cmd /k "npx expo start --clear"
+start "Metro" cmd /k "cd /d %~dp0 && npx expo start --clear"
 timeout /t 5 /nobreak >nul
 echo.
 echo Metro restarted with clean cache
@@ -362,7 +362,7 @@ echo.
 echo Full reset complete!
 echo.
 timeout /t 2 /nobreak >nul
-start "Metro" cmd /k "npx expo start --clear"
+start "Metro" cmd /k "cd /d %~dp0 && npx expo start --clear"
 echo.
 echo Metro started! Close Metro window when done.
 echo.
