@@ -6,7 +6,14 @@ import type { NavigationContainerRef } from '@react-navigation/native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Home, BookOpen, Library, TrendingUp, Bug } from 'lucide-react-native';
 
-// Note: react-native-screens is automatically enabled in Expo Go
+// Enable react-native-screens
+try {
+  const { enableScreens } = require('react-native-screens');
+  enableScreens(true);
+} catch (e) {
+  console.log('react-native-screens not available');
+}
+
 import ErrorBoundary from './src/components/ErrorBoundary';
 import { StartupLoader } from './src/components/StartupLoader';
 import { ErrorToast } from './src/components/ErrorToast';
