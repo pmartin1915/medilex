@@ -1,6 +1,13 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
 const ERROR_LOG_KEY = '@vocab_app:error_logs';
+
+// Lazy import AsyncStorage to avoid accessing it before React Native is ready
+let AsyncStorage: any = null;
+const getAsyncStorage = async () => {
+  if (!AsyncStorage) {
+    AsyncStorage = (await import('@react-native-async-storage/async-storage')).default;
+  }
+  return AsyncStorage;
+};
 const MAX_LOGS = 50;
 
 export interface ErrorLog {
@@ -21,7 +28,8 @@ class ErrorLogger {
     if (this.initialized) return;
 
     try {
-      const savedLogs = await AsyncStorage.getItem(ERROR_LOG_KEY);
+      const storage = await getAsyncStorage();
+      const savedLogs = await storage.getItem(ERROR_LOG_KEY);
       if (savedLogs) {
         this.logs = JSON.parse(savedLogs);
       }
@@ -132,7 +140,8 @@ class ErrorLogger {
 
   private async saveLogs() {
     try {
-      await AsyncStorage.setItem(ERROR_LOG_KEY, JSON.stringify(this.logs));
+      const storage = await getAsyncStorage();
+      await storage.setItem(ERROR_LOG_KEY, JSON.stringify(this.logs));
     } catch (error) {
       // Can't log this error without creating infinite loop
       console.warn('[ErrorLogger] Failed to save logs');
@@ -146,7 +155,8 @@ class ErrorLogger {
   async clearLogs() {
     this.logs = [];
     try {
-      await AsyncStorage.removeItem(ERROR_LOG_KEY);
+      const storage = await getAsyncStorage();
+      await storage.removeItem(ERROR_LOG_KEY);
       console.log('[ErrorLogger] Logs cleared');
     } catch (error) {
       console.error('[ErrorLogger] Failed to clear logs:', error);
