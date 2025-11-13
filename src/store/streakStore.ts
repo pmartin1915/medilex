@@ -1,6 +1,14 @@
 import { create } from 'zustand';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { STORAGE_KEYS } from '../data/sampleTerms';
+
+// Lazy load AsyncStorage to prevent runtime error
+let AsyncStorage: any = null;
+const getAsyncStorage = async () => {
+  if (!AsyncStorage) {
+    AsyncStorage = (await import('@react-native-async-storage/async-storage')).default;
+  }
+  return AsyncStorage;
+};
 
 interface StreakState {
   currentStreak: number;
@@ -67,7 +75,8 @@ export const useStreakStore = create<StreakState>((set, get) => ({
   
   loadStreak: async () => {
     try {
-      const streakJson = await AsyncStorage.getItem(STORAGE_KEYS.STREAK_DATA);
+      const storage = await getAsyncStorage();
+      const streakJson = await storage.getItem(STORAGE_KEYS.STREAK_DATA);
       if (streakJson) {
         const data = JSON.parse(streakJson);
         set(data);
@@ -96,7 +105,8 @@ export const useStreakStore = create<StreakState>((set, get) => ({
         weekProgress,
       };
       
-      await AsyncStorage.setItem(
+      const storage = await getAsyncStorage();
+      await storage.setItem(
         STORAGE_KEYS.STREAK_DATA,
         JSON.stringify(streakData)
       );

@@ -1,8 +1,16 @@
 import { create } from 'zustand';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { MedicalTerm, UserProgress } from '../types';
 import { SAMPLE_TERMS, STORAGE_KEYS } from '../data/sampleTerms';
 import { dataValidator } from '../utils/dataValidator';
+
+// Lazy load AsyncStorage to prevent runtime error
+let AsyncStorage: any = null;
+const getAsyncStorage = async () => {
+  if (!AsyncStorage) {
+    AsyncStorage = (await import('@react-native-async-storage/async-storage')).default;
+  }
+  return AsyncStorage;
+};
 
 interface WordState {
   terms: MedicalTerm[];
@@ -61,7 +69,8 @@ export const useWordStore = create<WordState>((set, get) => ({
       let userProgress = {};
 
       try {
-        const termsJson = await AsyncStorage.getItem(STORAGE_KEYS.TERMS);
+        const storage = await getAsyncStorage();
+        const termsJson = await storage.getItem(STORAGE_KEYS.TERMS);
         
         if (termsJson) {
           // Validate JSON before parsing
@@ -70,12 +79,12 @@ export const useWordStore = create<WordState>((set, get) => ({
           } catch (parseError) {
             console.error('Failed to parse terms JSON, using defaults:', parseError);
             // Reset to default terms if corrupted
-            await AsyncStorage.setItem(STORAGE_KEYS.TERMS, JSON.stringify(SAMPLE_TERMS));
+            await storage.setItem(STORAGE_KEYS.TERMS, JSON.stringify(SAMPLE_TERMS));
             terms = SAMPLE_TERMS;
           }
         } else {
           // First time load - save default terms
-          await AsyncStorage.setItem(STORAGE_KEYS.TERMS, JSON.stringify(SAMPLE_TERMS));
+          await storage.setItem(STORAGE_KEYS.TERMS, JSON.stringify(SAMPLE_TERMS));
         }
 
         // Validate terms structure
@@ -85,7 +94,7 @@ export const useWordStore = create<WordState>((set, get) => ({
         // Check if data is usable
         if (!dataValidator.isDataUsable(terms)) {
           console.error('Terms validation failed, resetting to defaults');
-          await AsyncStorage.setItem(STORAGE_KEYS.TERMS, JSON.stringify(SAMPLE_TERMS));
+          await storage.setItem(STORAGE_KEYS.TERMS, JSON.stringify(SAMPLE_TERMS));
           terms = SAMPLE_TERMS;
           set({
             error: 'Data was corrupted and has been reset. Check Debug tab for details.',
@@ -110,14 +119,15 @@ export const useWordStore = create<WordState>((set, get) => ({
 
       // Load user progress
       try {
-        const progressJson = await AsyncStorage.getItem(STORAGE_KEYS.USER_PROGRESS);
+        const storage2 = await getAsyncStorage();
+        const progressJson = await storage2.getItem(STORAGE_KEYS.USER_PROGRESS);
         if (progressJson) {
           try {
             userProgress = JSON.parse(progressJson);
           } catch (parseError) {
             console.error('Failed to parse progress JSON, resetting:', parseError);
             userProgress = {};
-            await AsyncStorage.setItem(STORAGE_KEYS.USER_PROGRESS, JSON.stringify({}));
+            await storage2.setItem(STORAGE_KEYS.USER_PROGRESS, JSON.stringify({}));
           }
         }
       } catch (progressError) {
@@ -170,7 +180,8 @@ export const useWordStore = create<WordState>((set, get) => ({
     
     // Save to storage asynchronously
     try {
-      await AsyncStorage.setItem(
+      const storage = await getAsyncStorage();
+      await storage.setItem(
         STORAGE_KEYS.USER_PROGRESS,
         JSON.stringify(newProgress)
       );
@@ -180,9 +191,10 @@ export const useWordStore = create<WordState>((set, get) => ({
       if (error?.message?.includes('quota') || error?.message?.includes('QuotaExceededError')) {
         // Try to clear old error logs to free space
         try {
-          await AsyncStorage.removeItem('@vocab_app:error_logs');
+          const storage = await getAsyncStorage();
+          await storage.removeItem('@vocab_app:error_logs');
           // Retry save
-          await AsyncStorage.setItem(
+          await storage.setItem(
             STORAGE_KEYS.USER_PROGRESS,
             JSON.stringify(newProgress)
           );
@@ -212,7 +224,8 @@ export const useWordStore = create<WordState>((set, get) => ({
     
     // Save to storage asynchronously
     try {
-      await AsyncStorage.setItem(
+      const storage = await getAsyncStorage();
+      await storage.setItem(
         STORAGE_KEYS.USER_PROGRESS,
         JSON.stringify(newProgress)
       );
@@ -240,7 +253,8 @@ export const useWordStore = create<WordState>((set, get) => ({
     
     // Save to storage asynchronously
     try {
-      await AsyncStorage.setItem(
+      const storage = await getAsyncStorage();
+      await storage.setItem(
         STORAGE_KEYS.USER_PROGRESS,
         JSON.stringify(newProgress)
       );

@@ -1,21 +1,13 @@
 console.log('[INIT] 1. Starting app registration...');
 
-// Check if AsyncStorage is available
 try {
-  const AsyncStorage = require('@react-native-async-storage/async-storage').default;
-  console.log('[INIT] 2. AsyncStorage available:', typeof AsyncStorage);
-} catch (e) {
-  console.error('[INIT] 2. AsyncStorage NOT available:', e);
-}
-
-try {
-  console.log('[INIT] 3. Importing registerRootComponent...');
+  console.log('[INIT] 2. Importing registerRootComponent...');
   const { registerRootComponent } = require('expo');
   
-  console.log('[INIT] 4. Importing App component...');
+  console.log('[INIT] 3. Importing App component...');
   const App = require('./App').default;
   
-  console.log('[INIT] 5. Registering root component...');
+  console.log('[INIT] 4. Registering root component...);
   registerRootComponent(App);
   
   console.log('[INIT] ✅ App registered successfully!');
