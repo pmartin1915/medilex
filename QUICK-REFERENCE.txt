@@ -1,0 +1,55 @@
+╔════════════════════════════════════════════════════════════╗
+║         HEALTHCARE VOCAB APP - QUICK REFERENCE            ║
+╚════════════════════════════════════════════════════════════╝
+
+🚀 TO START THE APP
+───────────────────
+  LAUNCH.bat → Option 1 → Scan QR with phone
+
+
+🔧 TO FIX iOS ERROR
+───────────────────
+  LAUNCH.bat → Option 3 (Nuclear Clean)
+
+
+💾 TO SAVE YOUR WORK (Git)
+──────────────────────────
+  LAUNCH.bat → Option 4 → Option 5 (Full Sync)
+  Enter commit message → Done!
+
+
+📱 TESTING
+──────────
+  iOS:     Expo Go app → Scan QR
+  Android: Expo Go app → Scan QR  
+  Web:     LAUNCH.bat → Option 2
+
+
+🆘 IF EVERYTHING BREAKS
+───────────────────────
+  GIT-HELPER.bat → Option 8 (Emergency Reset)
+  Then: CLEAN-START.bat
+
+
+📂 KEY FILES
+────────────
+  LAUNCH.bat       - Main launcher
+  CLEAN-START.bat  - Fix iOS errors
+  GIT-HELPER.bat   - Easy git commands
+  HOW-TO-FIX-IOS.md - Full guide
+
+
+✅ CURRENT STATUS
+─────────────────
+  ✓ react-native-screens removed
+  ✓ Package.json clean
+  ✓ Git synced
+  ✓ Ready to test!
+
+
+🎯 NEXT STEP
+────────────
+  Run: LAUNCH.bat → Option 3
+  This will clear all caches and fix the iOS error!
+
+╚════════════════════════════════════════════════════════════╝
