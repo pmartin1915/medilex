@@ -1,46 +1,109 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   View,
   Text,
   StyleSheet,
   ScrollView,
+  TouchableOpacity,
 } from 'react-native';
 import { theme } from '../theme/theme';
 import { useWordStore } from '../store/wordStore';
 import { useStreakStore } from '../store/streakStore';
-import { BookOpen, Target, Award, TrendingUp } from 'lucide-react-native';
+import { BookOpen, Target, Award, TrendingUp, Heart, Calendar } from 'lucide-react-native';
+import { StatCard } from '../components/StatCard';
+import { MasteryChart } from '../components/MasteryChart';
+import { StudyHeatmap } from '../components/StudyHeatmap';
+import { CategoryCard } from '../components/CategoryCard';
 
 export const ProgressScreen = () => {
   const terms = useWordStore(state => state.terms);
   const userProgress = useWordStore(state => state.userProgress);
   const currentStreak = useStreakStore(state => state.currentStreak);
   const longestStreak = useStreakStore(state => state.longestStreak);
+  const studyDates = useStreakStore(state => state.studyDates);
 
-  const totalStudied = Object.values(userProgress).reduce(
-    (sum, p) => sum + p.timesStudied,
-    0
-  );
+  // Calculate overall stats
+  const stats = useMemo(() => {
+    const totalStudied = Object.values(userProgress).reduce(
+      (sum, p) => sum + p.timesStudied,
+      0
+    );
 
-  const totalCorrect = Object.values(userProgress).reduce(
-    (sum, p) => sum + p.timesCorrect,
-    0
-  );
+    const totalCorrect = Object.values(userProgress).reduce(
+      (sum, p) => sum + p.timesCorrect,
+      0
+    );
 
-  const accuracy = totalStudied > 0
-    ? Math.round((totalCorrect / totalStudied) * 100)
-    : 0;
+    const accuracy = totalStudied > 0
+      ? Math.round((totalCorrect / totalStudied) * 100)
+      : 0;
 
-  const masteredTerms = Object.values(userProgress).filter(
-    p => p.masteryLevel === 'mastered'
-  ).length;
+    const favoritedTerms = Object.values(userProgress).filter(
+      p => p.isFavorited
+    ).length;
 
-  const StatCard = ({ icon: Icon, value, label, color }: any) => (
-    <View style={styles.statCard}>
-      <Icon size={32} color={color} />
-      <Text style={[styles.statValue, { color }]}>{value}</Text>
-      <Text style={styles.statLabel}>{label}</Text>
-    </View>
-  );
+    return { totalStudied, totalCorrect, accuracy, favoritedTerms };
+  }, [userProgress]);
+
+  // Calculate mastery distribution
+  const masteryStats = useMemo(() => {
+    const counts = {
+      new: 0,
+      learning: 0,
+      familiar: 0,
+      mastered: 0,
+    };
+
+    terms.forEach(term => {
+      const progress = userProgress[term.id];
+      const level = progress?.masteryLevel || 'new';
+      counts[level]++;
+    });
+
+    return counts;
+  }, [terms, userProgress]);
+
+  // Calculate category performance
+  const categoryStats = useMemo(() => {
+    const categories = new Map<string, {
+      total: number;
+      studied: number;
+      correct: number;
+      mastered: number;
+    }>();
+
+    terms.forEach(term => {
+      if (!categories.has(term.category)) {
+        categories.set(term.category, {
+          total: 0,
+          studied: 0,
+          correct: 0,
+          mastered: 0,
+        });
+      }
+
+      const cat = categories.get(term.category)!;
+      cat.total++;
+
+      const progress = userProgress[term.id];
+      if (progress) {
+        if (progress.timesStudied > 0) {
+          cat.studied++;
+          cat.correct += progress.timesCorrect;
+        }
+        if (progress.masteryLevel === 'mastered') {
+          cat.mastered++;
+        }
+      }
+    });
+
+    return Array.from(categories.entries()).map(([category, data]) => ({
+      category,
+      totalTerms: data.total,
+      masteredTerms: data.mastered,
+      accuracy: data.studied > 0 ? Math.round((data.correct / data.studied) * 100) : 0,
+    }));
+  }, [terms, userProgress]);
 
   return (
     <ScrollView style={styles.container}>
@@ -49,16 +112,17 @@ export const ProgressScreen = () => {
         <Text style={styles.subtitle}>Keep up the great work!</Text>
       </View>
 
+      {/* Main Stats Grid */}
       <View style={styles.statsGrid}>
         <StatCard
           icon={BookOpen}
-          value={totalStudied}
-          label="Terms Studied"
+          value={stats.totalStudied}
+          label="Reviews"
           color={theme.colors.accent}
         />
         <StatCard
           icon={Target}
-          value={`${accuracy}%`}
+          value={`${stats.accuracy}%`}
           label="Accuracy"
           color={theme.colors.success}
         />
@@ -67,7 +131,7 @@ export const ProgressScreen = () => {
       <View style={styles.statsGrid}>
         <StatCard
           icon={Award}
-          value={masteredTerms}
+          value={masteryStats.mastered}
           label="Mastered"
           color={theme.colors.clinical}
         />
@@ -79,8 +143,54 @@ export const ProgressScreen = () => {
         />
       </View>
 
+      <View style={styles.statsGrid}>
+        <StatCard
+          icon={Heart}
+          value={stats.favoritedTerms}
+          label="Favorites"
+          color={theme.colors.favorite}
+        />
+        <StatCard
+          icon={Calendar}
+          value={studyDates.length}
+          label="Study Days"
+          color={theme.colors.info}
+        />
+      </View>
+
+      {/* Mastery Distribution Chart */}
+      <View style={styles.section}>
+        <MasteryChart
+          newCount={masteryStats.new}
+          learningCount={masteryStats.learning}
+          familiarCount={masteryStats.familiar}
+          masteredCount={masteryStats.mastered}
+        />
+      </View>
+
+      {/* Study Activity Heatmap */}
+      <View style={styles.section}>
+        <StudyHeatmap studyDates={studyDates} />
+      </View>
+
+      {/* Category Performance */}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Performance by Category</Text>
+        {categoryStats.map((cat) => (
+          <CategoryCard
+            key={cat.category}
+            category={cat.category}
+            totalTerms={cat.totalTerms}
+            masteredTerms={cat.masteredTerms}
+            accuracy={cat.accuracy}
+          />
+        ))}
+      </View>
+
+      {/* Achievements */}
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Achievements</Text>
+
         <View style={styles.achievementCard}>
           <Text style={styles.achievementIcon}>🔥</Text>
           <View style={styles.achievementContent}>
@@ -88,7 +198,39 @@ export const ProgressScreen = () => {
             <Text style={styles.achievementValue}>{longestStreak} days</Text>
           </View>
         </View>
+
+        {stats.totalStudied >= 100 && (
+          <View style={styles.achievementCard}>
+            <Text style={styles.achievementIcon}>🎯</Text>
+            <View style={styles.achievementContent}>
+              <Text style={styles.achievementTitle}>Century Scholar</Text>
+              <Text style={styles.achievementValue}>100+ reviews</Text>
+            </View>
+          </View>
+        )}
+
+        {masteryStats.mastered >= 10 && (
+          <View style={styles.achievementCard}>
+            <Text style={styles.achievementIcon}>⭐</Text>
+            <View style={styles.achievementContent}>
+              <Text style={styles.achievementTitle}>Master of Terms</Text>
+              <Text style={styles.achievementValue}>{masteryStats.mastered} mastered</Text>
+            </View>
+          </View>
+        )}
+
+        {currentStreak >= 7 && (
+          <View style={styles.achievementCard}>
+            <Text style={styles.achievementIcon}>💪</Text>
+            <View style={styles.achievementContent}>
+              <Text style={styles.achievementTitle}>Week Warrior</Text>
+              <Text style={styles.achievementValue}>7+ day streak</Text>
+            </View>
+          </View>
+        )}
       </View>
+
+      <View style={{ height: 40 }} />
     </ScrollView>
   );
 };
@@ -118,57 +260,40 @@ const styles = StyleSheet.create({
     gap: 12,
     marginBottom: 12,
   },
-  statCard: {
-    flex: 1,
-    backgroundColor: theme.colors.cardBackground,
-    borderRadius: theme.borderRadius.md,
-    padding: 20,
-    alignItems: 'center',
-    ...theme.shadows.sm,
-  },
-  statValue: {
-    fontSize: 28,
-    fontWeight: '700',
-    marginTop: 8,
-  },
-  statLabel: {
-    fontSize: 12,
-    color: theme.colors.textSecondary,
-    marginTop: 4,
-    textAlign: 'center',
-  },
   section: {
-    padding: 20,
+    paddingHorizontal: 20,
+    paddingVertical: 8,
   },
   sectionTitle: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: '600',
     color: theme.colors.textPrimary,
-    marginBottom: 16,
+    marginBottom: 12,
   },
   achievementCard: {
     backgroundColor: theme.colors.cardBackground,
     borderRadius: theme.borderRadius.md,
-    padding: 20,
+    padding: 16,
     flexDirection: 'row',
     alignItems: 'center',
+    marginBottom: 12,
     ...theme.shadows.sm,
   },
   achievementIcon: {
-    fontSize: 48,
+    fontSize: 40,
     marginRight: 16,
   },
   achievementContent: {
     flex: 1,
   },
   achievementTitle: {
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: '600',
     color: theme.colors.textPrimary,
     marginBottom: 4,
   },
   achievementValue: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: '700',
     color: theme.colors.accent,
   },

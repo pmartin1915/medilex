@@ -1,0 +1,14 @@
+Starting project at D:\Medilex\HealthcareVocabApp
+Starting Metro Bundler
+Waiting on http://localhost:8081
+Logs for your project will appear below.
+[10:04:39 AM] GET /index.ts.bundle?platform=web&dev=true&hot=false&lazy=true&transform.engine=hermes&transform.routerRoot=app&unstable_transformProfile=hermes-stable
+Web Bundled 2361ms index.ts (2342 modules)
+ LOG  [web] Logs will appear in the browser console
+[10:04:43 AM] GET /favicon.ico
+[10:04:49 AM] GET /index.ts.bundle?platform=web&dev=true&hot=false&lazy=true&transform.engine=hermes&transform.routerRoot=app&unstable_transformProfile=hermes-stable
+Web .\index.ts ░░░░░░░░░░░░░░░░  0.0% (0/1)
+Web Bundled 106ms index.ts (1 module)
+ LOG  [web] Logs will appear in the browser console
+[10:08:20 AM] GET /assets/./assets/icon.png
+^C^C

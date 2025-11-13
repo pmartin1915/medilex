@@ -1,5 +1,5 @@
 import { MedicalTerm } from '../types';
-import { errorLogger } from './errorLogger';
+import { getErrorLogger } from './errorLogger';
 
 export interface ValidationResult {
   isValid: boolean;
@@ -174,22 +174,28 @@ export class DataValidator {
    * Log validation results to error logger
    */
   logValidationResults(result: ValidationResult, context: string = 'DataValidator'): void {
-    if (!result.isValid) {
-      result.errors.forEach(error => {
-        errorLogger.logError('error', error, undefined, undefined, context);
+    try {
+      const errorLogger = getErrorLogger();
+      
+      if (!result.isValid) {
+        result.errors.forEach(error => {
+          errorLogger.logError('error', error, undefined, undefined, context);
+        });
+      }
+
+      result.warnings.forEach(warning => {
+        errorLogger.logError('warn', warning, undefined, undefined, context);
       });
-    }
 
-    result.warnings.forEach(warning => {
-      errorLogger.logError('warn', warning, undefined, undefined, context);
-    });
-
-    // Log summary
-    const summary = `Validation complete: ${result.stats.validTerms}/${result.stats.totalTerms} terms valid`;
-    if (result.isValid) {
-      errorLogger.logInfo(summary, context);
-    } else {
-      errorLogger.logError('error', summary, undefined, undefined, context);
+      // Log summary
+      const summary = `Validation complete: ${result.stats.validTerms}/${result.stats.totalTerms} terms valid`;
+      if (result.isValid) {
+        errorLogger.logInfo(summary, context);
+      } else {
+        errorLogger.logError('error', summary, undefined, undefined, context);
+      }
+    } catch (error) {
+      console.error('Failed to log validation results:', error);
     }
   }
 

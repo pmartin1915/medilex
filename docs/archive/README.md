@@ -1,41 +1,106 @@
-# Archived Documentation
+# 📦 Documentation Archive
 
-This folder contains outdated or redundant documentation from earlier development sessions.
+This folder contains historical documentation that is no longer actively used but preserved for reference.
 
-## Why These Were Archived
+---
 
-These files were created during development but are now:
-- **Obsolete** - Issues they addressed have been fixed
-- **Redundant** - Content is covered in the main docs
-- **Outdated** - No longer reflect the current state
+## 📁 Folder Structure
 
-## Current Documentation
+### `handoffs/`
+Documents created for handoffs between development sessions:
+- HANDOFF*.md - Session handoff documents
+- NEXT_AI*.md - Instructions for next AI session
+- NEXT_SESSION*.md - Session continuation prompts
+- PROMPT-FOR-NEXT-AI.md - AI assistant prompts
 
-Use these files in the root directory instead:
+### `session-summaries/`
+Summaries of completed development sessions:
+- SESSION*.md - Session summary documents
+- *SUMMARY*.md - Feature/phase summaries
+- *SUMMARY*.txt - Text-based summaries
 
-1. **START-HERE.md** - Main entry point, tells you exactly what to do
-2. **HOW-TO-RUN-APP.md** - Complete guide with troubleshooting
-3. **README.md** - Project overview and features
-4. **CLAUDE-AUTONOMOUS-TESTING.md** - For Claude Code autonomous testing
+### `historical/`
+Completed features and historical documentation:
+- *COMPLETE.md - Completed feature documentation
+- MOBILE-READY.md - Mobile readiness milestone
+- READY_FOR_LAUNCH.md - Launch readiness documentation
+- PLATFORM_FIXES.md - Platform-specific fixes
+- TIKTOK_REDESIGN_PLAN.md - UI redesign documentation
+- PROFESSIONAL_POLISH_PLAN.md - Polish phase planning
+- PROJECT_ORGANIZATION_PLAN.md - This reorganization plan
+- WORKFLOW-WITH-CLAUDE.md - AI workflow documentation
+- START-HERE.* - Old start documents
+- Reference guides and inventories
 
-## What's In This Archive
+### `testing/`
+Historical testing documentation:
+- ANDROID_TESTING*.md - Android testing guides
+- iOS-VERIFICATION-GUIDE.md - iOS testing guide
+- MAESTRO_SETUP.md - E2E testing setup
+- WEB-*.md - Web platform documentation
+- VERIFICATION-CHECKLIST.md - Testing checklists
 
-- **ANDROID_CONNECTION_ISSUES.md** - Old ADB connection issues (now fixed)
-- **ANDROID_WORKFLOW.md** - Old workflow guide (replaced by HOW-TO-RUN-APP.md)
-- **CHANGES_SUMMARY.md** - Old change log (use git history instead)
-- **CURRENT_STATUS.md** - Outdated status from earlier session
-- **DEBUGGING_GUIDE.md** - Old debugging guide (merged into HOW-TO-RUN-APP.md)
-- **FIX_TURBOMODULE_ERROR.md** - Specific fix guide (issue now resolved)
-- **NEXT_SESSION_CHECKLIST.md** - Outdated checklist
-- **PROMPT_FOR_NEXT_SESSION.md** - Outdated prompt
-- **QUICK-START.md** - Old quick start (replaced by START-HERE.md)
-- **QUICK_FIX.md** - Old quick fix guide
-- **QUICK_START.md** - Duplicate quick start
-- **START_HERE.md** - Old start guide (replaced by START-HERE.md)
-- **TROUBLESHOOTING_FLOWCHART.md** - Old troubleshooting (now in HOW-TO-RUN-APP.md)
+---
 
-## Should I Delete These?
+## 🔍 When to Use Archive
 
-You can safely delete this entire `docs/archive` folder if you want. Everything you need is in the root directory documentation.
+### Use Archive When:
+- Looking for historical context
+- Understanding past decisions
+- Reviewing completed features
+- Researching old issues
 
-We kept them just in case you want to reference something from earlier sessions.
+### Don't Use Archive For:
+- Current development (use main docs/)
+- Active features (use README.md)
+- Testing (use docs/02-TESTING.md)
+- Debugging (use docs/03-DEBUGGING.md)
+
+---
+
+## 📚 Current Documentation
+
+For active documentation, see:
+- **[docs/00-START-HERE.md](../00-START-HERE.md)** - Main entry point
+- **[docs/01-DEVELOPMENT.md](../01-DEVELOPMENT.md)** - Development guide
+- **[docs/02-TESTING.md](../02-TESTING.md)** - Testing guide
+- **[docs/03-DEBUGGING.md](../03-DEBUGGING.md)** - Debugging guide
+- **[README.md](../../README.md)** - Project overview
+- **[TODO.md](../../TODO.md)** - Current priorities
+
+---
+
+## 🗂️ Archive Contents
+
+### Handoffs (9 files)
+Historical session handoff documents from development phases.
+
+### Session Summaries (7 files)
+Summaries of completed development sessions and phases.
+
+### Historical (20+ files)
+Completed features, milestones, and historical documentation.
+
+### Testing (7 files)
+Historical testing guides and platform-specific documentation.
+
+---
+
+## 🧹 Archive Maintenance
+
+### When to Archive
+- Feature is complete and documented elsewhere
+- Document is outdated or superseded
+- Information is historical/reference only
+- Document is no longer actively used
+
+### When to Remove from Archive
+- Information is completely obsolete
+- No historical value
+- Duplicates better documentation
+- After 1+ year with no references
+
+---
+
+*Last Updated: January 2025*  
+*Archive Created: January 2025*

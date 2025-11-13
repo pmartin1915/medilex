@@ -35,13 +35,14 @@ const calculateMasteryLevel = (
   progress: UserProgress,
   lastCorrect: boolean
 ): UserProgress['masteryLevel'] => {
-  const accuracy = progress.timesStudied > 0
-    ? progress.timesCorrect / progress.timesStudied
-    : 0;
+  // Calculate with updated counts
+  const totalStudied = progress.timesStudied + 1;
+  const totalCorrect = lastCorrect ? progress.timesCorrect + 1 : progress.timesCorrect;
+  const accuracy = totalStudied > 0 ? totalCorrect / totalStudied : 0;
   
-  if (accuracy >= 0.9 && progress.timesStudied >= 5) return 'mastered';
-  if (accuracy >= 0.7 && progress.timesStudied >= 3) return 'familiar';
-  if (progress.timesStudied >= 1) return 'learning';
+  if (accuracy >= 0.9 && totalStudied >= 5) return 'mastered';
+  if (accuracy >= 0.7 && totalStudied >= 3) return 'familiar';
+  if (totalStudied >= 1) return 'learning';
   return 'new';
 };
 
@@ -55,34 +56,84 @@ export const useWordStore = create<WordState>((set, get) => ({
     try {
       set({ isLoading: true, error: null });
 
-      const termsJson = await AsyncStorage.getItem(STORAGE_KEYS.TERMS);
-      const terms = termsJson ? JSON.parse(termsJson) : SAMPLE_TERMS;
+      // Try to load terms from storage
+      let terms = SAMPLE_TERMS;
+      let userProgress = {};
 
-      if (!termsJson) {
-        await AsyncStorage.setItem(STORAGE_KEYS.TERMS, JSON.stringify(SAMPLE_TERMS));
-      }
+      try {
+        const termsJson = await AsyncStorage.getItem(STORAGE_KEYS.TERMS);
+        
+        if (termsJson) {
+          // Validate JSON before parsing
+          try {
+            terms = JSON.parse(termsJson);
+          } catch (parseError) {
+            console.error('Failed to parse terms JSON, using defaults:', parseError);
+            // Reset to default terms if corrupted
+            await AsyncStorage.setItem(STORAGE_KEYS.TERMS, JSON.stringify(SAMPLE_TERMS));
+            terms = SAMPLE_TERMS;
+          }
+        } else {
+          // First time load - save default terms
+          await AsyncStorage.setItem(STORAGE_KEYS.TERMS, JSON.stringify(SAMPLE_TERMS));
+        }
 
-      // Validate terms before loading
-      const validationResult = dataValidator.validateTerms(terms);
-      dataValidator.logValidationResults(validationResult, 'WordStore.loadTerms');
+        // Validate terms structure
+        const validationResult = dataValidator.validateTerms(terms);
+        dataValidator.logValidationResults(validationResult, 'WordStore.loadTerms');
 
-      // Check if data is usable (allows loading even with warnings)
-      if (!dataValidator.isDataUsable(terms)) {
+        // Check if data is usable
+        if (!dataValidator.isDataUsable(terms)) {
+          console.error('Terms validation failed, resetting to defaults');
+          await AsyncStorage.setItem(STORAGE_KEYS.TERMS, JSON.stringify(SAMPLE_TERMS));
+          terms = SAMPLE_TERMS;
+          set({
+            error: 'Data was corrupted and has been reset. Check Debug tab for details.',
+            isLoading: false,
+            terms: SAMPLE_TERMS,
+            userProgress: {}
+          });
+          return;
+        }
+      } catch (storageError: any) {
+        console.error('AsyncStorage error loading terms:', storageError);
+        // Use default terms if storage fails
+        terms = SAMPLE_TERMS;
         set({
-          error: 'Terms data validation failed. Check Debug tab for details.',
+          error: 'Storage unavailable. Using default terms.',
           isLoading: false,
-          terms: []
+          terms: SAMPLE_TERMS,
+          userProgress: {}
         });
         return;
       }
 
-      const progressJson = await AsyncStorage.getItem(STORAGE_KEYS.USER_PROGRESS);
-      const userProgress = progressJson ? JSON.parse(progressJson) : {};
+      // Load user progress
+      try {
+        const progressJson = await AsyncStorage.getItem(STORAGE_KEYS.USER_PROGRESS);
+        if (progressJson) {
+          try {
+            userProgress = JSON.parse(progressJson);
+          } catch (parseError) {
+            console.error('Failed to parse progress JSON, resetting:', parseError);
+            userProgress = {};
+            await AsyncStorage.setItem(STORAGE_KEYS.USER_PROGRESS, JSON.stringify({}));
+          }
+        }
+      } catch (progressError) {
+        console.error('Failed to load progress:', progressError);
+        userProgress = {};
+      }
 
-      set({ terms, userProgress, isLoading: false });
-    } catch (error) {
-      set({ error: 'Failed to load terms', isLoading: false });
-      console.error('Load terms error:', error);
+      set({ terms, userProgress, isLoading: false, error: null });
+    } catch (error: any) {
+      console.error('Critical error loading terms:', error);
+      set({ 
+        error: 'Failed to load app data. Please restart the app.',
+        isLoading: false,
+        terms: SAMPLE_TERMS,
+        userProgress: {}
+      });
     }
   },
   
@@ -97,75 +148,107 @@ export const useWordStore = create<WordState>((set, get) => ({
   },
   
   updateProgress: async (termId, correct) => {
+    const { userProgress } = get();
+    const current = userProgress[termId] || createDefaultProgress(termId);
+    
+    // Calculate mastery level before updating counts
+    const masteryLevel = calculateMasteryLevel(current, correct);
+    
+    const updated: UserProgress = {
+      ...current,
+      timesStudied: current.timesStudied + 1,
+      timesCorrect: correct ? current.timesCorrect + 1 : current.timesCorrect,
+      timesIncorrect: !correct ? current.timesIncorrect + 1 : current.timesIncorrect,
+      lastStudied: new Date(),
+      masteryLevel,
+    };
+    
+    const newProgress = { ...userProgress, [termId]: updated };
+    
+    // Update state immediately for responsive UI
+    set({ userProgress: newProgress });
+    
+    // Save to storage asynchronously
     try {
-      const { userProgress } = get();
-      const current = userProgress[termId] || createDefaultProgress(termId);
-      
-      const updated: UserProgress = {
-        ...current,
-        timesStudied: current.timesStudied + 1,
-        timesCorrect: correct ? current.timesCorrect + 1 : current.timesCorrect,
-        timesIncorrect: !correct ? current.timesIncorrect + 1 : current.timesIncorrect,
-        lastStudied: new Date(),
-        masteryLevel: calculateMasteryLevel(current, correct),
-      };
-      
-      const newProgress = { ...userProgress, [termId]: updated };
-      
       await AsyncStorage.setItem(
         STORAGE_KEYS.USER_PROGRESS,
         JSON.stringify(newProgress)
       );
-      
-      set({ userProgress: newProgress });
-    } catch (error) {
-      console.error('Update progress error:', error);
+    } catch (error: any) {
+      console.error('Failed to save progress:', error);
+      // Check if quota exceeded
+      if (error?.message?.includes('quota') || error?.message?.includes('QuotaExceededError')) {
+        // Try to clear old error logs to free space
+        try {
+          await AsyncStorage.removeItem('@vocab_app:error_logs');
+          // Retry save
+          await AsyncStorage.setItem(
+            STORAGE_KEYS.USER_PROGRESS,
+            JSON.stringify(newProgress)
+          );
+        } catch (retryError) {
+          console.error('Failed to save progress after clearing logs:', retryError);
+          set({ error: 'Storage full. Progress may not be saved.' });
+        }
+      } else {
+        set({ error: 'Failed to save progress. Please check storage permissions.' });
+      }
     }
   },
   
   toggleFavorite: async (termId) => {
+    const { userProgress } = get();
+    const current = userProgress[termId] || createDefaultProgress(termId);
+    
+    const updated = {
+      ...current,
+      isFavorited: !current.isFavorited,
+    };
+    
+    const newProgress = { ...userProgress, [termId]: updated };
+    
+    // Update state immediately
+    set({ userProgress: newProgress });
+    
+    // Save to storage asynchronously
     try {
-      const { userProgress } = get();
-      const current = userProgress[termId] || createDefaultProgress(termId);
-      
-      const updated = {
-        ...current,
-        isFavorited: !current.isFavorited,
-      };
-      
-      const newProgress = { ...userProgress, [termId]: updated };
-      
       await AsyncStorage.setItem(
         STORAGE_KEYS.USER_PROGRESS,
         JSON.stringify(newProgress)
       );
-      
-      set({ userProgress: newProgress });
-    } catch (error) {
-      console.error('Toggle favorite error:', error);
+    } catch (error: any) {
+      console.error('Failed to save favorite:', error);
+      // Revert state on error
+      set({ userProgress });
+      set({ error: 'Failed to save favorite. Please try again.' });
     }
   },
   
   toggleBookmark: async (termId) => {
+    const { userProgress } = get();
+    const current = userProgress[termId] || createDefaultProgress(termId);
+    
+    const updated = {
+      ...current,
+      isBookmarked: !current.isBookmarked,
+    };
+    
+    const newProgress = { ...userProgress, [termId]: updated };
+    
+    // Update state immediately
+    set({ userProgress: newProgress });
+    
+    // Save to storage asynchronously
     try {
-      const { userProgress } = get();
-      const current = userProgress[termId] || createDefaultProgress(termId);
-      
-      const updated = {
-        ...current,
-        isBookmarked: !current.isBookmarked,
-      };
-      
-      const newProgress = { ...userProgress, [termId]: updated };
-      
       await AsyncStorage.setItem(
         STORAGE_KEYS.USER_PROGRESS,
         JSON.stringify(newProgress)
       );
-      
-      set({ userProgress: newProgress });
-    } catch (error) {
-      console.error('Toggle bookmark error:', error);
+    } catch (error: any) {
+      console.error('Failed to save bookmark:', error);
+      // Revert state on error
+      set({ userProgress });
+      set({ error: 'Failed to save bookmark. Please try again.' });
     }
   },
   

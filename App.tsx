@@ -6,16 +6,7 @@ import type { NavigationContainerRef } from '@react-navigation/native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Home, BookOpen, Library, TrendingUp, Bug } from 'lucide-react-native';
 
-// Enable react-native-screens
-try {
-  const { enableScreens } = require('react-native-screens');
-  enableScreens(true);
-} catch (e) {
-  console.log('react-native-screens not available');
-}
-
 import ErrorBoundary from './src/components/ErrorBoundary';
-import { StartupLoader } from './src/components/StartupLoader';
 import { ErrorToast } from './src/components/ErrorToast';
 import { HomeScreen } from './src/screens/HomeScreen';
 import { LearnScreen } from './src/screens/LearnScreen';
@@ -25,7 +16,7 @@ import { DebugScreen } from './src/screens/DebugScreen';
 import { useWordStore } from './src/store/wordStore';
 import { useStreakStore } from './src/store/streakStore';
 import { theme } from './src/theme/theme';
-import { errorLogger } from './src/utils/errorLogger';
+import { getErrorLogger } from './src/utils/errorLogger';
 
 const Tab = createBottomTabNavigator();
 
@@ -33,31 +24,46 @@ function AppContent() {
   const loadTerms = useWordStore(state => state.loadTerms);
   const loadStreak = useStreakStore(state => state.loadStreak);
   const [errorCount, setErrorCount] = useState(0);
+  const [isInitialized, setIsInitialized] = useState(false);
   const navigationRef = useRef<NavigationContainerRef<any>>(null);
 
   useEffect(() => {
-    const initializeStores = async () => {
+    const init = async () => {
       try {
-        errorLogger.logInfo('Loading app stores...', 'App');
+        // Initialize error logger first
+        const errorLogger = getErrorLogger();
+        await errorLogger.initialize();
+        
+        // Load stores
         await loadTerms();
         await loadStreak();
-        errorLogger.logInfo('App stores loaded successfully', 'App');
-      } catch (error: any) {
-        console.error('Failed to load stores:', error);
+        
+        setIsInitialized(true);
+      } catch (error) {
+        console.error('Init error:', error);
+        setIsInitialized(true); // Continue anyway
       }
     };
+    init();
+  }, []);
 
-    initializeStores();
-
+  useEffect(() => {
+    if (!isInitialized) return;
+    
     // Poll for error count updates
     const interval = setInterval(() => {
-      const logs = errorLogger.getLogs();
-      const errors = logs.filter(log => log.type === 'error').length;
-      setErrorCount(errors);
+      try {
+        const errorLogger = getErrorLogger();
+        const logs = errorLogger.getLogs();
+        const errors = logs.filter(log => log.type === 'error').length;
+        setErrorCount(errors);
+      } catch (error) {
+        // Ignore errors during polling
+      }
     }, 2000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [isInitialized]);
 
   const DebugIcon = ({ color, size }: { color: string; size: number }) => (
     <View style={styles.debugIconContainer}>
@@ -153,33 +159,10 @@ function AppContent() {
 }
 
 export default function App() {
-  // TEMPORARY: Bypass StartupLoader to diagnose black screen issue
-  // The StartupLoader will be re-enabled once we identify and fix the root cause
-
-  // const [startupComplete, setStartupComplete] = useState(false);
-
-  // const handleStartupComplete = async (success: boolean) => {
-  //   try {
-  //     if (success) {
-  //       errorLogger.logInfo('Startup completed successfully', 'App');
-  //     } else {
-  //       errorLogger.logError('error', 'Startup failed - app may not work correctly', undefined, undefined, 'App');
-  //     }
-  //   } catch (error) {
-  //     console.log('Startup complete:', success);
-  //   }
-  //   setStartupComplete(true);
-  // };
-
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <ErrorBoundary>
         <AppContent />
-        {/* TEMPORARY: StartupLoader bypassed - will be re-enabled after fixing
-        <StartupLoader onComplete={handleStartupComplete}>
-          {startupComplete && <AppContent />}
-        </StartupLoader>
-        */}
       </ErrorBoundary>
     </GestureHandlerRootView>
   );

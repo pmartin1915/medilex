@@ -1,6 +1,44 @@
 # Healthcare Vocabulary App - TODO
 
+**Last Updated**: January 2025  
+**Status**: Organized & Ready for Development  
+**See Also**: [PROJECT_STATUS.md](PROJECT_STATUS.md) for complete project overview
+
+---
+
 ## 🔴 HIGH PRIORITY
+
+### ✅ Project Reorganization (COMPLETED - January 2025)
+- [x] Create new documentation structure
+- [x] Move 43+ documents to archive
+- [x] Organize 26 scripts into folders
+- [x] Create comprehensive guides (00-START-HERE, Development, Testing, Debugging)
+- [x] Update README with new structure
+- [x] Create navigation guides
+- [x] Document all changes
+
+### 🔥 IMMEDIATE PRIORITIES (Next Session)
+
+#### 1. Verify Runtime Fix
+- [ ] Test app launch: `npx expo start --clear`
+- [ ] Verify no "Cannot read property 'S' of undefined" error
+- [ ] Test all 5 tabs work correctly
+- [ ] Check Debug tab for any errors
+- [ ] Document results
+
+#### 2. Fix Failing Tests
+- [ ] Run tests: `npm test`
+- [ ] Fix 31 failing tests systematically
+- [ ] Focus on critical path tests first
+- [ ] Update test documentation
+- [ ] Target: 100% passing tests
+
+#### 3. Increase Test Coverage
+- [ ] Current: 19% → Target: 30%+
+- [ ] Add tests for wordStore
+- [ ] Add tests for streakStore
+- [ ] Add tests for error scenarios
+- [ ] Add tests for edge cases
 
 ### TikTok-Style UI Polish
 - [ ] Test all platforms (iOS, Android, Web)
@@ -15,43 +53,43 @@
   - [ ] Add button press animations (scale effect)
   - [ ] Consider making threshold configurable
 
-### Error Handling
-- [ ] Add error handling to Speech synthesis
-  - Try/catch on `Speech.speak()`
-  - Show user-friendly error message
-- [ ] Add error handling to AsyncStorage operations
-  - Handle storage quota exceeded
-  - Handle corrupted data
-  - Provide fallback behavior
-- [ ] Add error handling to Zustand stores
-  - Validate state updates
-  - Handle undefined/null data
-- [ ] Global error boundary component
-  - Catch React errors
-  - Show recovery UI
+### Medical Terms Expansion
+- [ ] Add 25+ more medical terms
+  - Current: 75 terms
+  - Target: 100+ terms
+  - Focus on high-value specialties
+  - Maintain quality and accuracy
+- [ ] Validate all new terms
+  - Use Debug tab → Tests
+  - Check data integrity
+  - Verify no duplicates
+- [ ] Update MEDICAL-TERMS-GUIDE.md
+  - Document new categories
+  - Update statistics
+  - Add usage examples
 
-### Loading States
-- [ ] Add initial app loading screen
-  - Splash screen transition
-  - Data loading indicator
-- [ ] Add loading states for data persistence
-  - Saving progress indicator
-  - Saving favorites/bookmarks feedback
-- [ ] Add screen transition loading
-  - Skeleton screens for ReviewScreen
-  - Loading indicators for ProgressScreen
+### Platform Testing
+- [ ] Test on iOS
+  - Verify app launches
+  - Test all features
+  - Check for iOS-specific issues
+  - Document any problems
+- [ ] Test on Web
+  - Verify web compatibility
+  - Test responsive design
+  - Check for web-specific issues
+  - Document limitations
+- [ ] Test on physical Android device
+  - Performance testing
+  - Gesture testing
+  - Real-world usage
 
-### Input Validation
-- [ ] Handle empty term list gracefully
-  - Show empty state UI
-  - Prevent app crashes
-- [ ] Validate progress data structure
-  - Check for corrupted AsyncStorage
-  - Migrate old data formats
-- [ ] Handle edge cases in LearnScreen
-  - No terms available
-  - All terms completed
-  - Single term in deck
+### Documentation Maintenance
+- [ ] Keep TODO.md updated
+- [ ] Update PROJECT_STATUS.md after major changes
+- [ ] Archive completed documents
+- [ ] Update guides when adding features
+- [ ] Maintain MEDICAL-TERMS-GUIDE.md
 
 ---
 

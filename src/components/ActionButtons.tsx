@@ -127,6 +127,8 @@ const styles = StyleSheet.create({
     transform: [{ translateY: -120 }], // Center vertically (5 buttons * 48px + 4 gaps * 12px = 240 + 48 = 288px / 2 = 144, rounded to 120 for better centering)
     zIndex: 10,
     gap: 12,
+    opacity: 0, // Hidden by default to match photo design
+    pointerEvents: 'none', // Disable interaction when hidden
   },
   button: {
     width: 48,

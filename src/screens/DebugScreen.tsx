@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { theme } from '../theme/theme';
-import { errorLogger, ErrorLog } from '../utils/errorLogger';
+import { getErrorLogger, ErrorLog } from '../utils/errorLogger';
 import { useWordStore } from '../store/wordStore';
 import { useStreakStore } from '../store/streakStore';
 import { dataValidator } from '../utils/dataValidator';
@@ -45,13 +45,19 @@ export const DebugScreen = () => {
 
   const loadDebugInfo = async () => {
     // Load error logs
-    const errorLogs = errorLogger.getLogs();
-    setLogs(errorLogs);
+    try {
+      const errorLogger = getErrorLogger();
+      const errorLogs = errorLogger.getLogs();
+      setLogs(errorLogs);
+    } catch (error) {
+      console.error('Failed to load error logs:', error);
+      setLogs([]);
+    }
 
     // Load AsyncStorage keys
     try {
       const keys = await AsyncStorage.getAllKeys();
-      setStorageKeys(keys);
+      setStorageKeys([...keys]);
     } catch (error) {
       console.error('Failed to load storage keys:', error);
     }
@@ -67,8 +73,13 @@ export const DebugScreen = () => {
           text: 'Clear',
           style: 'destructive',
           onPress: async () => {
-            await errorLogger.clearLogs();
-            loadDebugInfo();
+            try {
+              const errorLogger = getErrorLogger();
+              await errorLogger.clearLogs();
+              loadDebugInfo();
+            } catch (error) {
+              console.error('Failed to clear logs:', error);
+            }
           },
         },
       ]
@@ -248,15 +259,24 @@ ${log.stack ? `Stack: ${log.stack}` : ''}
       });
 
       // Test 7: Error logging system
-      const errorLogs = errorLogger.getLogs();
-      const loggingWorks = Array.isArray(errorLogs);
-      results.push({
-        name: 'Error Logging System',
-        passed: loggingWorks,
-        message: loggingWorks
-          ? `Error logger working - ${errorLogs.length} logs stored`
-          : 'Error logging system not functioning',
-      });
+      try {
+        const errorLogger = getErrorLogger();
+        const errorLogs = errorLogger.getLogs();
+        const loggingWorks = Array.isArray(errorLogs);
+        results.push({
+          name: 'Error Logging System',
+          passed: loggingWorks,
+          message: loggingWorks
+            ? `Error logger working - ${errorLogs.length} logs stored`
+            : 'Error logging system not functioning',
+        });
+      } catch (error: any) {
+        results.push({
+          name: 'Error Logging System',
+          passed: false,
+          message: `Error logger failed: ${error.message}`,
+        });
+      }
 
       // Test 8: Platform compatibility
       const platformWorks = Platform.OS !== undefined;
@@ -282,10 +302,15 @@ ${log.stack ? `Stack: ${log.stack}` : ''}
     // Log test results
     const passedCount = results.filter(r => r.passed).length;
     const totalCount = results.length;
-    errorLogger.logInfo(
-      `Self-tests completed: ${passedCount}/${totalCount} passed`,
-      'DebugScreen.selfTests'
-    );
+    try {
+      const errorLogger = getErrorLogger();
+      errorLogger.logInfo(
+        `Self-tests completed: ${passedCount}/${totalCount} passed`,
+        'DebugScreen.selfTests'
+      );
+    } catch (error) {
+      console.log(`Self-tests completed: ${passedCount}/${totalCount} passed`);
+    }
   };
 
   const renderTests = () => (

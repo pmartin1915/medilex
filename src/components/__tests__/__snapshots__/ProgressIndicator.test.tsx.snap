@@ -1,0 +1,217 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`ProgressIndicator Snapshots should match snapshot at 0% progress 1`] = `
+<View
+  style={
+    {
+      "paddingHorizontal": 24,
+      "width": "100%",
+    }
+  }
+>
+  <Text
+    style={
+      {
+        "color": "#9B9B9B",
+        "fontSize": 11,
+        "fontWeight": "600",
+        "letterSpacing": 1,
+        "marginBottom": 8,
+        "textAlign": "center",
+        "textTransform": "uppercase",
+      }
+    }
+  >
+    0
+     / 
+    100
+  </Text>
+  <View
+    style={
+      {
+        "backgroundColor": "#E8E2D5",
+        "borderRadius": 9999,
+        "height": 3,
+        "overflow": "hidden",
+      }
+    }
+  >
+    <View
+      style={
+        [
+          {
+            "backgroundColor": "#C5BFB0",
+            "borderRadius": 9999,
+            "height": "100%",
+          },
+          {
+            "width": "0%",
+          },
+        ]
+      }
+    />
+  </View>
+</View>
+`;
+
+exports[`ProgressIndicator Snapshots should match snapshot at 50% progress 1`] = `
+<View
+  style={
+    {
+      "paddingHorizontal": 24,
+      "width": "100%",
+    }
+  }
+>
+  <Text
+    style={
+      {
+        "color": "#9B9B9B",
+        "fontSize": 11,
+        "fontWeight": "600",
+        "letterSpacing": 1,
+        "marginBottom": 8,
+        "textAlign": "center",
+        "textTransform": "uppercase",
+      }
+    }
+  >
+    50
+     / 
+    100
+  </Text>
+  <View
+    style={
+      {
+        "backgroundColor": "#E8E2D5",
+        "borderRadius": 9999,
+        "height": 3,
+        "overflow": "hidden",
+      }
+    }
+  >
+    <View
+      style={
+        [
+          {
+            "backgroundColor": "#C5BFB0",
+            "borderRadius": 9999,
+            "height": "100%",
+          },
+          {
+            "width": "50%",
+          },
+        ]
+      }
+    />
+  </View>
+</View>
+`;
+
+exports[`ProgressIndicator Snapshots should match snapshot at 100% progress 1`] = `
+<View
+  style={
+    {
+      "paddingHorizontal": 24,
+      "width": "100%",
+    }
+  }
+>
+  <Text
+    style={
+      {
+        "color": "#9B9B9B",
+        "fontSize": 11,
+        "fontWeight": "600",
+        "letterSpacing": 1,
+        "marginBottom": 8,
+        "textAlign": "center",
+        "textTransform": "uppercase",
+      }
+    }
+  >
+    100
+     / 
+    100
+  </Text>
+  <View
+    style={
+      {
+        "backgroundColor": "#E8E2D5",
+        "borderRadius": 9999,
+        "height": 3,
+        "overflow": "hidden",
+      }
+    }
+  >
+    <View
+      style={
+        [
+          {
+            "backgroundColor": "#C5BFB0",
+            "borderRadius": 9999,
+            "height": "100%",
+          },
+          {
+            "width": "100%",
+          },
+        ]
+      }
+    />
+  </View>
+</View>
+`;
+
+exports[`ProgressIndicator Snapshots should match snapshot with medical terms count 1`] = `
+<View
+  style={
+    {
+      "paddingHorizontal": 24,
+      "width": "100%",
+    }
+  }
+>
+  <Text
+    style={
+      {
+        "color": "#9B9B9B",
+        "fontSize": 11,
+        "fontWeight": "600",
+        "letterSpacing": 1,
+        "marginBottom": 8,
+        "textAlign": "center",
+        "textTransform": "uppercase",
+      }
+    }
+  >
+    23
+     / 
+    75
+  </Text>
+  <View
+    style={
+      {
+        "backgroundColor": "#E8E2D5",
+        "borderRadius": 9999,
+        "height": 3,
+        "overflow": "hidden",
+      }
+    }
+  >
+    <View
+      style={
+        [
+          {
+            "backgroundColor": "#C5BFB0",
+            "borderRadius": 9999,
+            "height": "100%",
+          },
+          {
+            "width": "30.666666666666664%",
+          },
+        ]
+      }
+    />
+  </View>
+</View>
+`;

@@ -1,7 +1,7 @@
 import React, { Component, ErrorInfo, ReactNode } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { theme } from '../theme/theme';
-import { errorLogger } from '../utils/errorLogger';
+import { getErrorLogger } from '../utils/errorLogger';
 
 interface Props {
   children: ReactNode;
@@ -27,14 +27,17 @@ class ErrorBoundary extends Component<Props, State> {
     console.error('ErrorBoundary caught:', error, errorInfo);
 
     // Log to our error logger
-    if (errorLogger) {
+    try {
+      const errorLogger = getErrorLogger();
       errorLogger.logError(
         'error',
         error.message || 'Unknown error',
         error.stack,
-        errorInfo.componentStack,
+        errorInfo.componentStack || undefined,
         'ErrorBoundary'
       );
+    } catch (logError) {
+      console.error('Failed to log error:', logError);
     }
 
     this.setState({ errorInfo });

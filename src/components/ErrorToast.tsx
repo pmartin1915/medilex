@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import { AlertCircle, X } from 'lucide-react-native';
 import { theme } from '../theme/theme';
-import { errorLogger, ErrorLog } from '../utils/errorLogger';
+import { getErrorLogger, ErrorLog } from '../utils/errorLogger';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const TOAST_DURATION = 5000; // 5 seconds
@@ -28,13 +28,18 @@ export const ErrorToast: React.FC<ErrorToastProps> = ({ onPress }) => {
     // Only show toasts in development mode
     if (__DEV__) {
       const interval = setInterval(() => {
-        const logs = errorLogger.getLogs();
-        const errors = logs.filter(log => log.type === 'error');
+        try {
+          const errorLogger = getErrorLogger();
+          const logs = errorLogger.getLogs();
+          const errors = logs.filter(log => log.type === 'error');
 
-        if (errors.length > 0 && errors[0].id !== lastErrorId) {
-          setCurrentError(errors[0]);
-          setLastErrorId(errors[0].id);
-          showToast();
+          if (errors.length > 0 && errors[0].id !== lastErrorId) {
+            setCurrentError(errors[0]);
+            setLastErrorId(errors[0].id);
+            showToast();
+          }
+        } catch (error) {
+          // Ignore errors during polling
         }
       }, 1000);
 
@@ -46,7 +51,7 @@ export const ErrorToast: React.FC<ErrorToastProps> = ({ onPress }) => {
     setVisible(true);
     Animated.spring(slideAnim, {
       toValue: 0,
-      useNativeDriver: true,
+      useNativeDriver: false,
       tension: 65,
       friction: 10,
     }).start();
@@ -61,7 +66,7 @@ export const ErrorToast: React.FC<ErrorToastProps> = ({ onPress }) => {
     Animated.timing(slideAnim, {
       toValue: -100,
       duration: 300,
-      useNativeDriver: true,
+      useNativeDriver: false,
     }).start(() => {
       setVisible(false);
     });

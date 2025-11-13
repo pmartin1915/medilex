@@ -1,46 +1,92 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
-import { Volume2, Heart, Bookmark, Info } from 'lucide-react-native';
+import { Volume2, ThumbsUp, X, Bookmark, Share2 } from 'lucide-react-native';
+import * as Haptics from 'expo-haptics';
 import { theme } from '../theme/theme';
 import { MedicalTerm } from '../types';
 import { TermBreakdown } from './TermBreakdown';
 import { hasBreakdown } from '../utils/componentBreakdown';
+import { Tooltip } from './Tooltip';
 
 interface Props {
   term: MedicalTerm;
   onPronounce: () => void;
-  onFavorite: () => void;
+  onKnowIt: () => void;
+  onDontKnow: () => void;
   onBookmark: () => void;
-  isFavorited?: boolean;
+  onShare: () => void;
   isBookmarked?: boolean;
   showActions?: boolean;
+  scrollEnabled?: boolean;
 }
 
 export const MedicalTermCard: React.FC<Props> = ({
   term,
   onPronounce,
-  onFavorite,
+  onKnowIt,
+  onDontKnow,
   onBookmark,
-  isFavorited = false,
+  onShare,
   isBookmarked = false,
   showActions = true,
+  scrollEnabled = true,
 }) => {
   const [showDetails, setShowDetails] = useState(false);
+  const [activeTooltip, setActiveTooltip] = useState<string | null>(null);
+
+  // Dynamic font size calculation based on term length
+  const getTermFontSize = (termText: string): number => {
+    const length = termText.length;
+    if (length <= 10) return 48;
+    if (length <= 14) return 42;
+    if (length <= 16) return 38;
+    if (length <= 20) return 34;
+    if (length <= 24) return 30;
+    return 26;
+  };
+
+  const termFontSize = getTermFontSize(term.term);
+
+  // Wrapper functions to add haptic feedback
+  const handleKnowIt = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    onKnowIt();
+  };
+
+  const handleDontKnow = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    onDontKnow();
+  };
+
+  const handleBookmark = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    onBookmark();
+  };
+
+  const handleShare = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    onShare();
+  };
 
   return (
     <View style={styles.card}>
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView
+        style={{ flex: 1 }}
+        showsVerticalScrollIndicator={false}
+        scrollEnabled={scrollEnabled}
+      >
         {/* Word block - primary focus */}
-        <Text style={styles.term}>{term.term}</Text>
+        <Text style={[styles.term, { fontSize: termFontSize }]}>{term.term}</Text>
 
-        <View style={styles.pronunciationRow}>
-          <Text style={styles.pronunciation}>{term.pronunciation}</Text>
+        {/* Pronunciation pill - rounded background */}
+        <View style={styles.pronunciationPillContainer}>
           <TouchableOpacity
             onPress={onPronounce}
-            style={styles.audioButton}
-            activeOpacity={0.6}
+            style={styles.pronunciationPill}
+            activeOpacity={0.7}
           >
-            <Volume2 size={22} color={theme.colors.accent} strokeWidth={1.5} />
+            <Volume2 size={20} color={theme.colors.accent} strokeWidth={1.8} />
+            <Text style={styles.pronunciation}>{term.pronunciation}</Text>
           </TouchableOpacity>
         </View>
 
@@ -110,21 +156,79 @@ export const MedicalTermCard: React.FC<Props> = ({
       </ScrollView>
 
       {showActions && (
-        <View style={styles.actions}>
-          <TouchableOpacity onPress={onFavorite} style={styles.actionButton}>
-            <Heart
-              size={24}
-              color={isFavorited ? theme.colors.favorite : theme.colors.textTertiary}
-              fill={isFavorited ? theme.colors.favorite : 'none'}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={onBookmark} style={styles.actionButton}>
-            <Bookmark
-              size={24}
-              color={isBookmarked ? theme.colors.bookmark : theme.colors.textTertiary}
-              fill={isBookmarked ? theme.colors.bookmark : 'none'}
-            />
-          </TouchableOpacity>
+        <View style={styles.actionButtonsFooter}>
+          {/* Know It - Green */}
+          <View style={styles.actionButtonContainer}>
+            <TouchableOpacity
+              style={[styles.actionButton, styles.knowItButton]}
+              onPress={handleKnowIt}
+              onLongPress={() => setActiveTooltip('knowIt')}
+              onPressOut={() => setActiveTooltip(null)}
+              delayLongPress={300}
+              activeOpacity={0.7}
+              accessibilityLabel="Know It"
+              accessibilityRole="button"
+            >
+              <ThumbsUp size={22} color="#FFFFFF" strokeWidth={2} />
+            </TouchableOpacity>
+            <Tooltip text="Know It" visible={activeTooltip === 'knowIt'} />
+          </View>
+
+          {/* Don't Know - Red */}
+          <View style={styles.actionButtonContainer}>
+            <TouchableOpacity
+              style={[styles.actionButton, styles.dontKnowButton]}
+              onPress={handleDontKnow}
+              onLongPress={() => setActiveTooltip('dontKnow')}
+              onPressOut={() => setActiveTooltip(null)}
+              delayLongPress={300}
+              activeOpacity={0.7}
+              accessibilityLabel="Don't Know"
+              accessibilityRole="button"
+            >
+              <X size={22} color="#FFFFFF" strokeWidth={2.5} />
+            </TouchableOpacity>
+            <Tooltip text="Don't Know" visible={activeTooltip === 'dontKnow'} />
+          </View>
+
+          {/* Bookmark - Amber */}
+          <View style={styles.actionButtonContainer}>
+            <TouchableOpacity
+              style={[styles.actionButton, styles.bookmarkButton]}
+              onPress={handleBookmark}
+              onLongPress={() => setActiveTooltip('save')}
+              onPressOut={() => setActiveTooltip(null)}
+              delayLongPress={300}
+              activeOpacity={0.7}
+              accessibilityLabel={isBookmarked ? "Remove bookmark" : "Bookmark"}
+              accessibilityRole="button"
+            >
+              <Bookmark
+                size={22}
+                color="#FFFFFF"
+                fill={isBookmarked ? "#FFFFFF" : "none"}
+                strokeWidth={2}
+              />
+            </TouchableOpacity>
+            <Tooltip text="Save" visible={activeTooltip === 'save'} />
+          </View>
+
+          {/* Share - Teal */}
+          <View style={styles.actionButtonContainer}>
+            <TouchableOpacity
+              style={[styles.actionButton, styles.shareButton]}
+              onPress={handleShare}
+              onLongPress={() => setActiveTooltip('share')}
+              onPressOut={() => setActiveTooltip(null)}
+              delayLongPress={300}
+              activeOpacity={0.7}
+              accessibilityLabel="Share"
+              accessibilityRole="button"
+            >
+              <Share2 size={22} color="#FFFFFF" strokeWidth={2} />
+            </TouchableOpacity>
+            <Tooltip text="Share" visible={activeTooltip === 'share'} />
+          </View>
         </View>
       )}
     </View>
@@ -134,37 +238,44 @@ export const MedicalTermCard: React.FC<Props> = ({
 const styles = StyleSheet.create({
   card: {
     backgroundColor: theme.colors.cardBackground,
-    borderRadius: theme.borderRadius.lg,
+    borderRadius: theme.borderRadius.md,
     padding: theme.spacing.xl,
-    marginHorizontal: theme.spacing.md,
-    minHeight: 500,
-    ...theme.shadows.card,
+    paddingHorizontal: 32,
+    paddingTop: 40,
+    minHeight: 600,
+    height: '88%',
   },
   // Word block - largest element, serif, bold
   term: {
     ...theme.typography.termDisplay,
     color: theme.colors.textPrimary,
+    marginBottom: theme.spacing.md,
+    letterSpacing: 0.5,
+  },
+  // Pronunciation pill container - centers the pill
+  pronunciationPillContainer: {
+    alignItems: 'center',
     marginBottom: theme.spacing.sm,
   },
-  pronunciationRow: {
+  // Rounded pill background for pronunciation + speaker icon
+  pronunciationPill: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: theme.spacing.xs,
+    gap: 8,
+    backgroundColor: 'rgba(91, 143, 163, 0.08)',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
   },
   pronunciation: {
-    ...theme.typography.pronunciation,
+    fontSize: 16,
     color: theme.colors.textSecondary,
     fontFamily: 'monospace',
-    flex: 1,
-  },
-  audioButton: {
-    padding: theme.spacing.sm,
-    marginRight: -theme.spacing.sm,
   },
   metaRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: theme.spacing.xl,
+    marginBottom: theme.spacing.lg,
   },
   syllables: {
     fontSize: 13,
@@ -180,6 +291,15 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: theme.colors.textTertiary,
     fontStyle: 'italic',
+  },
+  // Simplified inline part of speech + definition (matching photo)
+  partOfSpeechInline: {
+    fontSize: 20,
+    fontWeight: '400',
+    color: theme.colors.textPrimary,
+    lineHeight: 30,
+    marginTop: theme.spacing.md,
+    marginBottom: theme.spacing.lg,
   },
   // Section labels - small, uppercase, subtle
   sectionLabel: {
@@ -287,15 +407,38 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     letterSpacing: 0.5,
   },
-  actions: {
+  // New integrated action buttons footer (fixed at bottom of card)
+  actionButtonsFooter: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginTop: theme.spacing.lg,
+    justifyContent: 'space-between',
+    gap: 12,
+    marginTop: theme.spacing.md,
     paddingTop: theme.spacing.md,
     borderTopWidth: 1,
     borderTopColor: theme.colors.border,
   },
+  actionButtonContainer: {
+    flex: 1,
+    position: 'relative',
+  },
   actionButton: {
-    padding: theme.spacing.sm,
+    width: '100%',
+    aspectRatio: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: theme.borderRadius.md,
+    minHeight: 48,
+  },
+  knowItButton: {
+    backgroundColor: 'rgba(143, 172, 142, 0.92)',
+  },
+  dontKnowButton: {
+    backgroundColor: 'rgba(209, 123, 111, 0.92)',
+  },
+  bookmarkButton: {
+    backgroundColor: 'rgba(232, 182, 107, 0.92)',
+  },
+  shareButton: {
+    backgroundColor: 'rgba(123, 170, 165, 0.92)',
   },
 });

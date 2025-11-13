@@ -1,0 +1,71 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`SwipeableCard Snapshots should match snapshot with both swipe handlers 1`] = `
+<View
+  collapsable={false}
+  onMoveShouldSetResponder={[Function]}
+  onMoveShouldSetResponderCapture={[Function]}
+  onResponderEnd={[Function]}
+  onResponderGrant={[Function]}
+  onResponderMove={[Function]}
+  onResponderReject={[Function]}
+  onResponderRelease={[Function]}
+  onResponderStart={[Function]}
+  onResponderTerminate={[Function]}
+  onResponderTerminationRequest={[Function]}
+  onStartShouldSetResponder={[Function]}
+  onStartShouldSetResponderCapture={[Function]}
+  style={
+    {
+      "alignSelf": "center",
+      "marginHorizontal": 24,
+      "opacity": 1,
+      "transform": [
+        {
+          "translateX": 0,
+        },
+      ],
+      "width": 702,
+    }
+  }
+>
+  <Text>
+    Test Content
+  </Text>
+</View>
+`;
+
+exports[`SwipeableCard Snapshots should match snapshot with default props 1`] = `
+<View
+  collapsable={false}
+  onMoveShouldSetResponder={[Function]}
+  onMoveShouldSetResponderCapture={[Function]}
+  onResponderEnd={[Function]}
+  onResponderGrant={[Function]}
+  onResponderMove={[Function]}
+  onResponderReject={[Function]}
+  onResponderRelease={[Function]}
+  onResponderStart={[Function]}
+  onResponderTerminate={[Function]}
+  onResponderTerminationRequest={[Function]}
+  onStartShouldSetResponder={[Function]}
+  onStartShouldSetResponderCapture={[Function]}
+  style={
+    {
+      "alignSelf": "center",
+      "marginHorizontal": 24,
+      "opacity": 1,
+      "transform": [
+        {
+          "translateX": 0,
+        },
+      ],
+      "width": 702,
+    }
+  }
+>
+  <Text>
+    Test Content
+  </Text>
+</View>
+`;

@@ -1,0 +1,28 @@
+═══════════════════════════════════════════════════════════
+  HEALTHCARE VOCAB APP - QUICK START
+═══════════════════════════════════════════════════════════
+
+THREE COMMANDS. THAT'S IT.
+
+1. START THE APP
+   ► Double-click: GO.bat
+   ► Wait 8 seconds
+   ► Press 'w' in the Metro window that opens
+   ► App opens in browser
+
+2. STOP THE APP
+   ► Double-click: STOP.bat
+   ► Done
+
+3. RESTART (if something breaks)
+   ► Double-click: RESTART.bat
+   ► Done
+
+═══════════════════════════════════════════════════════════
+
+THAT'S ALL YOU NEED TO KNOW.
+
+No CLI. No PowerShell. No confusion.
+Just double-click GO.bat and you're coding.
+
+═══════════════════════════════════════════════════════════

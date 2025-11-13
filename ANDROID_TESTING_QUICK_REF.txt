@@ -1,0 +1,234 @@
+================================================================================
+ANDROID TESTING - QUICK REFERENCE
+================================================================================
+
+MAIN COMMANDS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Complete Testing (Recommended):
+  .\test-android-complete.bat
+
+Automated Launch Only:
+  .\test-android-auto.bat
+
+Analyze Errors Only:
+  node analyze-android-errors.js
+  (or: npm run test:android)
+
+================================================================================
+WHAT EACH SCRIPT DOES
+================================================================================
+
+test-android-complete.bat
+  ✓ Launches emulator automatically
+  ✓ Starts app and Metro bundler
+  ✓ Lets you test interactively
+  ✓ Analyzes errors when done
+  ✓ Generates comprehensive report
+  
+  Output:
+    - android-test-report-YYYYMMDD-HHMMSS.txt
+    - android-error-report.json
+    - android-test-errors.log
+
+test-android-auto.bat
+  ✓ Environment validation
+  ✓ Port conflict detection
+  ✓ ADB server management
+  ✓ Emulator launch/detection
+  ✓ Boot completion waiting
+  ✓ Metro cache clearing
+  ✓ Automatic app installation
+  
+  8 Steps:
+    1. Environment Setup
+    2. Port Conflict Detection
+    3. ADB Server Management
+    4. Emulator Detection/Launch
+    5. Package Manager Verification
+    6. Clear Metro Cache
+    7. Start Metro Bundler
+    8. Cleanup & Error Extraction
+
+analyze-android-errors.js
+  ✓ Parse logcat for errors
+  ✓ Categorize by severity
+  ✓ Extract stack traces
+  ✓ Detect common issues
+  ✓ Suggest solutions
+  ✓ Generate JSON report
+  
+  Categories:
+    - Fatal Crashes (red)
+    - JavaScript Errors (red)
+    - General Errors (yellow)
+    - Warnings (yellow)
+
+================================================================================
+TROUBLESHOOTING
+================================================================================
+
+Emulator Won't Start
+  → Check virtualization in BIOS
+  → Close Android Studio
+  → Try: .\launch-emulator.bat
+
+Port 8081 In Use
+  → Script auto-kills process
+  → Manual: netstat -ano | findstr :8081
+  → Kill: taskkill /F /PID <pid>
+
+ADB Not Found
+  → Run: .\setup-android-env.bat
+  → Restart terminal
+  → Verify: adb version
+
+Package Manager Error
+  → Wait for full boot (home screen)
+  → Script auto-reconnects
+  → Manual: adb reconnect
+
+App Not Installing
+  → Check Metro output
+  → Clear cache: npx expo start --clear
+  → Restart emulator
+  → Check android-error-report.json
+
+================================================================================
+TESTING WORKFLOW
+================================================================================
+
+1. Start Testing
+   .\test-android-complete.bat
+
+2. Wait for Launch
+   - Emulator boots (30-60s)
+   - Metro starts
+   - App installs
+
+3. Test Features
+   - All 5 tabs
+   - Swipe gestures
+   - Action buttons
+   - Success toasts
+   - Startup loader
+
+4. Stop Testing
+   - Press Ctrl+C
+   - Auto-analysis runs
+
+5. Review Results
+   - Console output
+   - android-test-report-*.txt
+   - android-error-report.json
+
+6. Fix & Re-test
+   - Address errors
+   - Run again to verify
+
+================================================================================
+OUTPUT FILES
+================================================================================
+
+android-test-report-YYYYMMDD-HHMMSS.txt
+  Complete test report with:
+  - Environment info
+  - Test execution details
+  - Error summary
+  - Verification checklist
+  - Next steps
+
+android-error-report.json
+  Detailed error analysis:
+  - Timestamp
+  - Emulator info
+  - Error counts
+  - Full error details
+  - Stack traces
+
+android-test-errors.log
+  Raw logcat errors:
+  - Unfiltered error output
+  - For manual review
+
+================================================================================
+COMMON ISSUES & SOLUTIONS
+================================================================================
+
+Issue: Unable to resolve module
+  → npm install && npx expo start --clear
+
+Issue: Metro bundler error
+  → npx expo start --clear
+
+Issue: Package manager error
+  → adb kill-server && adb start-server
+
+Issue: EADDRINUSE
+  → Kill process on port 8081
+
+Issue: Network request failed
+  → Check Metro bundler status
+
+================================================================================
+VERIFICATION CHECKLIST
+================================================================================
+
+Manual Checks:
+  [ ] App launches successfully
+  [ ] All 5 tabs accessible
+  [ ] Swipe left works (next card)
+  [ ] Swipe right works (previous card)
+  [ ] Know It button works
+  [ ] Don't Know button works
+  [ ] Bookmark button works
+  [ ] Share button works
+  [ ] Success toasts appear
+  [ ] Startup loader shows
+  [ ] No crashes during testing
+
+================================================================================
+ADVANCED USAGE
+================================================================================
+
+Launch Specific Emulator:
+  .\launch-emulator.bat "Pixel_5_API_33"
+
+Continuous Monitoring:
+  Terminal 1: .\test-android-auto.bat
+  Terminal 2: node analyze-android-errors.js
+
+Extract Specific Errors:
+  adb logcat -d | findstr "ReactNativeJS" > react-errors.log
+  adb logcat -d | findstr "FATAL" > fatal-errors.log
+
+NPM Scripts:
+  npm run test:android     (analyze errors)
+  npm run analyze:errors   (same as above)
+
+================================================================================
+SUCCESS CRITERIA
+================================================================================
+
+Testing successful when:
+  ✓ Emulator launches automatically
+  ✓ App installs without errors
+  ✓ All features work
+  ✓ No fatal crashes
+  ✓ JavaScript errors = 0
+  ✓ Report shows "No critical errors"
+
+================================================================================
+DOCUMENTATION
+================================================================================
+
+Full Guide:
+  ANDROID_TESTING_GUIDE.md
+
+Other Resources:
+  - VERIFICATION-CHECKLIST.md
+  - DEBUGGING-GUIDE.md
+  - HANDOFF.md
+  - QUICK-REFERENCE.md
+
+================================================================================

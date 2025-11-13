@@ -22,9 +22,27 @@ export const StartupLoader: React.FC<Props> = ({ onComplete, children }) => {
   ]);
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
+  const [timedOut, setTimedOut] = useState(false);
 
   useEffect(() => {
-    runStartupSequence();
+    // Timeout fallback - if startup takes > 5 seconds, proceed anyway
+    const timeoutId = setTimeout(() => {
+      console.warn('Startup timeout - proceeding anyway');
+      setTimedOut(true);
+      setIsLoading(false);
+      onComplete(true);
+    }, 5000);
+
+    runStartupSequence().then(() => {
+      clearTimeout(timeoutId);
+    }).catch((error) => {
+      console.error('Startup error:', error);
+      clearTimeout(timeoutId);
+      setIsLoading(false);
+      onComplete(true);
+    });
+
+    return () => clearTimeout(timeoutId);
   }, []);
 
   const updateStep = (index: number, status: StartupStep['status'], error?: string) => {
@@ -141,8 +159,7 @@ export const StartupLoader: React.FC<Props> = ({ onComplete, children }) => {
       console.log('Startup sequence completed successfully');
       setIsLoading(false);
 
-      // Small delay to show completion
-      await new Promise(resolve => setTimeout(resolve, 500));
+      // Immediate completion - no delay
       onComplete(true);
 
     } catch (error: any) {
@@ -152,13 +169,12 @@ export const StartupLoader: React.FC<Props> = ({ onComplete, children }) => {
       console.error('Startup failed:', error);
       setIsLoading(false);
 
-      // Show error for a bit longer
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      onComplete(false);
+      // Proceed anyway on error
+      onComplete(true);
     }
   };
 
-  if (!isLoading && steps.every(s => s.status === 'success')) {
+  if ((!isLoading && steps.every(s => s.status === 'success')) || timedOut) {
     return <>{children}</>;
   }
 
