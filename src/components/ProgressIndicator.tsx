@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { theme } from '../theme/theme';
 
@@ -7,8 +7,8 @@ interface Props {
   total: number;
 }
 
-export const ProgressIndicator: React.FC<Props> = ({ current, total }) => {
-  const percentage = (current / total) * 100;
+const ProgressIndicatorComponent: React.FC<Props> = ({ current, total }) => {
+  const percentage = useMemo(() => (current / total) * 100, [current, total]);
 
   return (
     <View style={styles.container}>
@@ -21,6 +21,9 @@ export const ProgressIndicator: React.FC<Props> = ({ current, total }) => {
     </View>
   );
 };
+
+// Memoize to prevent unnecessary re-renders when other state changes
+export const ProgressIndicator = React.memo(ProgressIndicatorComponent);
 
 const styles = StyleSheet.create({
   container: {

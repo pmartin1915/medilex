@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
   View,
   Text,
@@ -18,7 +18,8 @@ export const LibraryScreen = () => {
 
   const displayTerms = searchQuery ? searchTerms(searchQuery) : terms;
 
-  const renderTerm = ({ item }: { item: MedicalTerm }) => (
+  // Memoize render function to prevent unnecessary re-renders
+  const renderTerm = useCallback(({ item }: { item: MedicalTerm }) => (
     <TouchableOpacity style={styles.termItem}>
       <View style={styles.termHeader}>
         <Text style={styles.termName}>{item.term}</Text>
@@ -30,7 +31,7 @@ export const LibraryScreen = () => {
         {item.definition}
       </Text>
     </TouchableOpacity>
-  );
+  ), []);
 
   return (
     <View style={styles.container}>
@@ -50,6 +51,10 @@ export const LibraryScreen = () => {
         renderItem={renderTerm}
         keyExtractor={item => item.id}
         contentContainerStyle={styles.list}
+        removeClippedSubviews={true}
+        maxToRenderPerBatch={10}
+        windowSize={5}
+        initialNumToRender={10}
       />
     </View>
   );
