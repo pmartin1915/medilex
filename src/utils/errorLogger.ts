@@ -132,6 +132,10 @@ class ErrorLogger {
   logInfo(message: string, context?: string) {
     this.logError('info', message, undefined, undefined, context);
   }
+
+  logWarning(message: string, context?: string) {
+    this.logError('warn', message, undefined, undefined, context);
+  }
 }
 
 // Lazy singleton pattern - create instance only when first accessed
