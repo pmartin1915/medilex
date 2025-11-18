@@ -1,6 +1,12 @@
 // Setup global environment
 global.__DEV__ = true;
 
+// Mock Expo SDK 54's winter module system
+global.__ExpoImportMetaRegistry = {
+  register: jest.fn(),
+  resolve: jest.fn(() => ({})),
+};
+
 // Mock AsyncStorage
 jest.mock('@react-native-async-storage/async-storage', () => ({
   getItem: jest.fn(() => Promise.resolve(null)),
