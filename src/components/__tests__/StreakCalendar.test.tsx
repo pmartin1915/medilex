@@ -20,16 +20,15 @@ describe('StreakCalendar', () => {
   });
 
   it('displays all 7 day labels', () => {
-    const { getByText } = render(
+    const { getByText, getAllByText } = render(
       <StreakCalendar streak={0} weekProgress={[false, false, false, false, false, false, false]} />
     );
 
     expect(getByText('M')).toBeTruthy();
-    expect(getByText('T')).toBeTruthy();
+    expect(getAllByText('T').length).toBe(2); // Tuesday and Thursday
     expect(getByText('W')).toBeTruthy();
-    // Note: There are two 'T's (Tuesday and Thursday) and two 'S's (Saturday and Sunday)
     expect(getByText('F')).toBeTruthy();
-    expect(getByText('S')).toBeTruthy();
+    expect(getAllByText('S').length).toBe(2); // Saturday and Sunday
   });
 
   it('shows checkmarks for completed days', () => {
@@ -96,7 +95,7 @@ describe('StreakCalendar', () => {
   });
 
   it('handles single day progress', () => {
-    const { getAllByText } = render(
+    const { getAllByText, getByText } = render(
       <StreakCalendar
         streak={1}
         weekProgress={[false, false, false, false, false, false, true]}

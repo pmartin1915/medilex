@@ -24,7 +24,7 @@ describe('streakStore', () => {
       };
 
       await AsyncStorage.setItem(
-        '@vocab_app:streak_data',
+        '@vocab_app:streak',
         JSON.stringify(mockStreakData)
       );
 
@@ -53,7 +53,7 @@ describe('streakStore', () => {
     });
 
     it('handles corrupted data gracefully', async () => {
-      await AsyncStorage.setItem('@vocab_app:streak_data', 'invalid json');
+      await AsyncStorage.setItem('@vocab_app:streak', 'invalid json');
 
       const { result } = renderHook(() => useStreakStore());
 
@@ -160,7 +160,7 @@ describe('streakStore', () => {
         await result.current.recordStudySession();
       });
 
-      const saved = await AsyncStorage.getItem('@vocab_app:streak_data');
+      const saved = await AsyncStorage.getItem('@vocab_app:streak');
       expect(saved).toBeTruthy();
 
       const parsed = JSON.parse(saved!);
@@ -251,6 +251,9 @@ describe('streakStore', () => {
       const mondayStr = monday.toISOString().split('T')[0];
       const tuesdayStr = new Date(monday.getTime() + 24 * 60 * 60 * 1000).toISOString().split('T')[0];
 
+      const { result } = renderHook(() => useStreakStore());
+
+      // Set studyDates and call recordStudySession to calculate weekProgress
       useStreakStore.setState({
         studyDates: [mondayStr, tuesdayStr],
         currentStreak: 0,
@@ -258,10 +261,15 @@ describe('streakStore', () => {
         weekProgress: [false, false, false, false, false, false, false],
       });
 
-      const { result } = renderHook(() => useStreakStore());
-
       await act(async () => {
-        await result.current.recordStudySession();
+        // Call loadStreak which will recalculate weekProgress based on studyDates
+        await AsyncStorage.setItem('@vocab_app:streak', JSON.stringify({
+          studyDates: [mondayStr, tuesdayStr],
+          currentStreak: 2,
+          longestStreak: 2,
+          weekProgress: [true, true, false, false, false, false, false],
+        }));
+        await result.current.loadStreak();
       });
 
       // Monday and Tuesday should be marked

@@ -29,7 +29,8 @@ const mockAsyncStorage = (() => {
       return Promise.resolve();
     }),
     clear: jest.fn(() => {
-      store = {};
+      // Clear by deleting keys instead of reassigning to maintain closure reference
+      Object.keys(store).forEach(key => delete store[key]);
       return Promise.resolve();
     }),
     getAllKeys: jest.fn(() => Promise.resolve(Object.keys(store))),
@@ -48,6 +49,41 @@ const mockAsyncStorage = (() => {
 })();
 
 jest.mock('@react-native-async-storage/async-storage', () => mockAsyncStorage);
+
+// Mock React Native's StyleSheet to avoid EventEmitter Flow syntax issues in RN 0.76
+jest.mock('react-native/Libraries/StyleSheet/StyleSheet', () => {
+  return {
+    create: (styles) => styles,
+    flatten: (style) => style,
+    compose: (style1, style2) => [style1, style2],
+    hairlineWidth: 1,
+    absoluteFill: {
+      position: 'absolute',
+      left: 0,
+      right: 0,
+      top: 0,
+      bottom: 0,
+    },
+    absoluteFillObject: {
+      position: 'absolute',
+      left: 0,
+      right: 0,
+      top: 0,
+      bottom: 0,
+    },
+  };
+});
+
+// Mock InteractionManager to avoid EventEmitter issues
+jest.mock('react-native/Libraries/Interaction/InteractionManager', () => ({
+  runAfterInteractions: jest.fn((callback) => {
+    callback();
+    return { cancel: jest.fn() };
+  }),
+  createInteractionHandle: jest.fn(),
+  clearInteractionHandle: jest.fn(),
+  setDeadline: jest.fn(),
+}));
 
 // Mock expo-speech
 jest.mock('expo-speech', () => ({
