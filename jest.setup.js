@@ -7,6 +7,13 @@ global.__ExpoImportMetaRegistry = {
   resolve: jest.fn(() => ({})),
 };
 
+// Polyfill structuredClone for Jest environment (required by Expo SDK 54)
+if (typeof global.structuredClone === 'undefined') {
+  global.structuredClone = (obj) => {
+    return JSON.parse(JSON.stringify(obj));
+  };
+}
+
 // Mock AsyncStorage
 jest.mock('@react-native-async-storage/async-storage', () => ({
   getItem: jest.fn(() => Promise.resolve(null)),
