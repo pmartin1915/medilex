@@ -25,28 +25,28 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/66</span>
+                <span class='fraction'>0/74</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/24</span>
+                <span class='fraction'>0/26</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/13</span>
+                <span class='fraction'>0/14</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/65</span>
+                <span class='fraction'>0/73</span>
             </div>
         
             
@@ -232,9 +232,26 @@
 <a name='L167'></a><a href='#L167'>167</a>
 <a name='L168'></a><a href='#L168'>168</a>
 <a name='L169'></a><a href='#L169'>169</a>
-<a name='L170'></a><a href='#L170'>170</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L170'></a><a href='#L170'>170</a>
+<a name='L171'></a><a href='#L171'>171</a>
+<a name='L172'></a><a href='#L172'>172</a>
+<a name='L173'></a><a href='#L173'>173</a>
+<a name='L174'></a><a href='#L174'>174</a>
+<a name='L175'></a><a href='#L175'>175</a>
+<a name='L176'></a><a href='#L176'>176</a>
+<a name='L177'></a><a href='#L177'>177</a>
+<a name='L178'></a><a href='#L178'>178</a>
+<a name='L179'></a><a href='#L179'>179</a>
+<a name='L180'></a><a href='#L180'>180</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -258,6 +275,7 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -367,6 +385,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -378,6 +397,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -401,9 +421,16 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import AsyncStorage from '@react-native-async-storage/async-storage';
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">const ERROR_LOG_KEY = <span class="cstat-no" title="statement not covered" >'@vocab_app:error_logs';</span>
 &nbsp;
-const ERROR_LOG_KEY = <span class="cstat-no" title="statement not covered" >'@vocab_app:error_logs';</span>
+// Lazy import AsyncStorage to avoid accessing it before React Native is ready
+let AsyncStorage: any = <span class="cstat-no" title="statement not covered" >null;</span>
+const getAsyncStorage = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >as</span>ync () =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >  if (!AsyncStorage) {</span>
+<span class="cstat-no" title="statement not covered" >    AsyncStorage = (await import('@react-native-async-storage/async-storage')).default;</span>
+  }
+<span class="cstat-no" title="statement not covered" >  return AsyncStorage;</span>
+};
 const MAX_LOGS = <span class="cstat-no" title="statement not covered" >50;</span>
 &nbsp;
 export interface ErrorLog {
@@ -424,7 +451,8 @@ class ErrorLogger {
 <span class="cstat-no" title="statement not covered" >    if (this.initialized) <span class="cstat-no" title="statement not covered" >return;</span></span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >    try {</span>
-      const savedLogs = <span class="cstat-no" title="statement not covered" >await AsyncStorage.getItem(ERROR_LOG_KEY);</span>
+      const storage = <span class="cstat-no" title="statement not covered" >await getAsyncStorage();</span>
+      const savedLogs = <span class="cstat-no" title="statement not covered" >await storage.getItem(ERROR_LOG_KEY);</span>
 <span class="cstat-no" title="statement not covered" >      if (savedLogs) {</span>
 <span class="cstat-no" title="statement not covered" >        this.logs = JSON.parse(savedLogs);</span>
       }
@@ -535,7 +563,8 @@ class ErrorLogger {
 &nbsp;
 <span class="fstat-no" title="function not covered" >  pr</span>ivate async saveLogs() {
 <span class="cstat-no" title="statement not covered" >    try {</span>
-<span class="cstat-no" title="statement not covered" >      await AsyncStorage.setItem(ERROR_LOG_KEY, JSON.stringify(this.logs));</span>
+      const storage = <span class="cstat-no" title="statement not covered" >await getAsyncStorage();</span>
+<span class="cstat-no" title="statement not covered" >      await storage.setItem(ERROR_LOG_KEY, JSON.stringify(this.logs));</span>
     } catch (error) {
       // Can't log this error without creating infinite loop
 <span class="cstat-no" title="statement not covered" >      console.warn('[ErrorLogger] Failed to save logs');</span>
@@ -549,7 +578,8 @@ class ErrorLogger {
 <span class="fstat-no" title="function not covered" >  as</span>ync clearLogs() {
 <span class="cstat-no" title="statement not covered" >    this.logs = [];</span>
 <span class="cstat-no" title="statement not covered" >    try {</span>
-<span class="cstat-no" title="statement not covered" >      await AsyncStorage.removeItem(ERROR_LOG_KEY);</span>
+      const storage = <span class="cstat-no" title="statement not covered" >await getAsyncStorage();</span>
+<span class="cstat-no" title="statement not covered" >      await storage.removeItem(ERROR_LOG_KEY);</span>
 <span class="cstat-no" title="statement not covered" >      console.log('[ErrorLogger] Logs cleared');</span>
     } catch (error) {
 <span class="cstat-no" title="statement not covered" >      console.error('[ErrorLogger] Failed to clear logs:', error);</span>
@@ -577,7 +607,7 @@ export function <span class="fstat-no" title="function not covered" >getErrorLog
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-11-13T10:56:47.872Z
+                at 2025-11-18T15:36:01.224Z
             </div>
         <script src="../prettify.js"></script>
         <script>

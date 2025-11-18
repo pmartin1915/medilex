@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import {
   View,
   Text,
@@ -43,48 +43,59 @@ export const LearnScreen = () => {
     console.log('[LearnScreen] currentIndex state updated to:', currentIndex);
   }, [currentIndex]);
 
-  const currentTerm = terms[currentIndex];
-  const progress = currentTerm ? getProgress(currentTerm.id) : undefined;
+  // Memoize current term and progress lookups
+  const currentTerm = useMemo(() => terms[currentIndex], [terms, currentIndex]);
+  const progress = useMemo(() => currentTerm ? getProgress(currentTerm.id) : undefined, [currentTerm, getProgress]);
+
+  // Next card helper - defined early so other handlers can use it
+  const nextCard = useCallback(() => {
+    if (currentIndex < terms.length - 1) {
+      setCurrentIndex(prev => prev + 1);
+    } else {
+      setIsComplete(true);
+      recordStudySession();
+    }
+  }, [currentIndex, terms.length, recordStudySession]);
 
   // Know It - Mark as known and advance
-  const handleKnowIt = () => {
+  const handleKnowIt = useCallback(() => {
     if (currentTerm) {
       updateProgress(currentTerm.id, true);
       setToastMessage('Marked as known');
       setShowToast(true);
       nextCard();
     }
-  };
+  }, [currentTerm, updateProgress, nextCard]);
 
   // Don't Know - Mark as unknown and advance
-  const handleDontKnow = () => {
+  const handleDontKnow = useCallback(() => {
     if (currentTerm) {
       updateProgress(currentTerm.id, false);
       setToastMessage('Keep practicing');
       setShowToast(true);
       nextCard();
     }
-  };
+  }, [currentTerm, updateProgress, nextCard]);
 
   // Favorite - Toggle favorite (stays on card)
-  const handleFavorite = () => {
+  const handleFavorite = useCallback(() => {
     if (currentTerm) {
       toggleFavorite(currentTerm.id);
     }
-  };
+  }, [currentTerm, toggleFavorite]);
 
   // Bookmark - Toggle bookmark (stays on card)
-  const handleBookmark = () => {
+  const handleBookmark = useCallback(() => {
     if (currentTerm) {
       const isCurrentlyBookmarked = progress?.isBookmarked;
       toggleBookmark(currentTerm.id);
       setToastMessage(isCurrentlyBookmarked ? 'Bookmark removed' : 'Bookmarked');
       setShowToast(true);
     }
-  };
+  }, [currentTerm, progress, toggleBookmark]);
 
   // Share - Capture screenshot and share
-  const handleShare = async () => {
+  const handleShare = useCallback(async () => {
     if (!currentTerm) {
       Alert.alert('Error', 'No term available to share.');
       return;
@@ -128,10 +139,10 @@ export const LearnScreen = () => {
         );
       }
     }
-  };
+  }, [currentTerm]);
 
   // Swipe Left - Navigate to next card (no evaluation)
-  const handleSwipeLeft = () => {
+  const handleSwipeLeft = useCallback(() => {
     const current = currentIndexRef.current;
     console.log('[LearnScreen] handleSwipeLeft called, currentIndexRef.current:', current, 'termsLength:', terms.length);
     if (current < terms.length - 1) {
@@ -143,10 +154,10 @@ export const LearnScreen = () => {
     } else {
       console.log('[LearnScreen] Already at last card, not moving');
     }
-  };
+  }, [terms.length]);
 
   // Swipe Right - Navigate to previous card
-  const handleSwipeRight = () => {
+  const handleSwipeRight = useCallback(() => {
     const current = currentIndexRef.current;
     console.log('[LearnScreen] handleSwipeRight called, currentIndexRef.current:', current);
     if (current > 0) {
@@ -158,31 +169,22 @@ export const LearnScreen = () => {
     } else {
       console.log('[LearnScreen] Already at first card, not moving');
     }
-  };
+  }, []);
 
   // Navigation buttons (backup for gestures)
-  const handlePrevious = () => {
+  const handlePrevious = useCallback(() => {
     if (currentIndex > 0) {
       setCurrentIndex(prev => prev - 1);
     }
-  };
+  }, [currentIndex]);
 
-  const handleNext = () => {
+  const handleNext = useCallback(() => {
     if (currentIndex < terms.length - 1) {
       setCurrentIndex(prev => prev + 1);
     }
-  };
+  }, [currentIndex, terms.length]);
 
-  const nextCard = () => {
-    if (currentIndex < terms.length - 1) {
-      setCurrentIndex(prev => prev + 1);
-    } else {
-      setIsComplete(true);
-      recordStudySession();
-    }
-  };
-
-  const handlePronounce = async () => {
+  const handlePronounce = useCallback(async () => {
     if (!currentTerm) return;
     
     try {
@@ -209,12 +211,12 @@ export const LearnScreen = () => {
         'Unable to pronounce this term. Please try again.'
       );
     }
-  };
+  }, [currentTerm]);
 
-  const handleRestart = () => {
+  const handleRestart = useCallback(() => {
     setCurrentIndex(0);
     setIsComplete(false);
-  };
+  }, []);
 
   if (isComplete) {
     return (

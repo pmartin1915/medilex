@@ -1,4 +1,4 @@
-import { renderHook, act } from '@testing-library/react-native';
+import { renderHook, act, waitFor } from '@testing-library/react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useStreakStore } from '../streakStore';
 import { STORAGE_KEYS } from '../../data/sampleTerms';
@@ -42,7 +42,10 @@ describe('streakStore', () => {
         await result.current.loadStreak();
       });
 
-      expect(result.current.currentStreak).toBe(5);
+      await waitFor(() => {
+        expect(result.current.currentStreak).toBe(5);
+      });
+
       expect(result.current.longestStreak).toBe(10);
       expect(result.current.studyDates).toEqual(mockStreakData.studyDates);
       expect(result.current.weekProgress).toEqual(mockStreakData.weekProgress);
@@ -282,15 +285,16 @@ describe('streakStore', () => {
     });
 
     it('should maintain streak through today even if not studied yet', async () => {
-      const { result } = renderHook(() => useStreakStore());
-
-      // Study yesterday
+      // Set up yesterday's study first
       useStreakStore.setState({
         studyDates: [getDateStr(1)],
         currentStreak: 1,
         longestStreak: 1,
         weekProgress: [false, false, false, false, false, false, false],
       });
+
+      // Now render the hook - it should pick up the state
+      const { result } = renderHook(() => useStreakStore());
 
       // Streak should still be 1 (yesterday's study)
       expect(result.current.currentStreak).toBe(1);

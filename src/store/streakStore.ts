@@ -1,12 +1,10 @@
 import { create } from 'zustand';
 import { STORAGE_KEYS } from '../data/sampleTerms';
+import AsyncStorageLib from '@react-native-async-storage/async-storage';
 
-// Lazy load AsyncStorage to prevent runtime error
-let AsyncStorage: any = null;
+// Use static import for testability - Jest mocks work with static imports
+let AsyncStorage: any = AsyncStorageLib;
 const getAsyncStorage = async () => {
-  if (!AsyncStorage) {
-    AsyncStorage = (await import('@react-native-async-storage/async-storage')).default;
-  }
   return AsyncStorage;
 };
 
@@ -22,26 +20,26 @@ interface StreakState {
 
 const calculateStreak = (dates: string[]): number => {
   if (dates.length === 0) return 0;
-  
+
   const sorted = [...dates].sort().reverse();
   let streak = 0;
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  
+  // Use UTC date to match the ISO string format used in recordStudySession
+  const todayStr = new Date().toISOString().split('T')[0];
+  const today = new Date(todayStr + 'T00:00:00Z');
+
   for (const dateStr of sorted) {
-    const date = new Date(dateStr);
-    date.setHours(0, 0, 0, 0);
-    const diffDays = Math.floor(
+    const date = new Date(dateStr + 'T00:00:00Z');
+    const diffDays = Math.round(
       (today.getTime() - date.getTime()) / (1000 * 60 * 60 * 24)
     );
-    
+
     if (diffDays === streak) {
       streak++;
     } else {
       break;
     }
   }
-  
+
   return streak;
 };
 

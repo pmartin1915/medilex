@@ -2,13 +2,11 @@ import { create } from 'zustand';
 import { MedicalTerm, UserProgress } from '../types';
 import { SAMPLE_TERMS, STORAGE_KEYS } from '../data/sampleTerms';
 import { dataValidator } from '../utils/dataValidator';
+import AsyncStorageLib from '@react-native-async-storage/async-storage';
 
-// Lazy load AsyncStorage to prevent runtime error
-let AsyncStorage: any = null;
+// Use static import for testability - Jest mocks work with static imports
+let AsyncStorage: any = AsyncStorageLib;
 const getAsyncStorage = async () => {
-  if (!AsyncStorage) {
-    AsyncStorage = (await import('@react-native-async-storage/async-storage')).default;
-  }
   return AsyncStorage;
 };
 

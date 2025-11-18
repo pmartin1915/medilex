@@ -7,7 +7,7 @@ try {
   console.log('[INIT] 3. Importing App component...');
   const App = require('./App').default;
   
-  console.log('[INIT] 4. Registering root component...);
+  console.log('[INIT] 4. Registering root component...');
   registerRootComponent(App);
   
   console.log('[INIT] ✅ App registered successfully!');

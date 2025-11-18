@@ -1,0 +1,43 @@
+# 03-view-progress.yaml
+# Tests Progress screen displays study statistics correctly
+# Expected outcome: Progress tab shows stats, mastery levels, streak calendar
+
+appId: com.healthcarevocabapp
+---
+- launchApp
+
+# Wait for app to initialize
+- waitForAnimationToEnd
+
+# Navigate to Progress tab
+- tapOn: "Progress"
+- waitForAnimationToEnd
+
+# Verify key statistics are displayed
+- assertVisible:
+    text: ".*[Ss]tudied.*|.*[Tt]erms.*"
+    # Matches "Terms Studied", "studied", etc.
+
+# Verify accuracy stat exists
+- assertVisible:
+    text: ".*[Aa]ccuracy.*|.*%.*"
+    # Should show percentage
+
+# Verify mastery section
+- assertVisible:
+    text: ".*[Mm]astery.*|.*[Mm]astered.*"
+
+# Verify streak calendar is present
+- assertVisible:
+    text: ".*[Ss]treak.*"
+
+# Scroll down to view more stats (if needed)
+- scrollUntilVisible:
+    element:
+      text: ".*[Aa]chievement.*|.*[Pp]rogress.*"
+    direction: DOWN
+    timeout: 5000
+
+# Verify some form of achievement or progress indicator
+- assertVisible:
+    text: ".*[Aa]chievement.*|.*[Mm]ilestone.*|.*[Ll]evel.*"

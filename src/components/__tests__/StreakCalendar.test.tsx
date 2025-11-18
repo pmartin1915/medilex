@@ -16,15 +16,15 @@ describe('StreakCalendar', () => {
     });
 
     it('should render all 7 day labels', () => {
-      const { getByText } = render(<StreakCalendar {...defaultProps} />);
+      const { getByText, getAllByText } = render(<StreakCalendar {...defaultProps} />);
 
       expect(getByText('M')).toBeTruthy();
-      expect(getByText('T')).toBeTruthy();
+      // Two 'T' labels exist (Tuesday and Thursday)
+      expect(getAllByText('T')).toHaveLength(2);
       expect(getByText('W')).toBeTruthy();
-      // Note: Two 'T' labels exist (Tuesday and Thursday)
       expect(getByText('F')).toBeTruthy();
-      expect(getByText('S')).toBeTruthy();
-      // Note: Two 'S' labels exist (Saturday and Sunday)
+      // Two 'S' labels exist (Saturday and Sunday)
+      expect(getAllByText('S')).toHaveLength(2);
     });
 
     it('should display the correct streak number', () => {

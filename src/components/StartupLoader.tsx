@@ -65,7 +65,7 @@ export const StartupLoader: React.FC<Props> = ({ onComplete, children }) => {
       try {
         // Dynamically import errorLogger after React Native is ready
         const errorLoggerModule = await import('../utils/errorLogger');
-        errorLogger = errorLoggerModule.errorLogger;
+        errorLogger = errorLoggerModule.getErrorLogger();
         await errorLogger.initialize();
         errorLogger.logInfo('Error logger initialized', 'StartupLoader');
         updateStep(0, 'success');

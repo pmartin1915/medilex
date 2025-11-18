@@ -8,7 +8,7 @@ interface FilterChipProps {
   onPress: () => void;
 }
 
-export const FilterChip: React.FC<FilterChipProps> = ({ label, isActive, onPress }) => {
+const FilterChipComponent: React.FC<FilterChipProps> = ({ label, isActive, onPress }) => {
   return (
     <TouchableOpacity
       style={[styles.chip, isActive && styles.chipActive]}
@@ -46,3 +46,6 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
   },
 });
+
+// Memoize to prevent re-renders when other chips change
+export const FilterChip = React.memo(FilterChipComponent);

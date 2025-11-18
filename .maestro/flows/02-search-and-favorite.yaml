@@ -1,0 +1,57 @@
+# 02-search-and-favorite.yaml
+# Tests Library search and favorite functionality
+# Expected outcome: User can search for terms and mark them as favorites
+
+appId: com.healthcarevocabapp
+---
+- launchApp
+
+# Wait for app to initialize
+- waitForAnimationToEnd
+
+# Navigate to Library tab
+- tapOn: "Library"
+- waitForAnimationToEnd
+
+# Verify search bar is present
+- assertVisible: "Search medical terms*"
+
+# Search for cardio-related terms
+- tapOn: "Search medical terms*"
+- inputText: "cardio"
+- waitForAnimationToEnd
+
+# Verify filtered results appear (should show fewer terms than 75)
+- assertVisible: "cardio*"
+
+# Clear search
+- clearState:
+    text: "cardio"
+- inputText: ""
+- waitForAnimationToEnd
+
+# Search for a specific term prefix
+- tapOn: "Search medical terms*"
+- inputText: "tachy"
+- waitForAnimationToEnd
+
+# Should show tachycardia, tachypnea, etc.
+- assertVisible: "tachy*"
+
+# Tap on first result to view details
+- tapOn: "tachy*"
+- waitForAnimationToEnd
+
+# Favorite the term (Heart icon button)
+- tapOn:
+    text: "Add to favorites"
+- waitForAnimationToEnd
+
+# Verify favorite was added (icon should change state)
+- assertVisible:
+    text: "Remove from favorites"
+
+# Unfavorite to clean up
+- tapOn:
+    text: "Remove from favorites"
+- waitForAnimationToEnd

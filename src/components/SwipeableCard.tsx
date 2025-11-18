@@ -11,7 +11,7 @@ interface Props {
   onSwipeRight?: () => void; // Swipe right → Previous card
 }
 
-export const SwipeableCard: React.FC<Props> = ({
+const SwipeableCardComponent: React.FC<Props> = ({
   children,
   onSwipeLeft,
   onSwipeRight,
@@ -130,3 +130,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 24, // Equal margins on both sides
   },
 });
+
+// Memoize to prevent re-renders during parent state changes
+export const SwipeableCard = React.memo(SwipeableCardComponent);

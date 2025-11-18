@@ -1,0 +1,67 @@
+# 05-error-recovery.yaml
+# Tests graceful error handling and recovery
+# Expected outcome: App handles errors without crashing
+
+appId: com.healthcarevocabapp
+---
+- launchApp
+
+# Wait for app to initialize
+- waitForAnimationToEnd
+
+# Test 1: Navigate rapidly between tabs (stress test)
+- tapOn: "Home"
+- tapOn: "Learn"
+- tapOn: "Library"
+- tapOn: "Progress"
+- tapOn: "Debug"
+- tapOn: "Home"
+- waitForAnimationToEnd
+
+# Verify app is still responsive
+- assertVisible: "Home"
+
+# Test 2: Check Debug screen shows error logs (if any)
+- tapOn: "Debug"
+- waitForAnimationToEnd
+
+# Verify Debug screen renders
+- assertVisible: ".*[Dd]ebug.*|.*[Ee]rror.*|.*[Ll]og.*"
+
+# Test 3: Rapid search input (stress test)
+- tapOn: "Library"
+- waitForAnimationToEnd
+
+- tapOn: "Search medical terms*"
+- inputText: "abc"
+- inputText: "xyz"
+- inputText: "test"
+- clearState:
+    text: "test"
+- waitForAnimationToEnd
+
+# Verify Library still works
+- assertVisible: "Search medical terms*"
+
+# Test 4: Return to Learn and verify flashcards still work
+- tapOn: "Learn"
+- waitForAnimationToEnd
+
+# Verify card is visible
+- assertVisible:
+    text: ".*Current Term.*|.*Know It.*"
+
+# Try an action
+- tapOn: "Know It"
+- waitForAnimationToEnd
+
+# Test 5: Check if any errors were logged
+- tapOn: "Debug"
+- waitForAnimationToEnd
+
+# If errors exist, verify they're displayed properly
+# (This is non-blocking - errors may or may not exist)
+
+# Final verification: App is still functional
+- tapOn: "Home"
+- assertVisible: "Home"

@@ -1,0 +1,75 @@
+# 06-first-time-onboarding.yaml
+# Tests first-time user experience with fresh app state
+# Expected outcome: App loads with default 75 terms, proper initialization
+
+appId: com.healthcarevocabapp
+---
+- launchApp:
+    clearState: true
+    clearKeychain: true
+
+# Wait for app to initialize (may take longer on first launch)
+- waitForAnimationToEnd:
+    timeout: 10000
+
+# Verify Home screen loaded successfully
+- assertVisible: "Home"
+
+# Check that Word of the Day is displayed
+- assertVisible:
+    text: ".*[Ww]ord.*[Dd]ay.*|.*[Tt]erm.*"
+
+# Verify streak shows 0 or initial state
+- assertVisible:
+    text: ".*[Ss]treak.*"
+
+# Navigate to Learn to verify terms loaded
+- tapOn: "Learn"
+- waitForAnimationToEnd
+
+# Verify flashcard appears (means 75 terms loaded successfully)
+- assertVisible:
+    text: ".*Current Term.*|.*1/.*"
+    # Should show "1/75" or similar progress indicator
+
+# Verify action buttons are visible/accessible
+- assertVisible: "Know It"
+- assertVisible: "Don't Know"
+
+# Navigate to Library to verify all terms loaded
+- tapOn: "Library"
+- waitForAnimationToEnd
+
+# Verify search bar is present
+- assertVisible: "Search medical terms*"
+
+# Scroll to verify terms list is populated
+- assertVisible:
+    text: ".*cardio.*|.*tachy.*|.*brady.*"
+    # Should see some medical terms
+
+# Navigate to Progress (should show empty state or zero stats)
+- tapOn: "Progress"
+- waitForAnimationToEnd
+
+# Verify Progress screen renders (even with no study history)
+- assertVisible:
+    text: ".*[Pp]rogress.*|.*[Ss]tatistics.*|.*0.*"
+    # Should show zeros or empty state
+
+# Check Debug screen works
+- tapOn: "Debug"
+- waitForAnimationToEnd
+
+# Verify Debug screen renders
+- assertVisible:
+    text: ".*[Dd]ebug.*|.*[Ll]og.*"
+
+# Return to Home - verify complete initialization
+- tapOn: "Home"
+- waitForAnimationToEnd
+
+# Final check: Everything initialized properly
+- assertVisible: "Home"
+- assertVisible:
+    text: ".*[Ss]treak.*"

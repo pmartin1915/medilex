@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { Volume2, ThumbsUp, X, Bookmark, Share2 } from 'lucide-react-native';
 import * as Haptics from 'expo-haptics';
@@ -20,7 +20,7 @@ interface Props {
   scrollEnabled?: boolean;
 }
 
-export const MedicalTermCard: React.FC<Props> = ({
+const MedicalTermCardComponent: React.FC<Props> = ({
   term,
   onPronounce,
   onKnowIt,
@@ -34,39 +34,37 @@ export const MedicalTermCard: React.FC<Props> = ({
   const [showDetails, setShowDetails] = useState(false);
   const [activeTooltip, setActiveTooltip] = useState<string | null>(null);
 
-  // Dynamic font size calculation based on term length
-  const getTermFontSize = (termText: string): number => {
-    const length = termText.length;
+  // Dynamic font size calculation based on term length - memoized for performance
+  const termFontSize = useMemo(() => {
+    const length = term.term.length;
     if (length <= 10) return 48;
     if (length <= 14) return 42;
     if (length <= 16) return 38;
     if (length <= 20) return 34;
     if (length <= 24) return 30;
     return 26;
-  };
+  }, [term.term]);
 
-  const termFontSize = getTermFontSize(term.term);
-
-  // Wrapper functions to add haptic feedback
-  const handleKnowIt = () => {
+  // Wrapper functions to add haptic feedback - memoized to prevent re-creation
+  const handleKnowIt = useCallback(() => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     onKnowIt();
-  };
+  }, [onKnowIt]);
 
-  const handleDontKnow = () => {
+  const handleDontKnow = useCallback(() => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     onDontKnow();
-  };
+  }, [onDontKnow]);
 
-  const handleBookmark = () => {
+  const handleBookmark = useCallback(() => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     onBookmark();
-  };
+  }, [onBookmark]);
 
-  const handleShare = () => {
+  const handleShare = useCallback(() => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     onShare();
-  };
+  }, [onShare]);
 
   return (
     <View style={styles.card}>
@@ -441,4 +439,20 @@ const styles = StyleSheet.create({
   shareButton: {
     backgroundColor: 'rgba(123, 170, 165, 0.92)',
   },
+});
+
+// Memoize component with custom comparison for optimal performance
+export const MedicalTermCard = React.memo(MedicalTermCardComponent, (prevProps, nextProps) => {
+  // Return true if props are equal (prevents re-render)
+  return (
+    prevProps.term.id === nextProps.term.id &&
+    prevProps.isBookmarked === nextProps.isBookmarked &&
+    prevProps.showActions === nextProps.showActions &&
+    prevProps.scrollEnabled === nextProps.scrollEnabled &&
+    prevProps.onPronounce === nextProps.onPronounce &&
+    prevProps.onKnowIt === nextProps.onKnowIt &&
+    prevProps.onDontKnow === nextProps.onDontKnow &&
+    prevProps.onBookmark === nextProps.onBookmark &&
+    prevProps.onShare === nextProps.onShare
+  );
 });

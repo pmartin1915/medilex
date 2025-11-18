@@ -1,0 +1,48 @@
+# 01-complete-study-session.yaml
+# Tests the core learning flow: Navigate to Learn tab, interact with flashcards
+# Expected outcome: User can complete a study session with 5 cards
+
+appId: com.healthcarevocabapp
+---
+- launchApp:
+    clearState: true
+
+# Wait for app to initialize
+- waitForAnimationToEnd
+
+# Navigate to Learn tab
+- tapOn: "Learn"
+- waitForAnimationToEnd
+
+# Verify we're on the Learn screen with a card
+- assertVisible: "Current Term*"
+
+# Study 5 cards - mix of "Know It" and "Don't Know"
+- tapOn:
+    text: "Know It"
+- waitForAnimationToEnd
+
+- tapOn:
+    text: "Don't Know"
+- waitForAnimationToEnd
+
+- tapOn:
+    text: "Know It"
+- waitForAnimationToEnd
+
+- tapOn:
+    text: "Know It"
+- waitForAnimationToEnd
+
+- tapOn:
+    text: "Don't Know"
+- waitForAnimationToEnd
+
+# After 5 cards, verify completion screen appears
+- assertVisible:
+    text: ".*Complete.*"
+    # Matches "Session Complete", "Complete!", etc.
+
+# Verify streak was updated (should show some success message or stat)
+- assertVisible:
+    text: ".*[Ss]treak.*|.*[Ss]ession.*"

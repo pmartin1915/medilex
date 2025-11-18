@@ -9,7 +9,7 @@ interface Props {
   placeholder?: string;
 }
 
-export const SearchBar: React.FC<Props> = ({
+const SearchBarComponent: React.FC<Props> = ({
   value,
   onChangeText,
   placeholder = 'Search medical terms...',
@@ -52,3 +52,6 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
   },
 });
+
+// Memoize to avoid re-rendering on every keystroke when parent state changes
+export const SearchBar = React.memo(SearchBarComponent);

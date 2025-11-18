@@ -11,7 +11,7 @@ interface StatCardProps {
   trend?: string; // e.g., "+5% this week"
 }
 
-export const StatCard: React.FC<StatCardProps> = ({
+const StatCardComponent: React.FC<StatCardProps> = ({
   icon: Icon,
   value,
   label,
@@ -55,3 +55,6 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
 });
+
+// Memoize to prevent re-renders when displaying multiple stat cards
+export const StatCard = React.memo(StatCardComponent);

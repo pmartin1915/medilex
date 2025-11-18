@@ -18,6 +18,13 @@ expo-env.d.ts
 *.key
 *.mobileprovision
 
+# Keystore files (NEVER commit these!)
+*.keystore
+keystore.properties
+android/keystore.properties
+android/app/*.keystore
+!android/app/debug.keystore
+
 # Metro
 .metro-health-check*
 
