@@ -86,6 +86,12 @@ jest.mock('lucide-react-native', () => {
     Bookmark: mockIcon('Bookmark'),
     Info: mockIcon('Info'),
     Search: mockIcon('Search'),
+    Flame: mockIcon('Flame'),
+    Target: mockIcon('Target'),
+    Award: mockIcon('Award'),
+    Trash2: mockIcon('Trash2'),
+    RefreshCw: mockIcon('RefreshCw'),
+    AlertCircle: mockIcon('AlertCircle'),
   };
 });
 
