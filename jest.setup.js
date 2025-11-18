@@ -14,17 +14,40 @@ if (typeof global.structuredClone === 'undefined') {
   };
 }
 
-// Mock AsyncStorage
-jest.mock('@react-native-async-storage/async-storage', () => ({
-  getItem: jest.fn(() => Promise.resolve(null)),
-  setItem: jest.fn(() => Promise.resolve()),
-  removeItem: jest.fn(() => Promise.resolve()),
-  clear: jest.fn(() => Promise.resolve()),
-  getAllKeys: jest.fn(() => Promise.resolve([])),
-  multiGet: jest.fn(() => Promise.resolve([])),
-  multiSet: jest.fn(() => Promise.resolve()),
-  multiRemove: jest.fn(() => Promise.resolve()),
-}));
+// Mock AsyncStorage with in-memory storage
+const mockAsyncStorage = (() => {
+  let store = {};
+
+  return {
+    getItem: jest.fn((key) => Promise.resolve(store[key] || null)),
+    setItem: jest.fn((key, value) => {
+      store[key] = value;
+      return Promise.resolve();
+    }),
+    removeItem: jest.fn((key) => {
+      delete store[key];
+      return Promise.resolve();
+    }),
+    clear: jest.fn(() => {
+      store = {};
+      return Promise.resolve();
+    }),
+    getAllKeys: jest.fn(() => Promise.resolve(Object.keys(store))),
+    multiGet: jest.fn((keys) =>
+      Promise.resolve(keys.map(key => [key, store[key] || null]))
+    ),
+    multiSet: jest.fn((pairs) => {
+      pairs.forEach(([key, value]) => { store[key] = value; });
+      return Promise.resolve();
+    }),
+    multiRemove: jest.fn((keys) => {
+      keys.forEach(key => delete store[key]);
+      return Promise.resolve();
+    }),
+  };
+})();
+
+jest.mock('@react-native-async-storage/async-storage', () => mockAsyncStorage);
 
 // Mock expo-speech
 jest.mock('expo-speech', () => ({
