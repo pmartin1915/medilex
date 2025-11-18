@@ -79,10 +79,12 @@ describe('wordStore', () => {
   });
 
   describe('searchTerms', () => {
+    let storeHook: ReturnType<typeof renderHook<ReturnType<typeof useWordStore>, unknown>>;
+
     beforeEach(async () => {
-      const { result } = renderHook(() => useWordStore());
+      storeHook = renderHook(() => useWordStore());
       await act(async () => {
-        await result.current.loadTerms();
+        await storeHook.result.current.loadTerms();
       });
     });
 
@@ -91,6 +93,7 @@ describe('wordStore', () => {
       const searchResults = result.current.searchTerms('');
 
       expect(searchResults.length).toBe(result.current.terms.length);
+      expect(searchResults.length).toBeGreaterThan(0);
     });
 
     it('filters terms by term name', () => {
@@ -122,10 +125,12 @@ describe('wordStore', () => {
   });
 
   describe('getTermById', () => {
+    let storeHook: ReturnType<typeof renderHook<ReturnType<typeof useWordStore>, unknown>>;
+
     beforeEach(async () => {
-      const { result } = renderHook(() => useWordStore());
+      storeHook = renderHook(() => useWordStore());
       await act(async () => {
-        await result.current.loadTerms();
+        await storeHook.result.current.loadTerms();
       });
     });
 
@@ -149,10 +154,12 @@ describe('wordStore', () => {
   });
 
   describe('updateProgress', () => {
+    let storeHook: ReturnType<typeof renderHook<ReturnType<typeof useWordStore>, unknown>>;
+
     beforeEach(async () => {
-      const { result } = renderHook(() => useWordStore());
+      storeHook = renderHook(() => useWordStore());
       await act(async () => {
-        await result.current.loadTerms();
+        await storeHook.result.current.loadTerms();
       });
     });
 
@@ -228,10 +235,12 @@ describe('wordStore', () => {
   });
 
   describe('toggleFavorite', () => {
+    let storeHook: ReturnType<typeof renderHook<ReturnType<typeof useWordStore>, unknown>>;
+
     beforeEach(async () => {
-      const { result } = renderHook(() => useWordStore());
+      storeHook = renderHook(() => useWordStore());
       await act(async () => {
-        await result.current.loadTerms();
+        await storeHook.result.current.loadTerms();
       });
     });
 
@@ -266,10 +275,12 @@ describe('wordStore', () => {
   });
 
   describe('toggleBookmark', () => {
+    let storeHook: ReturnType<typeof renderHook<ReturnType<typeof useWordStore>, unknown>>;
+
     beforeEach(async () => {
-      const { result } = renderHook(() => useWordStore());
+      storeHook = renderHook(() => useWordStore());
       await act(async () => {
-        await result.current.loadTerms();
+        await storeHook.result.current.loadTerms();
       });
     });
 

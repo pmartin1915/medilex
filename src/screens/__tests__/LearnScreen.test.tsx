@@ -46,18 +46,32 @@ describe('LearnScreen', () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
-    // Mock useWordStore
-    (useWordStore as unknown as jest.Mock).mockReturnValue({
+    // Mock useWordStore - must handle selectors
+    const mockState = {
       terms: mockTerms,
       updateProgress: mockUpdateProgress,
       toggleFavorite: mockToggleFavorite,
       toggleBookmark: mockToggleBookmark,
       getProgress: mockGetProgress,
+    };
+
+    (useWordStore as unknown as jest.Mock).mockImplementation((selector) => {
+      if (typeof selector === 'function') {
+        return selector(mockState);
+      }
+      return mockState;
     });
 
-    // Mock useStreakStore
-    (useStreakStore as unknown as jest.Mock).mockReturnValue({
+    // Mock useStreakStore - must handle selectors
+    const mockStreakState = {
       recordStudySession: mockRecordStudySession,
+    };
+
+    (useStreakStore as unknown as jest.Mock).mockImplementation((selector) => {
+      if (typeof selector === 'function') {
+        return selector(mockStreakState);
+      }
+      return mockStreakState;
     });
 
     mockGetProgress.mockReturnValue(undefined);
@@ -90,12 +104,19 @@ describe('LearnScreen', () => {
   });
 
   it('displays "No terms available" when no terms exist', () => {
-    (useWordStore as unknown as jest.Mock).mockReturnValue({
+    const emptyState = {
       terms: [],
       updateProgress: mockUpdateProgress,
       toggleFavorite: mockToggleFavorite,
       toggleBookmark: mockToggleBookmark,
       getProgress: mockGetProgress,
+    };
+
+    (useWordStore as unknown as jest.Mock).mockImplementation((selector) => {
+      if (typeof selector === 'function') {
+        return selector(emptyState);
+      }
+      return emptyState;
     });
 
     const { getByText } = render(<LearnScreen />);
