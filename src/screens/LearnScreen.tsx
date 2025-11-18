@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import {
   View,
   Text,
@@ -24,42 +24,59 @@ export const LearnScreen = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isComplete, setIsComplete] = useState(false);
 
-  const currentTerm = terms[currentIndex];
-  const progress = currentTerm ? getProgress(currentTerm.id) : undefined;
+  // Memoize current term and progress lookups
+  const currentTerm = useMemo(() => terms[currentIndex], [terms, currentIndex]);
+  const progress = useMemo(() =>
+    currentTerm ? getProgress(currentTerm.id) : undefined,
+    [currentTerm, getProgress]
+  );
 
-  const handleSwipeLeft = () => {
-    if (currentTerm) {
-      updateProgress(currentTerm.id, false);
-      nextCard();
-    }
-  };
-
-  const handleSwipeRight = () => {
-    if (currentTerm) {
-      updateProgress(currentTerm.id, true);
-      nextCard();
-    }
-  };
-
-  const nextCard = () => {
+  // Define nextCard first since other handlers depend on it
+  const nextCard = useCallback(() => {
     if (currentIndex < terms.length - 1) {
       setCurrentIndex(prev => prev + 1);
     } else {
       setIsComplete(true);
       recordStudySession();
     }
-  };
+  }, [currentIndex, terms.length, recordStudySession]);
 
-  const handlePronounce = () => {
+  const handleSwipeLeft = useCallback(() => {
+    if (currentTerm) {
+      updateProgress(currentTerm.id, false);
+      nextCard();
+    }
+  }, [currentTerm, updateProgress, nextCard]);
+
+  const handleSwipeRight = useCallback(() => {
+    if (currentTerm) {
+      updateProgress(currentTerm.id, true);
+      nextCard();
+    }
+  }, [currentTerm, updateProgress, nextCard]);
+
+  const handlePronounce = useCallback(() => {
     if (currentTerm) {
       Speech.speak(currentTerm.term, { rate: 0.75 });
     }
-  };
+  }, [currentTerm]);
 
-  const handleRestart = () => {
+  const handleRestart = useCallback(() => {
     setCurrentIndex(0);
     setIsComplete(false);
-  };
+  }, []);
+
+  const handleFavorite = useCallback(() => {
+    if (currentTerm) {
+      toggleFavorite(currentTerm.id);
+    }
+  }, [currentTerm, toggleFavorite]);
+
+  const handleBookmark = useCallback(() => {
+    if (currentTerm) {
+      toggleBookmark(currentTerm.id);
+    }
+  }, [currentTerm, toggleBookmark]);
 
   if (isComplete) {
     return (
@@ -103,8 +120,8 @@ export const LearnScreen = () => {
           <MedicalTermCard
             term={currentTerm}
             onPronounce={handlePronounce}
-            onFavorite={() => toggleFavorite(currentTerm.id)}
-            onBookmark={() => toggleBookmark(currentTerm.id)}
+            onFavorite={handleFavorite}
+            onBookmark={handleBookmark}
             isFavorited={progress?.isFavorited}
             isBookmarked={progress?.isBookmarked}
           />

@@ -10,7 +10,7 @@ interface Props {
   onSwipeRight: () => void;
 }
 
-export const SwipeableCard: React.FC<Props> = ({
+const SwipeableCardComponent: React.FC<Props> = ({
   children,
   onSwipeLeft,
   onSwipeRight,
@@ -74,6 +74,9 @@ export const SwipeableCard: React.FC<Props> = ({
     </Animated.View>
   );
 };
+
+// Memoize to prevent re-renders during parent state changes
+export const SwipeableCard = React.memo(SwipeableCardComponent);
 
 const styles = StyleSheet.create({
   card: {

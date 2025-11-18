@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { Volume2, Heart, Bookmark, Info } from 'lucide-react-native';
 import { theme } from '../theme/theme';
@@ -14,7 +14,7 @@ interface Props {
   showActions?: boolean;
 }
 
-export const MedicalTermCard: React.FC<Props> = ({
+const MedicalTermCardComponent: React.FC<Props> = ({
   term,
   onPronounce,
   onFavorite,
@@ -25,6 +25,32 @@ export const MedicalTermCard: React.FC<Props> = ({
 }) => {
   const [showDetails, setShowDetails] = useState(false);
 
+  // Memoize expensive calculations
+  const termFontSize = useMemo(() => {
+    const length = term.term.length;
+    if (length <= 10) return 36;
+    if (length <= 15) return 32;
+    if (length <= 20) return 28;
+    return 24;
+  }, [term.term]);
+
+  // Memoize handlers to prevent child re-renders
+  const handlePronounce = useCallback(() => {
+    onPronounce();
+  }, [onPronounce]);
+
+  const handleFavorite = useCallback(() => {
+    onFavorite();
+  }, [onFavorite]);
+
+  const handleBookmark = useCallback(() => {
+    onBookmark();
+  }, [onBookmark]);
+
+  const toggleDetails = useCallback(() => {
+    setShowDetails(prev => !prev);
+  }, []);
+
   return (
     <View style={styles.card}>
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -32,7 +58,7 @@ export const MedicalTermCard: React.FC<Props> = ({
         
         <View style={styles.pronunciationRow}>
           <Text style={styles.pronunciation}>{term.pronunciation}</Text>
-          <TouchableOpacity onPress={onPronounce} style={styles.audioButton}>
+          <TouchableOpacity onPress={handlePronounce} style={styles.audioButton}>
             <Volume2 size={20} color={theme.colors.accent} />
           </TouchableOpacity>
         </View>
@@ -79,7 +105,7 @@ export const MedicalTermCard: React.FC<Props> = ({
         )}
 
         <TouchableOpacity
-          onPress={() => setShowDetails(!showDetails)}
+          onPress={toggleDetails}
           style={styles.detailsButton}
         >
           <Info size={16} color={theme.colors.accent} />
@@ -91,14 +117,14 @@ export const MedicalTermCard: React.FC<Props> = ({
 
       {showActions && (
         <View style={styles.actions}>
-          <TouchableOpacity onPress={onFavorite} style={styles.actionButton}>
+          <TouchableOpacity onPress={handleFavorite} style={styles.actionButton}>
             <Heart
               size={24}
               color={isFavorited ? theme.colors.favorite : theme.colors.textTertiary}
               fill={isFavorited ? theme.colors.favorite : 'none'}
             />
           </TouchableOpacity>
-          <TouchableOpacity onPress={onBookmark} style={styles.actionButton}>
+          <TouchableOpacity onPress={handleBookmark} style={styles.actionButton}>
             <Bookmark
               size={24}
               color={isBookmarked ? theme.colors.bookmark : theme.colors.textTertiary}
@@ -110,6 +136,19 @@ export const MedicalTermCard: React.FC<Props> = ({
     </View>
   );
 };
+
+// Memoize component with custom comparison for optimal performance
+export const MedicalTermCard = React.memo(MedicalTermCardComponent, (prevProps, nextProps) => {
+  return (
+    prevProps.term.id === nextProps.term.id &&
+    prevProps.isFavorited === nextProps.isFavorited &&
+    prevProps.isBookmarked === nextProps.isBookmarked &&
+    prevProps.showActions === nextProps.showActions &&
+    prevProps.onPronounce === nextProps.onPronounce &&
+    prevProps.onFavorite === nextProps.onFavorite &&
+    prevProps.onBookmark === nextProps.onBookmark
+  );
+});
 
 const styles = StyleSheet.create({
   card: {
