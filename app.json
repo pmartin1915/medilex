@@ -10,6 +10,16 @@
     "newArchEnabled": false,
     "privacy": "public",
     "platforms": ["ios", "android"],
+    "plugins": [
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "kotlinVersion": "2.0.20"
+          }
+        }
+      ]
+    ],
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",

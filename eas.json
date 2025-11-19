@@ -1,22 +1,41 @@
 {
   "cli": {
-    "version": ">= 12.10.3"
+    "version": ">= 12.10.3",
+    "appVersionSource": "remote"
   },
   "build": {
     "development": {
       "developmentClient": true,
       "distribution": "internal",
+      "android": {
+        "buildType": "apk"
+      },
       "ios": {
         "simulator": true
+      },
+      "env": {
+        "EXPO_USE_FAST_RESOLVER": "1"
       }
     },
     "preview": {
       "distribution": "internal",
-      "channel": "preview"
+      "channel": "preview",
+      "android": {
+        "buildType": "apk"
+      },
+      "env": {
+        "EXPO_USE_FAST_RESOLVER": "1"
+      }
     },
     "production": {
       "autoIncrement": true,
-      "channel": "production"
+      "channel": "production",
+      "android": {
+        "buildType": "apk"
+      },
+      "env": {
+        "EXPO_USE_FAST_RESOLVER": "1"
+      }
     }
   },
   "submit": {
