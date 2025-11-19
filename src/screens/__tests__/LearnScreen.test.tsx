@@ -229,4 +229,121 @@ describe('LearnScreen', () => {
     // useCallback should prevent handler recreation
     expect(mockUpdateProgress.mock.calls.length).toBe(initialCallCount);
   });
+
+  it('integrates with SwipeableCard for swipe gestures', () => {
+    const { UNSAFE_root } = render(<LearnScreen />);
+
+    // Find component with swipe handlers (SwipeableCard)
+    // SwipeableCard is memoized, so we find it by its props signature
+    const swipeableComponent = UNSAFE_root.findAll((node: any) => {
+      return (
+        node.props &&
+        typeof node.props.onSwipeLeft === 'function' &&
+        typeof node.props.onSwipeRight === 'function'
+      );
+    });
+
+    // Verify SwipeableCard is rendered with swipe handlers
+    expect(swipeableComponent.length).toBeGreaterThan(0);
+
+    // Verify the handlers are properly bound functions
+    const component = swipeableComponent[0];
+    expect(component.props.onSwipeLeft).toBeDefined();
+    expect(component.props.onSwipeRight).toBeDefined();
+  });
+
+  it('calls Speech.speak when pronounce is triggered', () => {
+    const speakSpy = jest.spyOn(Speech, 'speak');
+
+    const { UNSAFE_root } = render(<LearnScreen />);
+
+    const medicalTermCard = UNSAFE_root.findAllByType(
+      require('../../components/MedicalTermCard').MedicalTermCard
+    )[0];
+
+    medicalTermCard.props.onPronounce();
+
+    expect(speakSpy).toHaveBeenCalledWith('Tachycardia', { rate: 0.75 });
+  });
+
+  it('calls toggleFavorite when favorite is triggered', () => {
+    const { UNSAFE_root } = render(<LearnScreen />);
+
+    const medicalTermCard = UNSAFE_root.findAllByType(
+      require('../../components/MedicalTermCard').MedicalTermCard
+    )[0];
+
+    medicalTermCard.props.onFavorite();
+
+    expect(mockToggleFavorite).toHaveBeenCalledWith('1');
+  });
+
+  it('calls toggleBookmark when bookmark is triggered', () => {
+    const { UNSAFE_root } = render(<LearnScreen />);
+
+    const medicalTermCard = UNSAFE_root.findAllByType(
+      require('../../components/MedicalTermCard').MedicalTermCard
+    )[0];
+
+    medicalTermCard.props.onBookmark();
+
+    expect(mockToggleBookmark).toHaveBeenCalledWith('1');
+  });
+
+  it('passes correct favorite state to MedicalTermCard', () => {
+    mockGetProgress.mockReturnValue({
+      termId: '1',
+      userId: 'test',
+      timesStudied: 0,
+      timesCorrect: 0,
+      timesIncorrect: 0,
+      lastStudied: new Date(),
+      masteryLevel: 'new',
+      isFavorited: true,
+      isBookmarked: false,
+    });
+
+    const { UNSAFE_root } = render(<LearnScreen />);
+
+    const medicalTermCard = UNSAFE_root.findAllByType(
+      require('../../components/MedicalTermCard').MedicalTermCard
+    )[0];
+
+    expect(medicalTermCard.props.isFavorited).toBe(true);
+  });
+
+  it('passes correct bookmark state to MedicalTermCard', () => {
+    mockGetProgress.mockReturnValue({
+      termId: '1',
+      userId: 'test',
+      timesStudied: 0,
+      timesCorrect: 0,
+      timesIncorrect: 0,
+      lastStudied: new Date(),
+      masteryLevel: 'new',
+      isFavorited: false,
+      isBookmarked: true,
+    });
+
+    const { UNSAFE_root } = render(<LearnScreen />);
+
+    const medicalTermCard = UNSAFE_root.findAllByType(
+      require('../../components/MedicalTermCard').MedicalTermCard
+    )[0];
+
+    expect(medicalTermCard.props.isBookmarked).toBe(true);
+  });
+
+  it('handles undefined progress gracefully', () => {
+    mockGetProgress.mockReturnValue(undefined);
+
+    const { UNSAFE_root } = render(<LearnScreen />);
+
+    const medicalTermCard = UNSAFE_root.findAllByType(
+      require('../../components/MedicalTermCard').MedicalTermCard
+    )[0];
+
+    expect(medicalTermCard.props.isFavorited).toBeUndefined();
+    expect(medicalTermCard.props.isBookmarked).toBeUndefined();
+  });
 });
