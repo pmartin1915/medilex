@@ -9,7 +9,10 @@
     "userInterfaceStyle": "light",
     "newArchEnabled": false,
     "privacy": "public",
-    "platforms": ["ios", "android"],
+    "platforms": [
+      "ios",
+      "android"
+    ],
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
@@ -40,6 +43,11 @@
     },
     "assetBundlePatterns": [
       "**/*"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "ee690d6d-a26d-4b2f-a820-64e4aa1b5b21"
+      }
+    }
   }
 }
