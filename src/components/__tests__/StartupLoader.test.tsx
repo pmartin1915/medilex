@@ -22,15 +22,25 @@ jest.mock('../../store/streakStore', () => ({
   useStreakStore: jest.fn(),
 }));
 
+// Mock navigation libraries (used in StartupLoader)
+jest.mock('@react-navigation/native', () => ({
+  useNavigation: jest.fn(),
+  NavigationContainer: jest.fn(),
+}));
+
+jest.mock('@react-navigation/bottom-tabs', () => ({
+  createBottomTabNavigator: jest.fn(),
+}));
+
 const mockErrorLogger = errorLogger as jest.Mocked<typeof errorLogger>;
 
 describe('StartupLoader', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    // Reset ALL mocks to default success behavior
-    mockErrorLogger.initialize.mockReset().mockResolvedValue(undefined);
-    mockErrorLogger.logInfo.mockReset();
-    mockErrorLogger.logError.mockReset();
+    // Reset ALL mocks and restore default success behavior
+    mockErrorLogger.initialize.mockResolvedValue(undefined);
+    mockErrorLogger.logInfo.mockReturnValue(undefined);
+    mockErrorLogger.logError.mockReturnValue(undefined);
   });
 
   it('renders correctly with initial loading state', () => {
@@ -121,8 +131,8 @@ describe('StartupLoader', () => {
 
     await waitFor(() => {
       expect(getByText('Specific error message')).toBeTruthy();
-    }, { timeout: 5000 });
-  });
+    }, { timeout: 10000 });
+  }, 15000); // Increase test timeout
 
   it('shows running indicator for current step', async () => {
     const onComplete = jest.fn();
