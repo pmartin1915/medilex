@@ -49,7 +49,8 @@
       "favicon": "./assets/favicon.png"
     },
     "updates": {
-      "fallbackToCacheTimeout": 0
+      "fallbackToCacheTimeout": 0,
+      "url": "https://u.expo.dev/ee690d6d-a26d-4b2f-a820-64e4aa1b5b21"
     },
     "assetBundlePatterns": [
       "**/*"
@@ -58,6 +59,9 @@
       "eas": {
         "projectId": "ee690d6d-a26d-4b2f-a820-64e4aa1b5b21"
       }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
     }
   }
 }
