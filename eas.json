@@ -23,6 +23,10 @@
       "android": {
         "buildType": "apk"
       },
+      "ios": {
+        "buildConfiguration": "Release",
+        "simulator": false
+      },
       "env": {
         "EXPO_USE_FAST_RESOLVER": "1"
       }
@@ -32,6 +36,10 @@
       "channel": "production",
       "android": {
         "buildType": "apk"
+      },
+      "ios": {
+        "buildConfiguration": "Release",
+        "simulator": false
       },
       "env": {
         "EXPO_USE_FAST_RESOLVER": "1"
