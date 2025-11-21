@@ -17,7 +17,7 @@ A mobile flashcard application for learning medical terminology, built with Reac
 
 - **React Native** 0.76.5
 - **React** 18.2.0 (Critical: NOT React 19!)
-- **Expo** SDK 52
+- **Expo** SDK 54
 - **TypeScript** 5.3.3
 - **React Navigation** v6
 - **Zustand** v4.5.2 (State Management)
@@ -174,8 +174,52 @@ Built following best practices from:
 - React Navigation guides
 - Zustand state management patterns
 
+## Testing
+
+```bash
+# Run all tests
+npm test
+
+# Run with coverage
+npm run test:coverage
+
+# Watch mode
+npm run test:watch
+```
+
+**Current Coverage**: 75.95% statements, 73.68% functions, 65.06% branches (199/199 tests passing ✅)
+
+## Deployment
+
+Ready to deploy to App Store and Google Play! See **[DEPLOYMENT.md](./DEPLOYMENT.md)** for complete production checklist.
+
+**Quick Deploy:**
+```bash
+# Install EAS CLI
+npm install -g eas-cli
+eas login
+
+# Configure project
+eas build:configure
+
+# Build for iOS
+eas build --platform ios --profile production
+
+# Build for Android
+eas build --platform android --profile production
+
+# Submit to stores
+eas submit --platform ios
+eas submit --platform android
+```
+
+**Important Files:**
+- `DEPLOYMENT.md` - Complete deployment checklist and guide
+- `PRIVACY_POLICY.md` - Privacy policy (required for app stores)
+- `eas.json` - EAS Build configuration
+
 ---
 
-**Version**: 1.0.0  
-**Last Updated**: January 2025  
+**Version**: 1.0.0
+**Last Updated**: January 2025
 **Status**: Production Ready ✅

@@ -1,6 +1,9 @@
 module.exports = {
   preset: 'jest-expo',
   setupFiles: ['<rootDir>/jest.setup.js'],
+  moduleNameMapper: {
+    '^react-native/Libraries/BatchedBridge/NativeModules$': '<rootDir>/__mocks__/react-native/Libraries/BatchedBridge/NativeModules.js',
+  },
   transformIgnorePatterns: [
     'node_modules/(?!((jest-)?react-native|@react-native|@react-navigation|@expo|expo.*|lucide-react-native|zustand)/)',
   ],
