@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
 import { theme } from '../theme/theme';
+// Static imports for test environment (Jest doesn't handle dynamic imports well)
+import { errorLogger as staticErrorLogger } from '../utils/errorLogger';
+import { useWordStore as staticUseWordStore } from '../store/wordStore';
+import { useStreakStore as staticUseStreakStore } from '../store/streakStore';
+import AsyncStorageStatic from '@react-native-async-storage/async-storage';
 
 interface StartupStep {
   name: string;
@@ -36,6 +41,8 @@ export const StartupLoader: React.FC<Props> = ({ onComplete, children }) => {
   };
 
   const runStartupSequence = async () => {
+    // Detect test environment - Jest sets JEST_WORKER_ID
+    const isTestEnv = process.env.JEST_WORKER_ID !== undefined || process.env.NODE_ENV === 'test';
     let errorLogger: any = null;
 
     try {
@@ -45,9 +52,14 @@ export const StartupLoader: React.FC<Props> = ({ onComplete, children }) => {
       await new Promise(resolve => setTimeout(resolve, 100));
 
       try {
-        // Dynamically import errorLogger after React Native is ready
-        const errorLoggerModule = await import('../utils/errorLogger');
-        errorLogger = errorLoggerModule.errorLogger;
+        // Use static imports in test environment (Jest doesn't handle dynamic imports well)
+        if (isTestEnv) {
+          errorLogger = staticErrorLogger;
+        } else {
+          // Dynamically import errorLogger after React Native is ready (production)
+          const errorLoggerModule = await import('../utils/errorLogger');
+          errorLogger = errorLoggerModule.errorLogger;
+        }
         await errorLogger.initialize();
         errorLogger.logInfo('Error logger initialized', 'StartupLoader');
         updateStep(0, 'success');
@@ -64,8 +76,15 @@ export const StartupLoader: React.FC<Props> = ({ onComplete, children }) => {
 
       try {
         // Check if we can import stores
-        const { useWordStore } = await import('../store/wordStore');
-        const { useStreakStore } = await import('../store/streakStore');
+        if (isTestEnv) {
+          // Use static imports in test environment
+          const useWordStore = staticUseWordStore;
+          const useStreakStore = staticUseStreakStore;
+        } else {
+          // Dynamic imports for production
+          const { useWordStore } = await import('../store/wordStore');
+          const { useStreakStore } = await import('../store/streakStore');
+        }
 
         if (errorLogger) {
           errorLogger.logInfo('Stores imported successfully', 'StartupLoader');
@@ -86,7 +105,10 @@ export const StartupLoader: React.FC<Props> = ({ onComplete, children }) => {
       await new Promise(resolve => setTimeout(resolve, 100));
 
       try {
-        const AsyncStorage = (await import('@react-native-async-storage/async-storage')).default;
+        // Use static import in test environment
+        const AsyncStorage = isTestEnv
+          ? AsyncStorageStatic
+          : (await import('@react-native-async-storage/async-storage')).default;
 
         // Try to read/write test data
         const testKey = '@vocab_app:startup_test';
@@ -118,8 +140,11 @@ export const StartupLoader: React.FC<Props> = ({ onComplete, children }) => {
 
       try {
         // Check if navigation dependencies are available
-        await import('@react-navigation/native');
-        await import('@react-navigation/bottom-tabs');
+        // In test environment, these are mocked at module level, so skip dynamic import
+        if (!isTestEnv) {
+          await import('@react-navigation/native');
+          await import('@react-navigation/bottom-tabs');
+        }
 
         if (errorLogger) {
           errorLogger.logInfo('Navigation libraries loaded', 'StartupLoader');
