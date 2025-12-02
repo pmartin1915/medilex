@@ -121,6 +121,7 @@ class ErrorLogger {
 
   async clearLogs() {
     this.logs = [];
+    this.initialized = false; // Allow re-initialization (useful for testing)
     try {
       await AsyncStorage.removeItem(ERROR_LOG_KEY);
       console.log('[ErrorLogger] Logs cleared');
