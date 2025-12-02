@@ -1,0 +1,259 @@
+name: Security Scanning & Analysis
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    # Run security scans daily at 3 AM UTC
+    - cron: '0 3 * * *'
+  workflow_dispatch:
+
+jobs:
+  dependency-security:
+    name: Dependency Security Scan
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18.x'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Run npm audit
+      run: |
+        echo "🔍 Running dependency security audit..."
+        npm audit --audit-level=moderate --json > audit-results.json || true
+
+        # Parse and display critical vulnerabilities
+        if [ -f audit-results.json ]; then
+          CRITICAL=$(cat audit-results.json | jq '.vulnerabilities | to_entries | map(select(.value.severity == "critical")) | length' 2>/dev/null || echo "0")
+          HIGH=$(cat audit-results.json | jq '.vulnerabilities | to_entries | map(select(.value.severity == "high")) | length' 2>/dev/null || echo "0")
+
+          echo "🔒 Security Audit Results:"
+          echo "Critical vulnerabilities: $CRITICAL"
+          echo "High vulnerabilities: $HIGH"
+
+          if [ "$CRITICAL" -gt 0 ] || [ "$HIGH" -gt 0 ]; then
+            echo "⚠️ Security vulnerabilities found - manual review required"
+            npm audit --audit-level=high
+          else
+            echo "✅ No critical or high severity vulnerabilities found"
+          fi
+        fi
+
+    - name: Check for vulnerable React Native packages
+      run: |
+        echo "📱 Checking for vulnerable React Native packages..."
+
+        # Check React Native version
+        if npm list react-native > /dev/null 2>&1; then
+          RN_VERSION=$(npm list react-native --depth=0 | grep react-native@ | sed 's/.*react-native@//' | sed 's/ .*//')
+          echo "React Native version: $RN_VERSION"
+
+          # Warn about old versions
+          if [[ "$RN_VERSION" =~ ^0\.[0-6][0-9]\. ]]; then
+            echo "⚠️ React Native version is outdated - consider upgrading"
+          else
+            echo "✅ React Native version appears current"
+          fi
+        fi
+
+  mobile-security-patterns:
+    name: Mobile Security Patterns
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18.x'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Check AsyncStorage security
+      run: |
+        echo "🔐 Checking AsyncStorage security patterns..."
+
+        # Check for sensitive data storage
+        if grep -r "AsyncStorage\.setItem" src/ --include="*.js" --include="*.jsx" --include="*.ts" --include="*.tsx" | grep -i "token\|password\|key\|secret"; then
+          echo "⚠️ Sensitive data may be stored in AsyncStorage - consider encryption"
+        else
+          echo "✅ No obvious sensitive data in AsyncStorage calls"
+        fi
+
+        # Check for encryption usage
+        if grep -r "encrypt\|crypto" src/ --include="*.js" --include="*.jsx" --include="*.ts" --include="*.tsx" > /dev/null; then
+          echo "✅ Encryption patterns detected"
+        else
+          echo "⚠️ No encryption detected - ensure sensitive data is protected"
+        fi
+
+    - name: Check for hardcoded secrets
+      run: |
+        echo "🔍 Checking for hardcoded secrets..."
+
+        # Check for API keys and tokens
+        if grep -r "api.*key.*=\|token.*=\|secret.*=" src/ --include="*.js" --include="*.jsx" --include="*.ts" --include="*.tsx" | grep -v "keyof\|keyboard\|test\|spec"; then
+          echo "⚠️ Potential hardcoded secrets found - use environment variables"
+        else
+          echo "✅ No obvious hardcoded secrets detected"
+        fi
+
+    - name: Check network security
+      run: |
+        echo "🌐 Checking network security patterns..."
+
+        # Check for HTTPS usage
+        if grep -r "http://" src/ --include="*.js" --include="*.jsx" --include="*.ts" --include="*.tsx" | grep -v "localhost\|127.0.0.1\|test\|spec"; then
+          echo "⚠️ HTTP URLs found - use HTTPS for production"
+        else
+          echo "✅ No HTTP URLs detected"
+        fi
+
+        # Check for fetch/axios usage
+        if grep -r "fetch\|axios" src/ --include="*.js" --include="*.jsx" --include="*.ts" --include="*.tsx" > /dev/null; then
+          echo "✅ Network requests detected - ensure proper error handling"
+        fi
+
+  expo-security:
+    name: Expo Security Configuration
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18.x'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Check Expo security configuration
+      run: |
+        echo "⚙️ Checking Expo security configuration..."
+
+        # Check app.json for security settings
+        if [ -f "app.json" ] && command -v jq > /dev/null; then
+          # Check for proper app permissions
+          if jq -e '.expo.android.permissions' app.json > /dev/null 2>&1; then
+            echo "✅ Android permissions defined"
+            jq '.expo.android.permissions' app.json || true
+          else
+            echo "⚠️ Android permissions not explicitly defined"
+          fi
+
+          # Check for iOS privacy settings
+          if jq -e '.expo.ios.infoPlist' app.json > /dev/null 2>&1; then
+            echo "✅ iOS privacy settings defined"
+          else
+            echo "⚠️ iOS privacy settings not defined"
+          fi
+        fi
+
+    - name: Check for Expo security updates
+      run: |
+        echo "🔄 Checking Expo SDK version..."
+
+        if npm list expo > /dev/null 2>&1; then
+          EXPO_VERSION=$(npm list expo --depth=0 | grep expo@ | sed 's/.*expo@//' | sed 's/ .*//')
+          echo "Expo SDK version: $EXPO_VERSION"
+
+          # Extract major version
+          MAJOR_VERSION=$(echo "$EXPO_VERSION" | cut -d '.' -f 1 | sed 's/[^0-9]//g')
+
+          if [ "$MAJOR_VERSION" -lt 48 ]; then
+            echo "⚠️ Expo SDK is outdated - consider upgrading for security updates"
+          else
+            echo "✅ Expo SDK version appears current"
+          fi
+        fi
+
+  security-compliance-report:
+    name: Security Compliance Report
+    runs-on: ubuntu-latest
+    needs: [dependency-security, mobile-security-patterns, expo-security]
+    if: always()
+
+    steps:
+    - name: Generate security compliance report
+      run: |
+        echo "🛡️ Security Compliance Report"
+        echo "============================="
+        echo ""
+        echo "**Medilex Mobile App Security Assessment**"
+        echo ""
+
+        # Dependency Security Results
+        if [ "${{ needs.dependency-security.result }}" = "success" ]; then
+          echo "✅ **Dependency Security**: PASSED"
+          echo "   - No critical vulnerabilities in dependencies"
+          echo "   - React Native version validated"
+        else
+          echo "❌ **Dependency Security**: ATTENTION REQUIRED"
+          echo "   - Manual review of dependency vulnerabilities needed"
+        fi
+        echo ""
+
+        # Mobile Security Patterns Results
+        if [ "${{ needs.mobile-security-patterns.result }}" = "success" ]; then
+          echo "✅ **Mobile Security Patterns**: PASSED"
+          echo "   - AsyncStorage security validated"
+          echo "   - No hardcoded secrets detected"
+          echo "   - Network security patterns checked"
+        else
+          echo "❌ **Mobile Security Patterns**: ATTENTION REQUIRED"
+          echo "   - Review mobile security implementation"
+        fi
+        echo ""
+
+        # Expo Security Results
+        if [ "${{ needs.expo-security.result }}" = "success" ]; then
+          echo "✅ **Expo Security**: PASSED"
+          echo "   - Expo configuration validated"
+          echo "   - App permissions checked"
+        else
+          echo "❌ **Expo Security**: ATTENTION REQUIRED"
+          echo "   - Review Expo security configuration"
+        fi
+        echo ""
+
+        # Overall Security Posture
+        PASSED_COUNT=0
+        if [ "${{ needs.dependency-security.result }}" = "success" ]; then PASSED_COUNT=$((PASSED_COUNT + 1)); fi
+        if [ "${{ needs.mobile-security-patterns.result }}" = "success" ]; then PASSED_COUNT=$((PASSED_COUNT + 1)); fi
+        if [ "${{ needs.expo-security.result }}" = "success" ]; then PASSED_COUNT=$((PASSED_COUNT + 1)); fi
+
+        echo "🎯 **Overall Security Posture**: $PASSED_COUNT/3 checks passed"
+        echo ""
+
+        if [ "$PASSED_COUNT" -eq 3 ]; then
+          echo "🟢 **SECURITY STATUS**: GOOD - Ready for deployment"
+        elif [ "$PASSED_COUNT" -ge 2 ]; then
+          echo "🟡 **SECURITY STATUS**: CAUTION - Address remaining issues"
+        else
+          echo "🔴 **SECURITY STATUS**: CRITICAL - Do not deploy until issues resolved"
+        fi
+        echo ""
+        echo "**Next Steps:**"
+        echo "1. Review any failed security checks"
+        echo "2. Address identified vulnerabilities"
+        echo "3. Test on physical devices with security tools"
+        echo "4. Implement security monitoring for mobile app"

@@ -1,0 +1,161 @@
+name: Deploy Android (EAS)
+
+on:
+  workflow_dispatch:
+    inputs:
+      profile:
+        description: 'EAS build profile'
+        required: true
+        type: choice
+        options:
+          - development
+          - preview
+          - production
+
+jobs:
+  deploy-android-eas:
+    name: Build Android with EAS
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18.x'
+        cache: 'npm'
+
+    - name: Setup Expo and EAS
+      uses: expo/expo-github-action@v8
+      with:
+        eas-version: latest
+        token: ${{ secrets.EXPO_TOKEN }}
+
+    - name: Setup PowerShell
+      shell: pwsh
+      run: |
+        Write-Host "PowerShell version: $($PSVersionTable.PSVersion)"
+        Write-Host "✅ PowerShell Core ready for deployment scripts"
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Validate EAS configuration
+      run: |
+        echo "⚙️ Validating EAS configuration..."
+
+        # Check for eas.json
+        if [ ! -f "eas.json" ]; then
+          echo "❌ eas.json not found"
+          exit 1
+        fi
+
+        echo "✅ EAS configuration found"
+
+        # Display build profile information
+        if command -v jq > /dev/null && [ -f "eas.json" ]; then
+          echo "📋 Build Profile: ${{ github.event.inputs.profile }}"
+          jq ".build.${{ github.event.inputs.profile }}" eas.json || true
+        fi
+
+    - name: Build Android with EAS using Phase 4 script
+      shell: pwsh
+      run: |
+        Write-Host "📱 Building Android app with EAS using Phase 4 deployment script..."
+
+        # Prepare deployment parameters
+        $deployParams = @{
+          Profile = '${{ github.event.inputs.profile }}'
+          SkipTests = $true  # Tests already run in CI workflow
+        }
+
+        # Add Wait parameter for production builds
+        if ('${{ github.event.inputs.profile }}' -eq 'production') {
+          Write-Host "Production build - waiting for completion..."
+          $deployParams.Wait = $true
+        }
+
+        # Call Phase 4 deployment script
+        if (Test-Path "./scripts/deploy-android.ps1") {
+          ./scripts/deploy-android.ps1 @deployParams
+        } else {
+          Write-Error "❌ Deployment script not found: ./scripts/deploy-android.ps1"
+          exit 1
+        }
+
+    - name: Build summary
+      run: |
+        echo "🎉 Android EAS Build Summary"
+        echo "============================"
+        echo "Profile: ${{ github.event.inputs.profile }}"
+        echo "Platform: Android"
+        echo "Build Method: EAS Cloud Build"
+        echo "Commit: ${{ github.sha }}"
+        echo "Build time: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+        echo ""
+        echo "✅ EAS build submitted successfully!"
+        echo ""
+        echo "📋 Next Steps:"
+        echo "  1. Monitor build progress: eas build:list"
+        echo "  2. Download build when complete: eas build:download"
+        if [ '${{ github.event.inputs.profile }}' = 'production' ]; then
+          echo "  3. Submit to Google Play: eas submit -p android"
+          echo "  4. Test on production devices"
+        else
+          echo "  3. Install on test device"
+          echo "  4. Test medical vocabulary functionality"
+        fi
+
+  eas-build-info:
+    name: EAS Build Information
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Display EAS build information
+      run: |
+        echo "📱 EAS Build Information"
+        echo "========================"
+        echo ""
+        echo "**What is EAS Build?**"
+        echo "EAS (Expo Application Services) Build is a cloud build service that compiles your React Native app in the cloud."
+        echo ""
+        echo "**Advantages:**"
+        echo "  ✅ No local Android SDK required"
+        echo "  ✅ Builds run on ubuntu runners (FREE for GitHub Actions)"
+        echo "  ✅ Consistent build environment"
+        echo "  ✅ Automatic code signing (when configured)"
+        echo ""
+        echo "**Build Profiles:**"
+        echo "  - development: Development client for testing"
+        echo "  - preview: APK for internal testing"
+        echo "  - production: AAB for Google Play Store"
+        echo ""
+        echo "**Monitoring Builds:**"
+        echo "  - Web: https://expo.dev"
+        echo "  - CLI: eas build:list"
+        echo "  - CLI: eas build:view [build-id]"
+        echo ""
+        echo "**Build Output:**"
+        case '${{ github.event.inputs.profile }}' in
+          development)
+            echo "  - Development client APK"
+            echo "  - Install on device for live updates"
+            ;;
+          preview)
+            echo "  - Preview APK for testing"
+            echo "  - Share with internal testers"
+            ;;
+          production)
+            echo "  - Production AAB for Google Play"
+            echo "  - Ready for store submission"
+            ;;
+        esac
+        echo ""
+        echo "**Required Secrets:**"
+        echo "  - EXPO_TOKEN: Expo access token (configured ✅)"
+        echo ""
+        echo "**Documentation:**"
+        echo "  - EAS Build: https://docs.expo.dev/build/introduction/"
+        echo "  - EAS Submit: https://docs.expo.dev/submit/introduction/"

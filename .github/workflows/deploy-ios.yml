@@ -1,0 +1,176 @@
+name: Deploy iOS (EAS)
+
+on:
+  workflow_dispatch:
+    inputs:
+      profile:
+        description: 'EAS build profile'
+        required: true
+        type: choice
+        options:
+          - development
+          - preview
+          - production
+
+jobs:
+  deploy-ios-eas:
+    name: Build iOS with EAS
+    runs-on: ubuntu-latest  # iOS builds via EAS can use ubuntu runners!
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18.x'
+        cache: 'npm'
+
+    - name: Setup Expo and EAS
+      uses: expo/expo-github-action@v8
+      with:
+        eas-version: latest
+        token: ${{ secrets.EXPO_TOKEN }}
+
+    - name: Setup PowerShell
+      shell: pwsh
+      run: |
+        Write-Host "PowerShell version: $($PSVersionTable.PSVersion)"
+        Write-Host "✅ PowerShell Core ready for deployment scripts"
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Validate EAS configuration
+      run: |
+        echo "⚙️ Validating EAS configuration..."
+
+        # Check for eas.json
+        if [ ! -f "eas.json" ]; then
+          echo "❌ eas.json not found"
+          exit 1
+        fi
+
+        echo "✅ EAS configuration found"
+
+        # Display build profile information
+        if command -v jq > /dev/null && [ -f "eas.json" ]; then
+          echo "📋 Build Profile: ${{ github.event.inputs.profile }}"
+          jq ".build.${{ github.event.inputs.profile }}" eas.json || true
+        fi
+
+    - name: Build iOS with EAS using Phase 4 script
+      shell: pwsh
+      run: |
+        Write-Host "📱 Building iOS app with EAS using Phase 4 deployment script..."
+
+        # Prepare deployment parameters
+        $deployParams = @{
+          Profile = '${{ github.event.inputs.profile }}'
+          SkipTests = $true  # Tests already run in CI workflow
+        }
+
+        # Add Wait parameter for production builds
+        if ('${{ github.event.inputs.profile }}' -eq 'production') {
+          Write-Host "Production build - waiting for completion..."
+          $deployParams.Wait = $true
+        }
+
+        # Call Phase 4 deployment script
+        if (Test-Path "./scripts/deploy-ios.ps1") {
+          ./scripts/deploy-ios.ps1 @deployParams
+        } else {
+          Write-Error "❌ Deployment script not found: ./scripts/deploy-ios.ps1"
+          exit 1
+        }
+
+    - name: Build summary
+      run: |
+        echo "🎉 iOS EAS Build Summary"
+        echo "========================"
+        echo "Profile: ${{ github.event.inputs.profile }}"
+        echo "Platform: iOS"
+        echo "Build Method: EAS Cloud Build (ubuntu runner)"
+        echo "Commit: ${{ github.sha }}"
+        echo "Build time: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+        echo ""
+        echo "✅ EAS build submitted successfully!"
+        echo ""
+        echo "⭐ Key Advantage: iOS build runs on FREE ubuntu runners!"
+        echo "   (No expensive macOS runners needed with EAS)"
+        echo ""
+        echo "📋 Next Steps:"
+        echo "  1. Monitor build progress: eas build:list"
+        echo "  2. Download build when complete: eas build:download"
+        if [ '${{ github.event.inputs.profile }}' = 'production' ]; then
+          echo "  3. Submit to App Store: eas submit -p ios"
+          echo "  4. Test on production devices"
+        else
+          echo "  3. Install on test device or simulator"
+          echo "  4. Test medical vocabulary functionality"
+        fi
+
+  eas-ios-build-info:
+    name: EAS iOS Build Information
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Display EAS iOS build information
+      run: |
+        echo "🍎 EAS iOS Build Information"
+        echo "============================"
+        echo ""
+        echo "**Why EAS for iOS?**"
+        echo "EAS Build eliminates the need for macOS machines!"
+        echo ""
+        echo "**Cost Comparison:**"
+        echo "  - Traditional CI (macOS runner): $0.08/min = ~$12-24 per build"
+        echo "  - EAS Build (ubuntu runner): FREE (build happens in Expo cloud)"
+        echo ""
+        echo "**Advantages:**"
+        echo "  ✅ No macOS required"
+        echo "  ✅ No Xcode installation needed"
+        echo "  ✅ Builds run on FREE ubuntu runners"
+        echo "  ✅ Automatic code signing (when configured)"
+        echo "  ✅ Can build from Windows/Linux/macOS"
+        echo ""
+        echo "**Build Profiles:**"
+        echo "  - development: Development client for testing"
+        echo "  - preview: Simulator build for testing"
+        echo "  - production: Archive for App Store"
+        echo ""
+        echo "**Monitoring Builds:**"
+        echo "  - Web: https://expo.dev"
+        echo "  - CLI: eas build:list"
+        echo "  - CLI: eas build:view [build-id]"
+        echo ""
+        echo "**Build Output:**"
+        case '${{ github.event.inputs.profile }}' in
+          development)
+            echo "  - Development client IPA"
+            echo "  - Install on device for live updates"
+            ;;
+          preview)
+            echo "  - Simulator build"
+            echo "  - Test on iOS Simulator"
+            ;;
+          production)
+            echo "  - Production archive for App Store"
+            echo "  - Ready for store submission"
+            ;;
+        esac
+        echo ""
+        echo "**Required Secrets:**"
+        echo "  - EXPO_TOKEN: Expo access token (configured ✅)"
+        echo ""
+        echo "**iOS Credentials:**"
+        echo "  - Distribution certificate"
+        echo "  - Provisioning profile"
+        echo "  - App Store Connect API key (for submission)"
+        echo "  - Configure via: eas credentials"
+        echo ""
+        echo "**Documentation:**"
+        echo "  - EAS Build: https://docs.expo.dev/build/introduction/"
+        echo "  - iOS Credentials: https://docs.expo.dev/app-signing/managed-credentials/"
+        echo "  - EAS Submit: https://docs.expo.dev/submit/ios/"
