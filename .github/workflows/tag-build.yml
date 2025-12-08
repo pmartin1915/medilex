@@ -1,0 +1,77 @@
+name: Tag-Based Build
+
+on:
+  push:
+    tags:
+      - 'medilex-v*.*.*'
+      - 'medilex-v*.*.*-alpha.*'
+      - 'medilex-v*.*.*-beta.*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+      
+      - name: Setup Expo
+        uses: expo/expo-github-action@v8
+        with:
+          expo-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Extract version and profile
+        id: version
+        run: |
+          TAG=${GITHUB_REF#refs/tags/medilex-v}
+          echo "version=$TAG" >> $GITHUB_OUTPUT
+          if [[ $TAG == *"-alpha."* ]]; then
+            echo "profile=development" >> $GITHUB_OUTPUT
+          elif [[ $TAG == *"-beta."* ]]; then
+            echo "profile=preview" >> $GITHUB_OUTPUT
+          else
+            echo "profile=production" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Build Android via EAS
+        run: |
+          eas build --platform android --profile ${{ steps.version.outputs.profile }} --non-interactive --wait
+      
+      - name: Build iOS via EAS
+        run: |
+          eas build --platform ios --profile ${{ steps.version.outputs.profile }} --non-interactive --wait
+      
+      - name: Download builds
+        run: |
+          eas build:download --platform android --profile ${{ steps.version.outputs.profile }} --output medilex-android-${{ steps.version.outputs.version }}.apk
+          eas build:download --platform ios --profile ${{ steps.version.outputs.profile }} --output medilex-ios-${{ steps.version.outputs.version }}.ipa
+      
+      - name: Upload to Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            medilex-android-${{ steps.version.outputs.version }}.apk
+            medilex-ios-${{ steps.version.outputs.version }}.ipa
+          tag_name: ${{ github.ref_name }}
+          name: Medilex ${{ steps.version.outputs.version }}
+          draft: false
+          prerelease: ${{ contains(steps.version.outputs.version, '-') }}
+      
+      - name: Notify build status
+        if: always()
+        shell: pwsh
+        run: |
+          cd ../scripts
+          $status = if ('${{ job.status }}' -eq 'success') { 'success' } else { 'failure' }
+          ./notify-build.ps1 -Status $status -App Medilex -Platform android -Profile ${{ steps.version.outputs.profile }} -DownloadUrl "https://github.com/${{ github.repository }}/releases/tag/${{ github.ref_name }}"
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
