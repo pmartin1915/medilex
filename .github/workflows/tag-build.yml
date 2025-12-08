@@ -10,6 +10,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        platform: [android, ios]
     
     steps:
       - uses: actions/checkout@v4
@@ -41,25 +44,19 @@ jobs:
             echo "profile=production" >> $GITHUB_OUTPUT
           fi
       
-      - name: Build Android via EAS
+      - name: Build ${{ matrix.platform }} via EAS
         run: |
-          eas build --platform android --profile ${{ steps.version.outputs.profile }} --non-interactive --wait
+          eas build --platform ${{ matrix.platform }} --profile ${{ steps.version.outputs.profile }} --non-interactive --wait
       
-      - name: Build iOS via EAS
+      - name: Download build
         run: |
-          eas build --platform ios --profile ${{ steps.version.outputs.profile }} --non-interactive --wait
-      
-      - name: Download builds
-        run: |
-          eas build:download --platform android --profile ${{ steps.version.outputs.profile }} --output medilex-android-${{ steps.version.outputs.version }}.apk
-          eas build:download --platform ios --profile ${{ steps.version.outputs.profile }} --output medilex-ios-${{ steps.version.outputs.version }}.ipa
+          EXT=${{ matrix.platform == 'android' && 'apk' || 'ipa' }}
+          eas build:download --platform ${{ matrix.platform }} --profile ${{ steps.version.outputs.profile }} --output medilex-${{ matrix.platform }}-${{ steps.version.outputs.version }}.$EXT
       
       - name: Upload to Release
         uses: softprops/action-gh-release@v1
         with:
-          files: |
-            medilex-android-${{ steps.version.outputs.version }}.apk
-            medilex-ios-${{ steps.version.outputs.version }}.ipa
+          files: medilex-${{ matrix.platform }}-${{ steps.version.outputs.version }}.${{ matrix.platform == 'android' && 'apk' || 'ipa' }}
           tag_name: ${{ github.ref_name }}
           name: Medilex ${{ steps.version.outputs.version }}
           draft: false
@@ -71,7 +68,7 @@ jobs:
         run: |
           cd ../scripts
           $status = if ('${{ job.status }}' -eq 'success') { 'success' } else { 'failure' }
-          ./notify-build.ps1 -Status $status -App Medilex -Platform android -Profile ${{ steps.version.outputs.profile }} -DownloadUrl "https://github.com/${{ github.repository }}/releases/tag/${{ github.ref_name }}"
+          ./notify-build.ps1 -Status $status -App Medilex -Platform ${{ matrix.platform }} -Profile ${{ steps.version.outputs.profile }} -DownloadUrl "https://github.com/${{ github.repository }}/releases/tag/${{ github.ref_name }}"
         env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
