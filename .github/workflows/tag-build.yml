@@ -65,8 +65,8 @@ jobs:
       - name: Notify build status
         if: always()
         shell: pwsh
+        working-directory: scripts
         run: |
-          cd ../scripts
           $status = if ('${{ job.status }}' -eq 'success') { 'success' } else { 'failure' }
           ./notify-build.ps1 -Status $status -App Medilex -Platform ${{ matrix.platform }} -Profile ${{ steps.version.outputs.profile }} -DownloadUrl "https://github.com/${{ github.repository }}/releases/tag/${{ github.ref_name }}"
         env:
