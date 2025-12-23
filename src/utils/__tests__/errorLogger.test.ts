@@ -8,11 +8,9 @@ describe('ErrorLogger', () => {
     // Clear AsyncStorage
     await AsyncStorage.clear();
 
-    // Get fresh logger instance
+    // Get fresh logger instance and reset singleton state
     logger = getErrorLogger();
-
-    // Clear any existing logs
-    await logger.clearLogs();
+    logger._resetForTesting();
   });
 
   describe('Singleton Pattern', () => {

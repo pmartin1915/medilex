@@ -136,6 +136,15 @@ class ErrorLogger {
   logWarning(message: string, context?: string) {
     this.logError('warn', message, undefined, undefined, context);
   }
+
+  /**
+   * Reset the logger state for testing purposes.
+   * This allows tests to force re-initialization.
+   */
+  _resetForTesting() {
+    this.initialized = false;
+    this.logs = [];
+  }
 }
 
 // Lazy singleton pattern - create instance only when first accessed
