@@ -16,7 +16,9 @@
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:headed": "playwright test --headed",
-    "test:e2e:update-snapshots": "playwright test --update-snapshots"
+    "test:e2e:update-snapshots": "playwright test --update-snapshots",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "dependencies": {
     "@expo/metro-config": "^54.0.9",
@@ -45,6 +47,7 @@
     "@babel/preset-env": "^7.28.5",
     "@babel/preset-react": "^7.28.5",
     "@babel/preset-typescript": "^7.28.5",
+    "@eslint/js": "^9.39.2",
     "@playwright/test": "^1.57.0",
     "@testing-library/jest-native": "^5.4.3",
     "@testing-library/react-native": "^13.3.3",
@@ -55,12 +58,16 @@
     "@vitest/ui": "^2.1.8",
     "babel-jest": "^30.2.0",
     "babel-preset-expo": "~54.0.9",
+    "eslint": "^9.39.2",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "globals": "^16.5.0",
     "happy-dom": "^20.0.11",
     "jsdom": "^22.1.0",
     "react-native-web": "^0.21.2",
     "react-test-renderer": "^19.1.0",
     "serve": "^14.2.5",
     "typescript": "~5.9.2",
+    "typescript-eslint": "^8.50.1",
     "vite": "^5.4.11",
     "vitest": "^2.1.8"
   },
