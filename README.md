@@ -15,15 +15,23 @@ A mobile flashcard application for learning medical terminology, built with Reac
 
 ## Tech Stack
 
-- **React Native** 0.76.5
-- **React** 18.2.0 (Critical: NOT React 19!)
-- **Expo** SDK 52
-- **TypeScript** 5.3.3
-- **React Navigation** v6
-- **Zustand** v4.5.2 (State Management)
-- **AsyncStorage** (Data Persistence)
-- **Lucide React Native** (Icons)
-- **Expo Speech** (Audio Pronunciation)
+| Category             | Technology                            |
+| -------------------- | ------------------------------------- |
+| **Framework**        | React Native 0.81 + React 19          |
+| **Platform**         | Expo SDK 54                           |
+| **Language**         | TypeScript 5.3                        |
+| **Navigation**       | React Navigation v7                   |
+| **State Management** | Zustand with persistence              |
+| **Testing**          | Vitest + Playwright (20 + 48 E2E)     |
+| **Encryption**       | @healthcare-apps/core (AES-256-GCM)   |
+| **Storage**          | AsyncStorage (encrypted)              |
+| **Audio**            | Expo Speech                           |
+| **Icons**            | Lucide React Native                   |
+
+**Related Documentation:**
+
+- [CLAUDE.md](CLAUDE.md) - AI assistant guidance
+- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) - System architecture
 
 ## Getting Started
 
@@ -148,9 +156,6 @@ None currently! 🎉
 - [ ] More medical terms (100+)
 
 ## Development Notes
-
-### Critical: React Version
-This app MUST use React 18.2.0. React 19 has compatibility issues with React Navigation and other dependencies.
 
 ### Testing
 - Test on real device for best experience
