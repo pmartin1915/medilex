@@ -18,11 +18,12 @@
     "test:e2e:headed": "playwright test --headed",
     "test:e2e:update-snapshots": "playwright test --update-snapshots",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "lint:fix": "eslint . --fix",
+    "postinstall": "node scripts/patch-rn.js"
   },
   "dependencies": {
     "@expo/metro-config": "^54.0.9",
-    "@healthcare-apps/core": "^1.0.0",
+    "@healthcare-apps/core": "file:../burn-wizard/packages/core",
     "@react-native-async-storage/async-storage": "2.2.0",
     "@react-navigation/bottom-tabs": "^6.5.20",
     "@react-navigation/native": "^6.1.17",
@@ -49,7 +50,9 @@
     "@babel/preset-typescript": "^7.28.5",
     "@eslint/js": "^9.39.2",
     "@playwright/test": "^1.57.0",
+    "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-native": "^5.4.3",
+    "@testing-library/react": "^16.3.2",
     "@testing-library/react-native": "^13.3.3",
     "@types/react": "~19.1.10",
     "@types/react-test-renderer": "^19.1.0",

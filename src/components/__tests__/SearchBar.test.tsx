@@ -1,11 +1,12 @@
 import React from 'react';
-import { render, fireEvent } from '@testing-library/react-native';
+import { render, fireEvent } from '@testing-library/react';
 import { SearchBar } from '../SearchBar';
+import { vi } from 'vitest';
 
 describe('SearchBar', () => {
   it('renders correctly with placeholder', () => {
     const { getByPlaceholderText } = render(
-      <SearchBar value="" onChangeText={jest.fn()} />
+      <SearchBar value="" onChangeText={vi.fn()} />
     );
 
     expect(getByPlaceholderText('Search medical terms...')).toBeTruthy();
@@ -15,7 +16,7 @@ describe('SearchBar', () => {
     const { getByPlaceholderText } = render(
       <SearchBar
         value=""
-        onChangeText={jest.fn()}
+        onChangeText={vi.fn()}
         placeholder="Custom placeholder"
       />
     );
@@ -25,20 +26,20 @@ describe('SearchBar', () => {
 
   it('displays the provided value', () => {
     const { getByDisplayValue } = render(
-      <SearchBar value="test query" onChangeText={jest.fn()} />
+      <SearchBar value="test query" onChangeText={vi.fn()} />
     );
 
     expect(getByDisplayValue('test query')).toBeTruthy();
   });
 
   it('calls onChangeText when text is entered', () => {
-    const mockOnChangeText = jest.fn();
+    const mockOnChangeText = vi.fn();
     const { getByPlaceholderText } = render(
       <SearchBar value="" onChangeText={mockOnChangeText} />
     );
 
     const input = getByPlaceholderText('Search medical terms...');
-    fireEvent.changeText(input, 'cardio');
+    fireEvent.change(input, { target: { value: 'cardio' } });
 
     expect(mockOnChangeText).toHaveBeenCalledWith('cardio');
     expect(mockOnChangeText).toHaveBeenCalledTimes(1);
@@ -46,18 +47,18 @@ describe('SearchBar', () => {
 
   it('updates when value prop changes', () => {
     const { getByDisplayValue, rerender } = render(
-      <SearchBar value="initial" onChangeText={jest.fn()} />
+      <SearchBar value="initial" onChangeText={vi.fn()} />
     );
 
     expect(getByDisplayValue('initial')).toBeTruthy();
 
-    rerender(<SearchBar value="updated" onChangeText={jest.fn()} />);
+    rerender(<SearchBar value="updated" onChangeText={vi.fn()} />);
 
     expect(getByDisplayValue('updated')).toBeTruthy();
   });
 
   it('does not re-render when same props are passed (React.memo test)', () => {
-    const onChangeText = jest.fn();
+    const onChangeText = vi.fn();
     const { rerender } = render(
       <SearchBar value="test" onChangeText={onChangeText} />
     );
@@ -65,8 +66,6 @@ describe('SearchBar', () => {
     // Re-render with same props
     rerender(<SearchBar value="test" onChangeText={onChangeText} />);
 
-    // If React.memo is working, component should not re-render unnecessarily
-    // This is hard to test directly, but we can verify behavior remains consistent
     expect(onChangeText).not.toHaveBeenCalled();
   });
 });

@@ -1,5 +1,11 @@
 import { vi } from 'vitest';
 
+// Define React Native globals
+(globalThis as Record<string, unknown>).__DEV__ = true;
+
+// Provide jest compat for tests that use jest.fn() instead of vi.fn()
+(globalThis as Record<string, unknown>).jest = vi;
+
 // Mock AsyncStorage
 const mockStorage: Record<string, string> = {};
 
@@ -39,37 +45,82 @@ vi.mock('expo-speech', () => ({
   getAvailableVoicesAsync: vi.fn(() => Promise.resolve([])),
 }));
 
-// Mock react-native modules
-vi.mock('react-native', async () => {
-  const actual = await vi.importActual('react-native-web');
+// Mock react-native modules — fully static to avoid loading Flow-typed react-native/index.js
+vi.mock('react-native', () => {
+  const React = require('react');
+  const createElement = React.createElement;
+
+  const createMockComponent = (name: string) => {
+    return ({ children, ...props }: Record<string, unknown>) =>
+      createElement(name === 'Text' ? 'span' : 'div', props, children);
+  };
+
+  // TextInput renders as <input> so getByDisplayValue and fireEvent.change work
+  const TextInputMock = ({ value, placeholder, onChangeText, placeholderTextColor, autoCapitalize, autoCorrect, ...props }: Record<string, unknown>) =>
+    createElement('input', {
+      value,
+      placeholder,
+      onChange: (e: { target: { value: string } }) => {
+        if (typeof onChangeText === 'function') onChangeText(e.target.value);
+      },
+      ...props,
+    });
+
+  const mockAnimatedValue = () => ({
+    setValue: vi.fn(),
+    interpolate: vi.fn(() => 0),
+    addListener: vi.fn(),
+    removeListener: vi.fn(),
+    removeAllListeners: vi.fn(),
+  });
+
   return {
-    ...actual,
+    default: {},
+    View: createMockComponent('View'),
+    Text: createMockComponent('Text'),
+    Image: createMockComponent('Image'),
+    ScrollView: createMockComponent('ScrollView'),
+    FlatList: createMockComponent('FlatList'),
+    TouchableOpacity: createMockComponent('TouchableOpacity'),
+    TextInput: TextInputMock,
+    ActivityIndicator: createMockComponent('ActivityIndicator'),
     Platform: {
       OS: 'web',
-      select: vi.fn((obj) => obj.web || obj.default),
+      select: vi.fn((obj: Record<string, unknown>) => obj.web || obj.default),
     },
     Dimensions: {
       get: vi.fn(() => ({ width: 375, height: 812 })),
       addEventListener: vi.fn(() => ({ remove: vi.fn() })),
     },
     Animated: {
-      View: 'View',
-      Text: 'Text',
-      Image: 'Image',
-      ScrollView: 'ScrollView',
-      FlatList: 'FlatList',
-      timing: vi.fn(() => ({ start: vi.fn() })),
-      spring: vi.fn(() => ({ start: vi.fn() })),
-      Value: vi.fn(() => ({
-        setValue: vi.fn(),
-        interpolate: vi.fn(() => 0),
+      View: createMockComponent('Animated.View'),
+      Text: createMockComponent('Animated.Text'),
+      Image: createMockComponent('Animated.Image'),
+      ScrollView: createMockComponent('Animated.ScrollView'),
+      FlatList: createMockComponent('Animated.FlatList'),
+      timing: vi.fn(() => ({ start: vi.fn((cb?: () => void) => cb && cb()) })),
+      spring: vi.fn(() => ({ start: vi.fn((cb?: () => void) => cb && cb()) })),
+      Value: vi.fn(mockAnimatedValue),
+      ValueXY: vi.fn(() => ({
+        ...mockAnimatedValue(),
+        x: mockAnimatedValue(),
+        y: mockAnimatedValue(),
+        getLayout: vi.fn(() => ({ left: 0, top: 0 })),
+        getTranslateTransform: vi.fn(() => [{ translateX: 0 }, { translateY: 0 }]),
       })),
-      createAnimatedComponent: vi.fn((component) => component),
+      createAnimatedComponent: vi.fn((component: unknown) => component),
+    },
+    PanResponder: {
+      create: vi.fn(() => ({
+        panHandlers: {},
+      })),
     },
     StyleSheet: {
-      create: vi.fn((styles) => styles),
-      flatten: vi.fn((style) => style),
+      create: vi.fn((styles: Record<string, unknown>) => styles),
+      flatten: vi.fn((style: unknown) => style),
     },
+    useWindowDimensions: vi.fn(() => ({ width: 375, height: 812 })),
+    useColorScheme: vi.fn(() => 'light'),
   };
 });
 
@@ -119,6 +170,7 @@ vi.mock('lucide-react-native', () => ({
   Home: () => null,
   Book: () => null,
   Brain: () => null,
+  Info: () => null,
 }));
 
 // Suppress console warnings in tests

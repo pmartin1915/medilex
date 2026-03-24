@@ -167,6 +167,33 @@ const handleSwipeRight = () => markAsLearnedAndAdvance();
 4. Run unit tests: `npm test`
 5. For E2E: `npm run build:web && npm run test:e2e`
 
+## Agent Workflow
+
+### Delegation (Opus → Sonnet)
+
+**Delegate to Sonnet:** test runs, lint/typecheck, adding new flashcard data entries, UI styling, documentation, git operations, Expo build commands, i18n additions.
+
+**Opus handles directly:** medical terminology accuracy, speech synthesis integration, state management architecture (Zustand stores), AsyncStorage encryption logic, navigation flow changes, data persistence schema changes.
+
+After Sonnet completes any task, Opus must review. Run `npm test` before accepting.
+
+### Clinical Safety
+
+This project handles medical terminology education. Follow the **clinical-dev** skill for:
+- SNOMED CT terminology standards
+- No PHI in code, tests, or commits
+- Synthetic test data only (faker.js patterns)
+
+### Cross-Model Audit
+
+Use `pal codereview` after changes to medical terminology data or learning algorithm logic. Use `pal chat` for quick terminology accuracy checks.
+
+### Session State
+
+For multi-session work, maintain `ai/STATE.md` and `ai/DECISIONS.md`. Update STATE.md after every significant action.
+
+---
+
 ## Related Documentation
 
 - [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) - System architecture

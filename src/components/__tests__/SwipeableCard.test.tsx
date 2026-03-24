@@ -1,51 +1,49 @@
 import React from 'react';
-import { render } from '@testing-library/react-native';
-import { Text } from 'react-native';
+import { render } from '@testing-library/react';
 import { SwipeableCard } from '../SwipeableCard';
+import { vi } from 'vitest';
 
 describe('SwipeableCard', () => {
   it('renders children correctly', () => {
-    const { getByText } = render(
-      <SwipeableCard onSwipeLeft={jest.fn()} onSwipeRight={jest.fn()}>
-        <Text>Test Child</Text>
+    const { container } = render(
+      <SwipeableCard onSwipeLeft={vi.fn()} onSwipeRight={vi.fn()}>
+        <span>Test Child</span>
       </SwipeableCard>
     );
 
-    expect(getByText('Test Child')).toBeTruthy();
+    expect(container.textContent).toContain('Test Child');
   });
 
   it('accepts swipe callbacks', () => {
-    const onSwipeLeft = jest.fn();
-    const onSwipeRight = jest.fn();
+    const onSwipeLeft = vi.fn();
+    const onSwipeRight = vi.fn();
 
-    const { getByText } = render(
+    const { container } = render(
       <SwipeableCard onSwipeLeft={onSwipeLeft} onSwipeRight={onSwipeRight}>
-        <Text>Swipeable Content</Text>
+        <span>Swipeable Content</span>
       </SwipeableCard>
     );
 
-    expect(getByText('Swipeable Content')).toBeTruthy();
-    // Callbacks are set up correctly (actual swipe testing requires more complex gesture simulation)
+    expect(container.textContent).toContain('Swipeable Content');
   });
 
   it('renders with React.memo optimization', () => {
-    const onSwipeLeft = jest.fn();
-    const onSwipeRight = jest.fn();
+    const onSwipeLeft = vi.fn();
+    const onSwipeRight = vi.fn();
 
     const { rerender } = render(
       <SwipeableCard onSwipeLeft={onSwipeLeft} onSwipeRight={onSwipeRight}>
-        <Text>Content</Text>
+        <span>Content</span>
       </SwipeableCard>
     );
 
     // Re-render with same props - React.memo should prevent unnecessary re-renders
     rerender(
       <SwipeableCard onSwipeLeft={onSwipeLeft} onSwipeRight={onSwipeRight}>
-        <Text>Content</Text>
+        <span>Content</span>
       </SwipeableCard>
     );
 
-    // Component should handle re-renders efficiently
     expect(onSwipeLeft).not.toHaveBeenCalled();
     expect(onSwipeRight).not.toHaveBeenCalled();
   });

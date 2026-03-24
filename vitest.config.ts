@@ -1,8 +1,15 @@
 import { defineConfig } from 'vitest/config';
 import react from '@vitejs/plugin-react';
+import path from 'path';
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react({
+      babel: {
+        plugins: ['@babel/plugin-transform-flow-strip-types'],
+      },
+    }),
+  ],
   test: {
     globals: true,
     environment: 'jsdom',
@@ -17,25 +24,16 @@ export default defineConfig({
     server: {
       deps: {
         inline: [
-          'react-native',
           '@testing-library/react-native',
           'react-native-web',
           '@react-native-async-storage/async-storage',
-          'expo-speech',
-          'react-native-gesture-handler',
-          'react-native-safe-area-context',
-          'react-native-screens',
-          '@react-navigation/native',
-          '@react-navigation/native-stack',
-          '@react-navigation/bottom-tabs',
-          'lucide-react-native',
         ],
       },
     },
   },
   resolve: {
     alias: {
-      'react-native': 'react-native-web',
+      'react-native': path.resolve(__dirname, 'src/test/react-native-mock.ts'),
     },
   },
 });
