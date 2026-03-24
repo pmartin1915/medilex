@@ -1,6 +1,5 @@
 import { defineConfig } from 'vitest/config';
 import react from '@vitejs/plugin-react';
-import path from 'path';
 
 export default defineConfig({
   plugins: [
@@ -29,11 +28,6 @@ export default defineConfig({
           '@react-native-async-storage/async-storage',
         ],
       },
-    },
-  },
-  resolve: {
-    alias: {
-      'react-native': path.resolve(__dirname, 'src/test/react-native-mock.ts'),
     },
   },
 });

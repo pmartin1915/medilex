@@ -1,4 +1,5 @@
-import { renderHook, act } from '@testing-library/react-native';
+import { renderHook, act } from '@testing-library/react';
+import { type Mock } from 'vitest';
 import { useWordStore } from '../wordStore';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -45,7 +46,7 @@ describe('wordStore', () => {
       ];
 
       // Mock AsyncStorage.getItem to return our test data
-      const mockGetItem = AsyncStorage.getItem as jest.Mock;
+      const mockGetItem = AsyncStorage.getItem as Mock;
       mockGetItem.mockResolvedValueOnce(JSON.stringify(mockTerms));
 
       const { result } = renderHook(() => useWordStore());
@@ -62,7 +63,7 @@ describe('wordStore', () => {
 
     it('handles loading errors gracefully', async () => {
       // Force an error by mocking AsyncStorage.getItem to throw
-      const mockGetItem = AsyncStorage.getItem as jest.Mock;
+      const mockGetItem = AsyncStorage.getItem as Mock;
       mockGetItem.mockRejectedValueOnce(new Error('Storage error'));
 
       const { result } = renderHook(() => useWordStore());
