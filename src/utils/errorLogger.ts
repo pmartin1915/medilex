@@ -61,10 +61,17 @@ class ErrorLogger {
   private setupGlobalErrorHandler() {
     // Setup global error handler - only after initialization
     try {
-      if (typeof global !== 'undefined' && global.ErrorUtils) {
-        const originalHandler = global.ErrorUtils.getGlobalHandler();
+      const errorUtils = (globalThis as Record<string, unknown>).ErrorUtils as
+        | {
+            getGlobalHandler: () => (error: Error, isFatal?: boolean) => void;
+            setGlobalHandler: (handler: (error: Error, isFatal?: boolean) => void) => void;
+          }
+        | undefined;
 
-        global.ErrorUtils.setGlobalHandler((error: Error, isFatal?: boolean) => {
+      if (errorUtils) {
+        const originalHandler = errorUtils.getGlobalHandler();
+
+        errorUtils.setGlobalHandler((error: Error, isFatal?: boolean) => {
           this.logError(
             'error',
             `${isFatal ? 'FATAL: ' : ''}${error.message || 'Unknown error'}`,

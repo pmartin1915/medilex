@@ -30,9 +30,9 @@ class ErrorBoundary extends Component<Props, State> {
     if (errorLogger) {
       errorLogger.logError(
         'error',
-        error.message || 'Unknown error',
+        error.message ?? 'Unknown error',
         error.stack,
-        errorInfo.componentStack,
+        errorInfo.componentStack ?? undefined,
         'ErrorBoundary'
       );
     }

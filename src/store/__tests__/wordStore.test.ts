@@ -1,6 +1,6 @@
 import { renderHook, act } from '@testing-library/react';
 import { type Mock } from 'vitest';
-import { useWordStore } from '../wordStore';
+import { useWordStore, type WordState } from '../wordStore';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 describe('wordStore', () => {
@@ -80,7 +80,7 @@ describe('wordStore', () => {
   });
 
   describe('searchTerms', () => {
-    let storeHook: ReturnType<typeof renderHook<ReturnType<typeof useWordStore>, unknown>>;
+    let storeHook: { result: { current: WordState } };
 
     beforeEach(async () => {
       storeHook = renderHook(() => useWordStore());
@@ -126,7 +126,7 @@ describe('wordStore', () => {
   });
 
   describe('getTermById', () => {
-    let storeHook: ReturnType<typeof renderHook<ReturnType<typeof useWordStore>, unknown>>;
+    let storeHook: { result: { current: WordState } };
 
     beforeEach(async () => {
       storeHook = renderHook(() => useWordStore());
@@ -155,7 +155,7 @@ describe('wordStore', () => {
   });
 
   describe('updateProgress', () => {
-    let storeHook: ReturnType<typeof renderHook<ReturnType<typeof useWordStore>, unknown>>;
+    let storeHook: { result: { current: WordState } };
 
     beforeEach(async () => {
       storeHook = renderHook(() => useWordStore());
@@ -236,7 +236,7 @@ describe('wordStore', () => {
   });
 
   describe('toggleFavorite', () => {
-    let storeHook: ReturnType<typeof renderHook<ReturnType<typeof useWordStore>, unknown>>;
+    let storeHook: { result: { current: WordState } };
 
     beforeEach(async () => {
       storeHook = renderHook(() => useWordStore());
@@ -276,7 +276,7 @@ describe('wordStore', () => {
   });
 
   describe('toggleBookmark', () => {
-    let storeHook: ReturnType<typeof renderHook<ReturnType<typeof useWordStore>, unknown>>;
+    let storeHook: { result: { current: WordState } };
 
     beforeEach(async () => {
       storeHook = renderHook(() => useWordStore());

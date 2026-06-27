@@ -10,7 +10,7 @@ import {
   SENSITIVE_FIELDS,
 } from '../utils/encryptedStorage';
 
-interface WordState {
+export interface WordState {
   terms: MedicalTerm[];
   userProgress: Record<string, UserProgress>;
   isLoading: boolean;

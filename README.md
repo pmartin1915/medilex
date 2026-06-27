@@ -143,7 +143,7 @@ To add more medical terms:
 
 ## Known Issues
 
-None currently! 🎉
+See [CURRENT_STATUS.md](CURRENT_STATUS.md) for the latest build/runtime status.
 
 ## Future Enhancements
 
@@ -182,5 +182,5 @@ Built following best practices from:
 ---
 
 **Version**: 1.0.0  
-**Last Updated**: January 2025  
-**Status**: Production Ready ✅
+**Last Updated**: June 2026  
+**Status**: Active development — see [CURRENT_STATUS.md](CURRENT_STATUS.md)

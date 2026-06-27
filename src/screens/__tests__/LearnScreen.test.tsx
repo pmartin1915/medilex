@@ -61,7 +61,7 @@ describe('LearnScreen', () => {
       getProgress: mockGetProgress,
     };
 
-    (useWordStore as Mock).mockImplementation((selector?: (state: typeof mockState) => unknown) => {
+    (useWordStore as unknown as Mock).mockImplementation((selector?: (state: typeof mockState) => unknown) => {
       if (typeof selector === 'function') {
         return selector(mockState);
       }
@@ -72,7 +72,7 @@ describe('LearnScreen', () => {
       recordStudySession: mockRecordStudySession,
     };
 
-    (useStreakStore as Mock).mockImplementation((selector?: (state: typeof mockStreakState) => unknown) => {
+    (useStreakStore as unknown as Mock).mockImplementation((selector?: (state: typeof mockStreakState) => unknown) => {
       if (typeof selector === 'function') {
         return selector(mockStreakState);
       }
@@ -117,7 +117,7 @@ describe('LearnScreen', () => {
       getProgress: mockGetProgress,
     };
 
-    (useWordStore as Mock).mockImplementation((selector?: (state: typeof emptyState) => unknown) => {
+    (useWordStore as unknown as Mock).mockImplementation((selector?: (state: typeof emptyState) => unknown) => {
       if (typeof selector === 'function') {
         return selector(emptyState);
       }
