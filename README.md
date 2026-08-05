@@ -169,7 +169,7 @@ See [CURRENT_STATUS.md](CURRENT_STATUS.md) for the latest build/runtime status.
 
 ## License
 
-MIT
+Proprietary — all rights reserved. See [LICENSE](LICENSE).
 
 ## Credits
 
